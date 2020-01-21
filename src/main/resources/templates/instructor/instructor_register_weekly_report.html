@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学習サポートシステム</title>
+<link href="../css/bootstrap.css" rel="stylesheet">
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body onload="responsibleCompanies();">
+	<div class="container">
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#"> <!-- 企業ロゴ --> <img
+						alt="main log" src="../img/header_logo.png">
+					</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="instructor_training_list.html">研修コース</a></li>
+					</ul>
+					<p class="navbar-text navbar-right">
+						<a href="admin_login.html" class="navbar-link">ログアウト</a>
+					</p>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+
+
+		<!-- register form -->
+		<div class="row">
+			<div
+				class="col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
+				<div class="well">
+					<form method="post" action="register_daily_report.html">
+						<fieldset>
+							<legend>○月○日～の週報を入力してください</legend>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputTodaysContent">今週の研修内容について:</label> <label
+											class="control-label" style="color: red"
+											for="inputTodaysContent">今週の研修内容についてを入力してください</label>
+										<textarea rows="10" cols="30" class="form-control"
+											id="inputTodaysContent"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputTodaysIntelligibilityDetail">受講生所感(講師から見た受講生の状況):</label><br/>
+<pre>
+1.理解度・・・・・・・・・・研修内容に対しポイント把握、技術習得できたか
+2.熱意・意欲・・・・・・・前準備、復習はできたか？研修への取り組み姿勢は？
+3.積極性・協調性・・・意見発表、提案・質問・友人との対話など
+4.研修態度・・・・・・・・研修中のぼんやり、居眠り、遅刻・5分前行動
+5.モラルマナー・・・・・・・挨拶、言葉遣い朝掃除、身だしなみ
+6.その他・・・・・・・・・・・講師が気づいた事、特記事項、所見
+※評価ポイントに記載されている内容を踏まえ、特に気づいた点や特に気になった点について記載してください。
+</pre>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputTodaysContent">山田太郎様:</label> 
+										<textarea rows="5" cols="30" class="form-control"
+											id="inputTodaysContent"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputTodaysContent">鈴木次郎様:</label> 
+										<textarea rows="5" cols="30" class="form-control"
+											id="inputTodaysContent"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputTodaysContent">加藤三郎様:</label> 
+										<textarea rows="5" cols="30" class="form-control"
+											id="inputTodaysContent"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<button type="submit" class="btn btn-primary">登録</button>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!-- end container -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+</body>
+</html>
