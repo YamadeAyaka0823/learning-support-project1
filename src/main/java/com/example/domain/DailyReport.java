@@ -1,13 +1,13 @@
 package com.example.domain;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class DailyReport {
 	
 	/** ID */
 	private Integer id;
 	/** 日付 */
-	private LocalDate date;
+	private Date date;
 	
 	private Integer trainingId;
 	
@@ -15,28 +15,27 @@ public class DailyReport {
 	/** 内容 */
 	private String content;
 	/** 理解度 */
-	private Integer intelligibillity;
+	private Integer intelligibility;
 	/** 理解度詳細 */
 	private String detailIntelligibillity;
 	/** 講師について */
-	private Integer aboutInstractor;
+	private Integer aboutInstructor;
 	/** 質問 */
 	private String question;
 	/** 研修 */
 	private Training training;
 	/** 受講生 */
 	private Student student;
-	
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public LocalDate getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(LocalDate date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public Integer getTrainingId() {
@@ -57,11 +56,11 @@ public class DailyReport {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public Integer getIntelligibillity() {
-		return intelligibillity;
+	public Integer getIntelligibility() {
+		return intelligibility;
 	}
-	public void setIntelligibillity(Integer intelligibillity) {
-		this.intelligibillity = intelligibillity;
+	public void setIntelligibility(Integer intelligibility) {
+		this.intelligibility = intelligibility;
 	}
 	public String getDetailIntelligibillity() {
 		return detailIntelligibillity;
@@ -69,11 +68,11 @@ public class DailyReport {
 	public void setDetailIntelligibillity(String detailIntelligibillity) {
 		this.detailIntelligibillity = detailIntelligibillity;
 	}
-	public Integer getAboutInstractor() {
-		return aboutInstractor;
+	public Integer getAboutInstructor() {
+		return aboutInstructor;
 	}
-	public void setAboutInstractor(Integer aboutInstractor) {
-		this.aboutInstractor = aboutInstractor;
+	public void setAboutInstructor(Integer aboutInstructor) {
+		this.aboutInstructor = aboutInstructor;
 	}
 	public String getQuestion() {
 		return question;
@@ -93,14 +92,21 @@ public class DailyReport {
 	public void setStudent(Student student) {
 		this.student = student;
 	}
-	
 	@Override
 	public String toString() {
 		return "DailyReport [id=" + id + ", date=" + date + ", trainingId=" + trainingId + ", studentId=" + studentId
-				+ ", content=" + content + ", intelligibillity=" + intelligibillity + ", detailIntelligibillity="
-				+ detailIntelligibillity + ", aboutInstractor=" + aboutInstractor + ", question=" + question
+				+ ", content=" + content + ", intelligibility=" + intelligibility + ", detailIntelligibillity="
+				+ detailIntelligibillity + ", aboutInstructor=" + aboutInstructor + ", question=" + question
 				+ ", training=" + training + ", student=" + student + "]";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 }

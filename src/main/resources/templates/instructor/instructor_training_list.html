@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -54,15 +54,25 @@
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>週報(閲覧/登録)</th>
+							<th>　　週報(閲覧)　　　　週報(登録)　　　　日報(閲覧)</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-							<td><form action="instructor_view_weekly_report.html" method="post"><button type="submit">週報(閲覧/登録)</button></form></td>
+						<tr th:each="training:${instructor.trainingList}">
+							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
+							<td th:text="${instructor.name}">鈴木一郎</td>
+							<td>
+							    <a th:href="@{'/instructor/view?id=' + ${training.id}}">
+							　　<button type="submit">週報(閲覧)</button>　
+							   </a>
+							　　<a th:href="@{'/instructor/weekly_report?id=' + ${training.id}}">
+							   <button type="submit">週報(登録)</button>
+							   </a>&nbsp;&nbsp;&nbsp;&nbsp;
+							   <a th:href="@{'/instructor/view_daily_report?id=' + ${training.id}}">
+							   <button type="submit">日報(閲覧)</button>
+							   </a>　　
+							</td>
 						</tr>
 
 					</tbody>

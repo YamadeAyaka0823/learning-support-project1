@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -50,16 +50,22 @@
 			<div
 				class="col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<div class="well">
-					<form method="post" action="register_daily_report.html">
+					<form method="post" th:action="@{/instructor/insert}">
 						<fieldset>
-							<legend>○月○日～の週報を入力してください</legend>
+							<legend th:text="${dates} + '〜の週報を入力してください'">○月○日～の週報を入力してください</legend>
+							<input type="hidden" name="instructorName" th:value="${training.instructor.name}">
+							<input type="hidden" name="startDate" th:value="${date}">
+							<!--  <span th:each="student:${training.studentList}">
+							<input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].studentName'}" th:value="${student.name}">
+							</span> -->
+							<input type="hidden" name="trainingId" th:value="${training.id}">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">今週の研修内容について:</label> <label
 											class="control-label" style="color: red"
 											for="inputTodaysContent">今週の研修内容についてを入力してください</label>
-										<textarea rows="10" cols="30" class="form-control"
+										<textarea name="instructorContent" rows="10" cols="30" class="form-control"
 											id="inputTodaysContent"></textarea>
 									</div>
 								</div>
@@ -83,30 +89,17 @@
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputTodaysContent">山田太郎様:</label> 
-										<textarea rows="5" cols="30" class="form-control"
+									<span th:each="student, stat:${training.studentList}">
+									
+										<label th:text="${student.name} + '様:'" for="inputTodaysContent">山田太郎様:</label> 
+										<input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].studentName'}" th:value="${student.name}">
+										<textarea th:name="${'studentImpressionList[' + stat.index + '].content'}" rows="5" cols="30" class="form-control"
 											id="inputTodaysContent"></textarea>
+									</span>
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="row">
-									<div class="col-sm-12">
-										<label for="inputTodaysContent">鈴木次郎様:</label> 
-										<textarea rows="5" cols="30" class="form-control"
-											id="inputTodaysContent"></textarea>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="row">
-									<div class="col-sm-12">
-										<label for="inputTodaysContent">加藤三郎様:</label> 
-										<textarea rows="5" cols="30" class="form-control"
-											id="inputTodaysContent"></textarea>
-									</div>
-								</div>
-							</div>
+							
 
 							<div class="form-group">
 								<div class="row">

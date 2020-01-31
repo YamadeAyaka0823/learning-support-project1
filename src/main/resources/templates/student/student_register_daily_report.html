@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>学習サポートシステム</title>
-<link href="../css/bootstrap.css" rel="stylesheet">
+<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -51,16 +51,19 @@
 			<div
 				class="col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<div class="well">
-					<form method="post" action="register_daily_report.html">
+					<form method="post" th:action="@{/student/insert}">
+					<input type="hidden" name="formattedDate" th:value="${formattedDate}">
+					<input type="hidden" name="trainingId" th:value="${id}">
+					<input type="hidden" name="studentId" th:value="${session.id}">
 						<fieldset>
-							<legend>○月○日の日報を入力してください</legend>
+							<legend th:text="${formattedDate} + 'の日報を入力してください'">の日報を入力してください</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">本日学んだ内容:</label> <label
 											class="control-label" style="color: red"
 											for="inputTodaysContent">本日学んだ内容を入力してください</label>
-										<textarea rows="10" cols="30" class="form-control"
+										<textarea name="content" rows="10" cols="30" class="form-control"
 											id="inputTodaysContent"></textarea>
 									</div>
 								</div>
@@ -72,19 +75,19 @@
 											class="control-label" style="color: red" for="inputEmail">本日の理解度を選択してください</label>
 										<div class="col-sm-12">
 											<label class="radio-inline"> <input type="radio"
-												name="inputTodaysIntelligibility" checked="checked">良く理解できた
+												name="intelligibility" checked="checked" value="1">良く理解できた
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="inputTodaysIntelligibility">概ね理解できた
+												name="intelligibility" value="2">概ね理解できた
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="inputTodaysIntelligibility">普通
+												name="intelligibility" value="3">普通
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="inputTodaysIntelligibility">少し難しかった
+												name="intelligibility" value="4">少し難しかった
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="inputTodaysIntelligibility">とても難しかった
+												name="intelligibility" value="5">とても難しかった
 											</label>
 										</div>
 									</div>
@@ -95,7 +98,7 @@
 									<div class="col-sm-12">
 										<label for="inputTodaysIntelligibilityDetail">本日の理解度(詳細):</label><br/>
 										※上記で「少し難しかった」「とても難しかった」とお答えの方へ、具体的にどの内容が難しかったのかをご入力ください。また、復習が必要な箇所、苦手とする項目がありましたらご入力ください。
-										<textarea rows="10" cols="30" class="form-control"
+										<textarea name="detailIntelligibillity" rows="10" cols="30" class="form-control"
 											id="inputTodaysIntelligibilityDetail"></textarea>
 									</div>
 								</div>
@@ -107,19 +110,19 @@
 											class="control-label" style="color: red" for="inputEmail">講師の対応の丁寧さを選択してください</label>
 										<div class="col-sm-12">
 											<label class="radio-inline"> <input type="radio"
-												name="civility" checked="checked">とても丁寧だった
+												name="aboutInstructor" checked="checked" value="1">とても丁寧だった
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="civility">概ね丁寧だった
+												name="aboutInstructor" value="2">概ね丁寧だった
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="civility">どちらともいえない
+												name="aboutInstructor" value="3">どちらともいえない
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="civility">やや丁寧ではなかった
+												name="aboutInstructor" value="4">やや丁寧ではなかった
 											</label><br/>
 											<label class="radio-inline"> <input type="radio"
-												name="civility">全く丁寧ではなかった
+												name="aboutInstructor" value="5">全く丁寧ではなかった
 											</label>
 										</div>
 									</div>
@@ -130,7 +133,7 @@
 									<div class="col-sm-12">
 										<label for="inputTodaysQuestion">本日の研修内容についてのご質問:</label><br/>
 										研修時間内で質問できなかったことやご相談等がございましたらご入力ください。後日講師より解説致します。
-										<textarea rows="10" cols="30" class="form-control"
+										<textarea name="question" rows="10" cols="30" class="form-control"
 											id="inputTodaysQuestion"></textarea>
 									</div>
 								</div>
@@ -152,6 +155,6 @@
 	<!-- end container -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

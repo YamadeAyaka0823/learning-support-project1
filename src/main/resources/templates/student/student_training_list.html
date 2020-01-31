@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>学習サポートシステム</title>
-<link href="../css/bootstrap.css" rel="stylesheet">
+<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -25,7 +25,7 @@
 							class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="admin_login.html"> <!-- 企業ロゴ -->
-						<img alt="main log" src="../img/header_logo.png">
+						<img alt="main log" th:src="@{/img/header_logo.png}">
 					</a>
 				</div>
 
@@ -33,7 +33,7 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="student_training_list.html">研修コース</a></li>
+						<li class="active"><a th:href="@{/student/login}">研修コース</a></li>
 					</ul>
 					<p class="navbar-text navbar-right">
 						<a href="admin_login.html" class="navbar-link">パスワード変更</a> <a
@@ -55,25 +55,35 @@
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>日報(閲覧/登録)</th>
+							<th>　　日報(閲覧)　　　　日報(登録)</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-							<td><form action="student_view_daily_report.html" method="post"><button type="submit">日報(閲覧/登録)</button></form></td>
+						<tr th:each="training:${student.trainingList}">
+							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
+							<td th:text="${training.instructor.name}">鈴木一郎</td>
+							<td>
+							   <a th:href="@{'/student/daily_load?id=' + ${training.id}}">
+							　　<button type="submit">日報(閲覧)</button>　
+							   </a>
+							　　<!-- <a th:href="@{'/student/daily?id=' + ${training.id} + 'studentId=’ + ${student.id}}"> -->
+							　　<a th:href="@{/student/daily(id=${training.id},studentId=${session.id})}">
+							   <button type="submit">日報(登録)</button>
+							   </a>　　
+							　　
+							</td>
 						</tr>
 
 					</tbody>
 				</table>
 			</div>
 		</div>
+		<input type="hidden" name="id" th:value="${session.id}">
 	</div>
 	<!-- end container -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

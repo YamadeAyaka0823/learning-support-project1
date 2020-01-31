@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>学習サポートシステム</title>
-<link href="../css/bootstrap.css" rel="stylesheet">
+<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/pulldown.js}"></script>
+
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -63,40 +66,13 @@
 						<div class="panel-title">日付</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
+						<form method="post" th:action="@{/student/date_load}" class="form-horizontal" id="form">
+						<!--  <input type="hidden" name="date" th:value="${ymd}"> -->
+						<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<select class="form-control">
-										<option selected="selected">2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
+									<select class="form-control" name="date" id="pulldown" onchange="change()">
+										<option th:each="date:${dates}" th:text="${date}">2016/07/01</option>
 									</select>
 								</div>
 							</div>
@@ -108,18 +84,12 @@
 				<div class="well">
 					<form method="post" action="register_daily_report.html">
 						<fieldset>
-							<legend>○月○日の鈴木一郎さんの日報</legend>
+							<legend th:text="${formattedDate} + 'の' + ${dailyReport.student.name} + 'さんの日報'">○月○日の鈴木一郎さんの日報</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">学んだ内容:</label>
-										<pre>
-オブジェクト指向入門
-クラスとオブジェクト
-継承
-インターフェース
-ポリモーフィズム
-カプセル化
+										<pre th:text="${dailyReport.content}"> 
 										</pre>
 									</div>
 								</div>
@@ -128,7 +98,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">理解度</label>
-										<pre>
+										<pre th:text="${intelligibility}">
 概ね理解できた
 										</pre>
 									</div>
@@ -138,7 +108,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysIntelligibilityDetail">理解度(詳細):</label><br />
-										<pre>
+										<pre th:text="${dailyReport.detailIntelligibillity}">
 ポリモーフィズムの概念(同じ操作で違う振る舞いというもの)がとても難しく感じました。
 
 
@@ -150,7 +120,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">講師の対応の丁寧さ</label>
-										<pre>
+										<pre th:text="${aboutInstructor}">
 とても丁寧だった
 										</pre>
 									</div>
@@ -160,7 +130,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysQuestion">本日の研修内容についてのご質問:</label><br />
-										<pre>
+										<pre th:text="${dailyReport.question}">
 ポリモーフィズムがわかりませんでした。
 
 もう一度説明をお願いしたいです。
@@ -177,8 +147,6 @@
 
 	</div>
 	<!-- end container -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.example.domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Training {
@@ -8,27 +9,27 @@ public class Training {
 	/** ID */
 	private Integer id;
 	/** 開始日 */
-	private LocalDate startDate;
+	private Date startDate;
 	/** 終了日 */
-	private LocalDate endDate;
+	private Date endDate;
 	/** 研修名 */
 	private String name;
 	/** 講師ID */
-	private Integer instractorId;
+	private Integer instructorId;
 	/** サブ講師ID1 */
-	private Integer subInstractorId1;
+	private Integer subInstructorId1;
 	/** サブ講師ID2 */
-	private Integer subInstractorId2;
+	private Integer subInstructorId2;
 	/** サブ講師ID3 */
-	private Integer subInstractorId3;
+	private Integer subInstructorId3;
 	/** 講師 */
-	private Instractor instractor;
+	private Instructor instructor;
 	/** 講師1 */
-	private Instractor subInstractor1;
+	private Instructor subInstructor1;
 	/** 講師2 */
-	private Instractor subInstractor2;
+	private Instructor subInstructor2;
 	/** 講師3 */
-	private Instractor subInstractor3;
+	private Instructor subInstructor3;
 	
 	private List<Student> studentList;
 	
@@ -42,19 +43,19 @@ public class Training {
 		this.id = id;
 	}
 
-	public LocalDate getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDate startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDate getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDate endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -66,68 +67,68 @@ public class Training {
 		this.name = name;
 	}
 
-	public Integer getInstractorId() {
-		return instractorId;
+	public Integer getInstructorId() {
+		return instructorId;
 	}
 
-	public void setInstractorId(Integer instractorId) {
-		this.instractorId = instractorId;
+	public void setInstructorId(Integer instructorId) {
+		this.instructorId = instructorId;
 	}
 
-	public Integer getSubInstractorId1() {
-		return subInstractorId1;
+	public Integer getSubInstructorId1() {
+		return subInstructorId1;
 	}
 
-	public void setSubInstractorId1(Integer subInstractorId1) {
-		this.subInstractorId1 = subInstractorId1;
+	public void setSubInstructorId1(Integer subInstructorId1) {
+		this.subInstructorId1 = subInstructorId1;
 	}
 
-	public Integer getSubInstractorId2() {
-		return subInstractorId2;
+	public Integer getSubInstructorId2() {
+		return subInstructorId2;
 	}
 
-	public void setSubInstractorId2(Integer subInstractorId2) {
-		this.subInstractorId2 = subInstractorId2;
+	public void setSubInstructorId2(Integer subInstructorId2) {
+		this.subInstructorId2 = subInstructorId2;
 	}
 
-	public Integer getSubInstractorId3() {
-		return subInstractorId3;
+	public Integer getSubInstructorId3() {
+		return subInstructorId3;
 	}
 
-	public void setSubInstractorId3(Integer subInstractorId3) {
-		this.subInstractorId3 = subInstractorId3;
+	public void setSubInstructorId3(Integer subInstructorId3) {
+		this.subInstructorId3 = subInstructorId3;
 	}
 
-	public Instractor getInstractor() {
-		return instractor;
+	public Instructor getInstructor() {
+		return instructor;
 	}
 
-	public void setInstractor(Instractor instractor) {
-		this.instractor = instractor;
+	public void setInstructor(Instructor instructor) {
+		this.instructor = instructor;
 	}
 
-	public Instractor getSubInstractor1() {
-		return subInstractor1;
+	public Instructor getSubInstructor1() {
+		return subInstructor1;
 	}
 
-	public void setSubInstractor1(Instractor subInstractor1) {
-		this.subInstractor1 = subInstractor1;
+	public void setSubInstructor1(Instructor subInstructor1) {
+		this.subInstructor1 = subInstructor1;
 	}
 
-	public Instractor getSubInstractor2() {
-		return subInstractor2;
+	public Instructor getSubInstructor2() {
+		return subInstructor2;
 	}
 
-	public void setSubInstractor2(Instractor subInstractor2) {
-		this.subInstractor2 = subInstractor2;
+	public void setSubInstructor2(Instructor subInstructor2) {
+		this.subInstructor2 = subInstructor2;
 	}
 
-	public Instractor getSubInstractor3() {
-		return subInstractor3;
+	public Instructor getSubInstructor3() {
+		return subInstructor3;
 	}
 
-	public void setSubInstractor3(Instractor subInstractor3) {
-		this.subInstractor3 = subInstractor3;
+	public void setSubInstructor3(Instructor subInstructor3) {
+		this.subInstructor3 = subInstructor3;
 	}
 
 	public List<Student> getStudentList() {
@@ -149,9 +150,19 @@ public class Training {
 	@Override
 	public String toString() {
 		return "Training [id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", name=" + name
-				+ ", instractorId=" + instractorId + ", subInstractorId1=" + subInstractorId1 + ", subInstractorId2="
-				+ subInstractorId2 + ", subInstractorId3=" + subInstractorId3 + ", studentList=" + studentList + "]";
+				+ ", instructorId=" + instructorId + ", subInstructorId1=" + subInstructorId1 + ", subInstructorId2="
+				+ subInstructorId2 + ", subInstructorId3=" + subInstructorId3 + ", instructor=" + instructor
+				+ ", subInstructor1=" + subInstructor1 + ", subInstructor2=" + subInstructor2 + ", subInstructor3="
+				+ subInstructor3 + ", studentList=" + studentList + ", weeklyReportList=" + weeklyReportList + "]";
 	}
+
+	
+
+	
+
+	
+
+	
 	
 	
 
