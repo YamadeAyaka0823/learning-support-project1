@@ -81,7 +81,7 @@ public class StudentController {
 	 */
 	@RequestMapping("/load")
 	public String load(Model model) {
-		Integer id = (Integer) session.getAttribute("id");
+		Integer id = (Integer) session.getAttribute("id"); //sessionに入れたstudent_idで検索.
 		Student student = studentService.load(id);
 		model.addAttribute("student", student);
 		return "student/student_training_list";

@@ -23,17 +23,15 @@
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminCompany/company_register}" th:object="${companyRegisterForm}">
+					<form method="post" th:action="@{/adminCompany/company_edit}">
+					<input type="hidden" name="id" th:value="${company.id}">
 						<fieldset>
 							<legend>企業(企業担当者)</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputCompanyName">企業名:</label>
-										<div th:if="${#fields.hasErrors('name')}"
-									         th:errors="*{name}"
-									         style="color:red"></div>
-										<input type="text" name="name" id="inputCompanyName" class="form-control" th:field="*{name}">
+										<input type="text" name="name" th:value="${company.name}" id="inputCompanyName" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -41,10 +39,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputCompanyName">企業名(かな):</label>
-										<div th:if="${#fields.hasErrors('kana')}"
-									         th:errors="*{kana}"
-									         style="color:red"></div>
-										<input type="text" name="kana" id="inputCompanyName" class="form-control" th:field="*{kana}">
+										<input type="text" name="kana" th:value="${company.kana}" id="inputCompanyName" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -52,7 +47,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputRemarks">備考</label>
-										<textarea rows="10" cols="30" name="remarks" class="form-control" id="inputRemarks"></textarea>
+										<textarea rows="10" cols="30" name="remarks" th:text="${company.remarks}" class="form-control" id="inputRemarks"></textarea>
 									</div>
 								</div>
 							</div>

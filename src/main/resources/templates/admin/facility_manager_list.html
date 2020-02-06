@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,47 +13,14 @@
 </head>
 <body>
 	<div class="container">
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="admin_login.html"> <!-- 企業ロゴ --> <img
-						alt="main log" src="../img/header_logo.png">
-					</a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li><a href="admin_training_list.html">研修コース</a></li>
-						<li class="active"><a href="facility_manager_list.html">運営管理者</a></li>
-						<li><a href="company_list.html">企業(企業担当者)</a></li>
-						<li><a href="instructor_list.html">講師</a></li>
-					</ul>
-					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
-					</p>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="fragment::hedder1"></span>
 
 		<!-- add training -->
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<form method="post" action="facility_manager_detail.html">
-				<button type="submit" class="btn btn-primary">新規登録</button>
-				</form>
+				<a th:href="@{/admin/register}"><button type="submit" class="btn btn-primary">新規登録</button></a>
 			</div>
 		</div>
 		<!-- table -->
@@ -70,29 +37,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>管理者一郎</td>
-							<td>ichiro@gmail.com</td>
-							<td>すべて</td>
-							<td><form action="facility_manager_detail.html" method="post"><button type="submit">編集</button></form></td>
-						</tr>
-						<tr>
-							<td>管理者次郎</td>
-							<td>ichiro@gmail.com</td>
-							<td>株式会社１１１<br/>株式会社２２２</td>
-							<td><form action="facility_manager_detail.html" method="post"><button type="submit">編集</button></form></td>
-						</tr>
-						<tr>
-							<td>管理者三郎</td>
-							<td>ichiro@gmail.com</td>
-							<td>株式会社１１１<br/>株式会社２２２</td>
-							<td><form action="facility_manager_detail.html" method="post"><button type="submit">編集</button></form></td>
-						</tr>
-						<tr>
-							<td>管理者四朗</td>
-							<td>ichiro@gmail.com</td>
-							<td>株式会社１１１<br/>株式会社２２２<br/>株式会社３３３</td>
-							<td><form action="facility_manager_detail.html" method="post"><button type="submit">編集</button></form></td>
+						<tr th:each="admin:${adminList}">
+							<td th:text="${admin.name}">管理者一郎</td>
+							<td th:text="${admin.email}">ichiro@gmail.com</td>
+							<td>
+							<span th:each="company:${admin.companyList}">
+								<div th:unless="${admin.canShowAllCompany == true}" th:text="${company.name}"><br/></div>
+							</span>
+							<span th:if="${admin.canShowAllCompany == true}" th:text="すべて"></span>
+							</td>
+							<td><a th:href="@{'/admin/edit?id=' + ${admin.id}}"><button type="submit">編集</button></a></td>
 						</tr>
 					</tbody>
 				</table>

@@ -23,17 +23,15 @@
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminInstructor/instructor_register}" th:object="${instructorRegisterForm}">
+					<form method="post" th:action="@{/adminInstructor/instructor_edit}">
+					<input type="hidden" name="id" th:value="${instructor.id}">
 						<fieldset>
 							<legend>講師情報</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputInstructorName">講師名:</label> 
-										<div th:if="${#fields.hasErrors('name')}"
-									         th:errors="*{name}"
-									         style="color:red"></div>
-										 <input type="text" name="name" id="inputInstructorName" class="form-control" th:field="*{name}">
+										 <input type="text" name="name" th:value="${instructor.name}" id="inputInstructorName" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -41,10 +39,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputInstructorEmail">講師名(かな):</label> 
-										<div th:if="${#fields.hasErrors('kana')}"
-									         th:errors="*{kana}"
-									         style="color:red"></div>
-										 <input type="text" name="kana" id="inputInstructorEmail" class="form-control" th:field="*{kana}">
+										 <input type="text" name="kana" th:value="${instructor.kana}" id="inputInstructorEmail" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -52,10 +47,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputInstructorEmail">メール:</label> 
-										<div th:if="${#fields.hasErrors('email')}"
-									         th:errors="*{email}"
-									         style="color:red"></div>
-										 <input type="text" name="email" id="inputInstructorEmail" class="form-control" th:field="*{email}">
+										 <input type="text" name="email" th:value="${instructor.email}" id="inputInstructorEmail" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -63,10 +55,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputInstructorEmail">パスワード:</label> 
-										<div th:if="${#fields.hasErrors('password')}"
-									         th:errors="*{password}"
-									         style="color:red"></div>
-										 <input type="password" name="password" id="inputInstructorEmail" class="form-control" th:field="*{password}">
+										 <input type="text" name="password" th:value="${instructor.password}" id="inputInstructorEmail" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -74,11 +63,8 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputInstructorAffiliation">所属名:</label> 
-										<div th:if="${#fields.hasErrors('affiliation')}"
-									         th:errors="*{affiliation}"
-									         style="color:red"></div>
-										 <input type="text" name="affiliation" id="inputInstructorAffiliation"
-											class="form-control" th:field="*{affiliation}">
+										 <input type="text" name="affiliation" th:value="${instructor.affiliation}" id="inputInstructorAffiliation"
+											class="form-control">
 									</div>
 								</div>
 							</div>
@@ -87,7 +73,7 @@
 									<div class="col-sm-12">
 										<label for="inputRemarks">備考</label>
 										<textarea rows="10" cols="30" class="form-control"
-											id="inputRemarks" name="remarks"></textarea>
+											id="inputRemarks" name="remarks" th:text="${instructor.remarks}"></textarea>
 									</div>
 								</div>
 							</div>
@@ -117,30 +103,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
+						<tr th:each="training:${instructorTrainingList.trainingList}">
+							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
+							<td th:text="${instructorTrainingList.name}">鈴木一郎</td>
 						</tr>
 					</tbody>
 				</table>

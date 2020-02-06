@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,39 +13,8 @@
 </head>
 <body>
 	<div class="container">
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#"> <!-- 企業ロゴ --> <img
-						alt="main log" src="../img/header_logo.png">
-					</a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li><a href="admin_training_list.html">研修コース</a></li>
-						<li><a href="#">運営管理者</a></li>
-						<li class="active"><a href="#">企業(企業担当者)</a></li>
-						<li><a href="#">講師</a></li>
-					</ul>
-					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
-					</p>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="fragment::hedder1"></span>
 
 		<!-- register form -->
 		<div class="row">
@@ -53,14 +22,16 @@
 				class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" action="admin_training_list.html">
+					<form method="post" th:action="@{/adminCompany/companyMember_insert}" th:object="${companyMemberRegisterForm}">
+					<input type="hidden" name="companyId" th:value="${company.id}">
 						<fieldset>
 							<legend>企業担当者登録</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										〇〇株式会社<br/>
-										<pre>
+									<span th:text="${company.name}"></span>
+										<br/>
+										<pre th:text="${company.remarks}">
 備考備考備考備考備考備考備考備考備考備考備考備考
 備考備考備考備考備考備考備考備考備考備考備考備考
 備考備考備考備考備考備考備考備考備考備考備考備考
@@ -73,27 +44,62 @@
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label class="control-label" style="color: red" for="inputError">担当者を登録しました</label>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputChargeName">担当者名:</label> <label
-											class="control-label" style="color: red"
-											for="inputChargeName">担当者名を入力してください</label> <input
-											type="text" id="inputChargeName" class="form-control">
+										<label for="inputChargeName">担当者名:</label>
+										<div th:if="${#fields.hasErrors('name')}"
+									         th:errors="*{name}"
+									         style="color:red"></div>
+										 <input type="text" name="name" id="inputChargeName" class="form-control" th:field="*{name}">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputChargeEmail">メール:</label> <label
-											class="control-label" style="color: red"
-											for="inputChargeEmail">メールを入力してください</label> <input
-											type="text" id="inputChargeEmail" class="form-control">
+										<label for="inputChargeName">担当者名(かな):</label>
+										<div th:if="${#fields.hasErrors('kana')}"
+									         th:errors="*{kana}"
+									         style="color:red"></div>
+										 <input type="text" name="kana" id="inputChargeName" class="form-control" th:field="*{kana}">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputChargeEmail">メール:</label>
+										<div th:if="${#fields.hasErrors('email')}"
+									         th:errors="*{email}"
+									         style="color:red"></div>
+										 <input type="text" name="email" id="inputChargeEmail" class="form-control" th:field="*{email}">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputChargeEmail">パスワード:</label>
+										<div th:if="${#fields.hasErrors('password')}"
+									         th:errors="*{password}"
+									         style="color:red"></div>
+										 <input type="password" name="password" id="inputChargeEmail" class="form-control" th:field="*{password}">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<label for="inputChargeEmail">確認用パスワード:</label>
+										<span th:text="${error}" style="color:red"></span>
+										<div th:if="${#fields.hasErrors('confirmPassword')}"
+									         th:errors="*{confirmPassword}"
+									         style="color:red"></div>
+										 <input type="password" name="confirmPassword" id="inputChargeEmail" class="form-control" th:field="*{confirmPassword}">
 									</div>
 								</div>
 							</div>
@@ -123,13 +129,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>担当者一郎</td>
-							<td>ichi@gmail.com</td>
-							<td><form action="company_register_charge.html"
-									method="post">
-									<button type="submit">削除</button>
-								</form></td>
+						<tr th:each="companyMember:${companyMemberList}">
+							<td th:text="${companyMember.name}">担当者一郎</td>
+							<td th:text="${companyMember.email}">ichi@gmail.com</td>
+							<td>
+								<a th:href="@{'/adminCompany/delete?id=' + ${companyMember.id}}"><button type="submit">削除</button></a>
+							</td>
 						</tr>
 					</tbody>
 				</table>

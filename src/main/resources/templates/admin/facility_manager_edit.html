@@ -52,61 +52,53 @@
 			<div
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<div class="well">
-					<form method="post" th:action="@{/admin/admin_register}" name="adminEditForm" th:object="${adminRegisterForm}">
+					<form method="post" th:action="@{/admin/admin_edit}" name="adminEditForm">
+					<input type="hidden" name="id" th:value="${admin.id}">
 						<fieldset>
 							<legend>運営管理者</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputName">氏名:</label> 
-										<div th:if="${#fields.hasErrors('name')}"
-									         th:errors="*{name}"
-									         style="color:red"></div>
-										<input type="text" name="name" id="inputName" class="form-control" th:field="*{name}">
+										<label for="inputName">氏名:</label> <label
+											class="control-label" style="color: red" for="inputName">氏名を入力してください</label>
+										<input type="text" name="name" th:value="${admin.name}" id="inputName" class="form-control">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputName">氏名(かな):</label>
-										<div th:if="${#fields.hasErrors('kana')}"
-									         th:errors="*{kana}"
-									         style="color:red"></div>
-										<input type="text" name="kana" id="inputName" class="form-control" th:field="*{kana}">
+										<label for="inputName">氏名(かな):</label> <label
+											class="control-label" style="color: red" for="inputName">氏名(かな)を入力してください</label>
+										<input type="text" name="kana" th:value="${admin.kana}" id="inputName" class="form-control">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputEmail">メール</label>
-										<div th:if="${#fields.hasErrors('email')}"
-									         th:errors="*{email}"
-									         style="color:red"></div>
-										<input type="text" name="email" id="inputEmail" class="form-control" th:field="*{email}">
+										<label for="inputEmail">メール</label> <label
+											class="control-label" style="color: red" for="inputEmail">メールを入力してください</label>
+										<input type="text" name="email" th:value="${admin.email}" id="inputEmail" class="form-control">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputPassword">パスワード</label>
-										<div th:if="${#fields.hasErrors('password')}"
-									         th:errors="*{password}"
-									         style="color:red"></div>
-										<input type="password" name="password" id="inputPassword" class="form-control" th:field="*{password}">
+										<label for="inputPassword">パスワード</label> <label
+											class="control-label" style="color: red" for="inputPassword">パスワードを入力してください</label>
+										<input type="password" name="password" th:value="${admin.password}" id="inputPassword" class="form-control">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputConfirmationPassword">確認用パスワード</label>
-										<div th:if="${#fields.hasErrors('confirmPassword')}"
-									         th:errors="*{confirmPassword}"
-									         style="color:red"></div>
-										 <input type="password" name="confirmPassword" id="inputConfirmationPassword" th:field="*{confirmPassword}"
+										<label for="inputConfirmationPassword">確認用パスワード</label> <label
+											class="control-label" style="color: red"
+											for="inputConfirmationPassword">確認用パスワードを入力してください</label> <input
+											type="password" name="confirmPassword" id="inputConfirmationPassword"
 											class="form-control">
 									</div>
 								</div>

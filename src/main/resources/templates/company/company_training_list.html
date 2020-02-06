@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,10 +59,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
+						<tr th:each="training:${trainingList}">
+							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text=${training.name}>〇〇企業様向け Java新人研修</td>
+							<td>
+							<span th:each="student:${training.studentList}">
+							<span th:text="${student.name}"></span>
+							</span>
+							</td>
 							<td><form action="../admin/admin_view_daily_report.html" method="post"><button type="submit">日報閲覧</button></form></td>
 							<td><form action="../admin/admin_view_weekly_report.html" method="post"><button type="submit">週報閲覧</button></form></td>
 						</tr>

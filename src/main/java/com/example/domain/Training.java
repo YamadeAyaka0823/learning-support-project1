@@ -1,6 +1,5 @@
 package com.example.domain;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +29,8 @@ public class Training {
 	private Instructor subInstructor2;
 	/** 講師3 */
 	private Instructor subInstructor3;
+	/** 企業ID */
+	private Integer companyId;
 	
 	private List<Student> studentList;
 	
@@ -131,6 +132,14 @@ public class Training {
 		this.subInstructor3 = subInstructor3;
 	}
 
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
 	public List<Student> getStudentList() {
 		return studentList;
 	}
@@ -153,8 +162,11 @@ public class Training {
 				+ ", instructorId=" + instructorId + ", subInstructorId1=" + subInstructorId1 + ", subInstructorId2="
 				+ subInstructorId2 + ", subInstructorId3=" + subInstructorId3 + ", instructor=" + instructor
 				+ ", subInstructor1=" + subInstructor1 + ", subInstructor2=" + subInstructor2 + ", subInstructor3="
-				+ subInstructor3 + ", studentList=" + studentList + ", weeklyReportList=" + weeklyReportList + "]";
+				+ subInstructor3 + ", companyId=" + companyId + ", studentList=" + studentList + ", weeklyReportList="
+				+ weeklyReportList + "]";
 	}
+
+	
 
 	
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,39 +13,8 @@
 </head>
 <body>
 	<div class="container">
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#"> <!-- 企業ロゴ --> <img
-						alt="main log" src="../img/header_logo.png">
-					</a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li><a href="admin_training_list.html">研修コース</a></li>
-						<li><a href="facility_manager_list.html">運営管理者</a></li>
-						<li class="active"><a href="company_list.html">企業(企業担当者)</a></li>
-						<li><a href="instructor_list.html">講師</a></li>
-					</ul>
-					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
-					</p>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="fragment::hedder1"></span>
 
 		<!-- search form -->
 		<div class="row">
@@ -56,11 +25,11 @@
 						<div class="panel-title">検索条件</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
+						<form method="post" th:action="@{/adminCompany/company_list}" class="form-horizontal">
 							<div class="form-group">
 								<label for="code" class="control-label col-sm-2">企業名</label>
 								<div class="col-sm-9">
-									<input type="text" name="code" id="code"
+									<input type="text" name="name" id="code"
 										class="form-control input-sm" />
 								</div>
 							</div>
@@ -78,7 +47,7 @@
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<form method="post" action="company_detail.html">
+				<form method="post" th:action="@{/adminCompany/register}">
 				<button type="submit" class="btn btn-primary">新規登録</button>
 				</form>
 			</div>
@@ -97,17 +66,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>株式会社AAA</td>
-							<td>鈴木一郎(ichiro@gmail.com)<br/>鈴木次郎(ichiro@gmail.com)</td>
-							<td><form action="company_detail.html" method="post"><button type="submit">編集</button></form></td>
-							<td><form action="company_register_charge.html" method="post"><button type="submit">担当者登録</button></form></td>
-						</tr>
-						<tr>
-							<td>株式会社AAA</td>
-							<td>鈴木一郎(ichiro@gmail.com)<br/>鈴木次郎(ichiro@gmail.com)</td>
-							<td><form action="company_detail.html" method="post"><button type="submit">編集</button></form></td>
-							<td><form action="company_register_charge.html" method="post"><button type="submit">担当者登録</button></form></td>
+						<tr th:each="company:${companyList}">
+							<td th:text="${company.name}">株式会社AAA</td>
+							<td>
+							<span th:each="companyMember:${company.companyMemberList}">
+								<div th:text="${companyMember.name} + '(' + ${companyMember.email} + ')'"><br/></div>
+							</span>
+							</td>
+							<td><a th:href="@{'/adminCompany/edit?id=' + ${company.id}}"><button type="submit">編集</button></a></td>
+							<td><a th:href="@{'/adminCompany/companyMember_register?id=' + ${company.id}}"><button type="submit">担当者登録</button></a></td>
 						</tr>
 					</tbody>
 				</table>

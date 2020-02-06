@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,14 @@ public class TrainingService {
 	 */
 	public Training instructorIdLoad(Integer id) {
 		return trainingRepository.instructorIdLoad(id);
+	}
+	
+	/**
+	 * 管理者画面で研修一覧を表示するためのサービス.
+	 * @return
+	 */
+	public List<Training> findAll(){
+		return trainingRepository.findAll();
 	}
 
 }

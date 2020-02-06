@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -138,6 +139,63 @@ public class InstructorRepository {
 			return null;
 		}
 		return instructorList.get(0);
+	}
+	
+	/**
+	 * 管理者画面で講師の一覧のためのリポジトリ.
+	 * @return
+	 */
+	public List<Instructor> findAll(){
+		String sql = "SELECT id, name, kana, email, password, remarks, affiliation FROM instructors ORDER BY id";
+		List<Instructor> instructorList = template.query(sql, INSTRUCTOR_ROW_MAPPER);
+		return instructorList;
+	}
+	
+	/**
+	 * 管理者画面で講師の新規登録のためのリポジトリ.
+	 * @param instructor
+	 */
+	public void insert(Instructor instructor) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(instructor);
+		String sql = "INSERT INTO instructors (name, kana, email, password, affiliation, remarks) VALUES (:name, :kana, :email, :password, :affiliation, :remarks)";
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 管理者画面で講師情報を編集するために講師を1件検索するためのリポジトリ.
+	 * @param id
+	 * @return
+	 */
+	public Instructor oneLoad(Integer id) {
+		String sql = "SELECT id, name, kana, email, password, affiliation, remarks FROM instructors WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		List<Instructor> instructorList = template.query(sql, param, INSTRUCTOR_ROW_MAPPER);
+		if(instructorList.size() == 0) {
+			return null;
+		}
+		return instructorList.get(0);
+	}
+	
+	/**
+	 * 管理者画面で講師情報を更新するためのリポジトリ.
+	 * @param instructor
+	 */
+	public void update(Instructor instructor) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(instructor);
+		String sql = "UPDATE instructors SET name = :name, kana = :kana, email = :email, password = :password, affiliation = :affiliation, remarks = :remarks WHERE id = :id";
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 管理者画面で講師を曖昧検索するためのリポジトリ.
+	 * @param name
+	 * @return
+	 */
+	public List<Instructor> findByName(String name){
+		String sql = "SELECT id, name, kana, email, password, affiliation, remarks FROM instructors WHERE name LIKE :name ORDER BY id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+		List<Instructor> instructorList = template.query(sql, param, INSTRUCTOR_ROW_MAPPER);
+		return instructorList;
 	}
 	
 
