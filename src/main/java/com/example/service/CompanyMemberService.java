@@ -28,6 +28,15 @@ public class CompanyMemberService {
 	}
 	
 	/**
+	 * 企業担当者がログインするためのサービス.
+	 * @param form
+	 * @return
+	 */
+	public CompanyMember findByEmail(String email) {
+		return companyMemberRepository.findByEmail(email);
+	}
+	
+	/**
 	 * 管理者画面で企業担当者を新規登録するためのサービス.
 	 * @param form
 	 */

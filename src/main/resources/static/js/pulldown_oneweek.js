@@ -15,5 +15,6 @@
 
 function change(){
 	var value = document.getElementById("oneWeek").value;
+	$('#form').submit();
 	console.log(value);
 }

@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import com.example.domain.Instructor;
 import com.example.domain.StudentImpression;
 import com.example.domain.Training;
 import com.example.domain.WeeklyReport;
@@ -72,6 +73,16 @@ public class WeeklyReportRepository {
 				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id1"));
 				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id2"));
 				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id3"));
+				
+				Instructor instructor = new Instructor();
+				instructor.setId(rs.getInt("D_id"));
+				instructor.setName(rs.getString("D_name"));
+				instructor.setKana(rs.getString("D_kana"));
+				instructor.setEmail(rs.getString("D_email"));
+				instructor.setAffiliation(rs.getString("D_affiliation"));
+				instructor.setPassword(rs.getString("D_password"));
+				instructor.setRemarks(rs.getString("D_remarks"));
+				training.setInstructor(instructor);
 				
 				weeklyReportList = new ArrayList<>();
 				training.setWeeklyReportList(weeklyReportList);
@@ -185,6 +196,53 @@ public class WeeklyReportRepository {
 		return JoinSql;
 	}
 	
+	/**
+	 * trainingとweeklyReportとstudentImpressionとinstructorを結合.
+	 * @return
+	 */
+	public String join4Table() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT ");
+		sb.append(" A.id A_id, ");
+		sb.append(" A.end_date A_end_date, ");
+		sb.append(" A.start_date A_start_date, ");
+		sb.append(" A.instructor_id A_instructor_id, ");
+		sb.append(" A.name A_name, ");
+		sb.append(" A.sub_instructor_id1 A_sub_instructor_id1, ");
+		sb.append(" A.sub_instructor_id2 A_sub_instructor_id2, ");
+		sb.append(" A.sub_instructor_id3 A_sub_instructor_id3, ");
+		sb.append(" B.id B_id, ");
+		sb.append(" B.instructor_name B_instructor_name, ");
+		sb.append(" B.content B_content, ");
+		sb.append(" B.start_date B_start_date, ");
+		sb.append(" B.training_id B_training_id, ");
+		sb.append(" C.id C_id, ");
+		sb.append(" C.weekly_report_id C_weekly_report_id, ");
+		sb.append(" C.student_name C_student_name, ");
+		sb.append(" C.content C_content, ");
+		sb.append(" D.id D_id, ");
+		sb.append(" D.name D_name, ");
+		sb.append(" D.kana D_kana, ");
+		sb.append(" D.email D_email, ");
+		sb.append(" D.password D_password, ");
+		sb.append(" D.affiliation D_affiliation, ");
+		sb.append(" D.remarks D_remarks ");
+		sb.append(" FROM ");
+		sb.append(" trainings A ");
+		sb.append(" INNER JOIN ");
+		sb.append(" weekly_reports B ");
+		sb.append(" ON A.id = B.training_id ");
+		sb.append(" INNER JOIN ");
+		sb.append(" student_impressions C ");
+		sb.append(" ON B.id = C.weekly_report_id ");
+		sb.append(" INNER JOIN ");
+		sb.append(" instructors D ");
+		sb.append(" ON D.id = A.instructor_id ");
+		
+		String JoinSql = sb.toString();
+		return JoinSql;
+	}
+	
 	
 	/**
 	 * 週報を登録するためのリポジトリ.
@@ -207,8 +265,25 @@ public class WeeklyReportRepository {
 	public WeeklyReport load(Integer id) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
-		sql.append(" WHERE B.id = :id ");
+		sql.append(" WHERE A.id = :id ");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		List<WeeklyReport> weeklyReportList = template.query(sql.toString(), param, WEEKLY_REPORT_RESULT_SET_EXTRACTOR);
+		if(weeklyReportList.size() == 0) {
+			return null;
+		}
+		return weeklyReportList.get(0);
+	}
+	
+	/**
+	 * 週報を日付で1件検索するためのリポジトリ.
+	 * @param id
+	 * @return
+	 */
+	public WeeklyReport loadByDate(Date date) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE B.start_date = :startDate ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("startDate", date);
 		List<WeeklyReport> weeklyReportList = template.query(sql.toString(), param, WEEKLY_REPORT_RESULT_SET_EXTRACTOR);
 		if(weeklyReportList.size() == 0) {
 			return null;

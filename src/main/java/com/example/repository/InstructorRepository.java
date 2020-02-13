@@ -125,6 +125,22 @@ public class InstructorRepository {
 	}
 	
 	/**
+	 * 講師がログインするためのリポジトリ.
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public Instructor findByEmail(String email) {
+		String sql = "SELECT id, name, kana, email, password, affiliation, remarks FROM instructors WHERE email = :email";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
+		List<Instructor> instructorList = template.query(sql, param, INSTRUCTOR_ROW_MAPPER);
+		if(instructorList.size() == 0) {
+			return null;
+		}
+		return instructorList.get(0);
+	}
+	
+	/**
 	 * 講師1人に対する研修一覧のためのリポジトリ.
 	 * @param id
 	 * @return

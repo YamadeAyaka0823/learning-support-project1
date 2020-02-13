@@ -48,6 +48,22 @@ public class CompanyMemberRepository {
 	}
 	
 	/**
+	 * 企業担当者がログインするためのリポジトリ.
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public CompanyMember findByEmail(String email) {
+		String sql = "SELECT id, name, kana, password, email, company_id FROM company_members WHERE email = :email";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
+		List<CompanyMember> companyMemberList = template.query(sql, param, COMPANY_MEMBER_ROW_MAPPER);
+		if(companyMemberList.size() == 0) {
+			return null;
+		}
+		return companyMemberList.get(0);
+	}
+	
+	/**
 	 * 管理者画面で企業担当者を新規登録するためのリポジトリ.
 	 * @param companyMember
 	 */

@@ -31,6 +31,7 @@
 						<li><a th:href="@{/adminCompany/company_list}">企業(企業担当者)</a></li>
 						<li><a th:href="@{/adminInstructor/instructor_list}">講師</a></li>
 					</ul>
+					<span sec:authentication="principal.administrator.name">山田</span>さんこんにちは！
 					<p class="navbar-text navbar-right">
 						<a href="admin_login.html" class="navbar-link">ログアウト</a>
 					</p>

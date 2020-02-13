@@ -140,6 +140,22 @@ public class AdminRepository {
 	}
 	
 	/**
+	 * 管理者がログインするためのリポジトリ.
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public Admin findByEmail(String email) {
+		String sql = "SELECT id, name, kana, email, password, can_show_all_company FROM admins WHERE email = :email";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
+		List<Admin> adminList = template.query(sql, param, ADMIN_ROW_MAPPER);
+		if(adminList.size() == 0) {
+			return null;
+		}
+		return adminList.get(0);
+	}
+	
+	/**
 	 * 管理者画面で管理者を新規登録するためのリポジトリ.
 	 * @param admin
 	 * @return

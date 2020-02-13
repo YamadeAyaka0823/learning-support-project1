@@ -35,6 +35,15 @@ public class AdminService {
 	}
 	
 	/**
+	 * 管理者がログインするためのサービス.
+	 * @param form
+	 * @return
+	 */
+	public Admin findByEmail(String email) {
+		return adminRepository.findByEmail(email);
+	}
+	
+	/**
 	 * 管理者画面で管理者の一覧を取得するためのサービス.
 	 * @return
 	 */

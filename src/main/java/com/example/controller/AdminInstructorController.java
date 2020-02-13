@@ -3,22 +3,25 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.domain.Admin;
-import com.example.domain.Company;
 import com.example.domain.Instructor;
+import com.example.domain.LoginAdmin;
+import com.example.domain.Training;
 import com.example.form.AdminLoginForm;
 import com.example.form.InstructorRegisterForm;
 import com.example.form.InstructorUpdateForm;
 import com.example.service.AdminService;
-import com.example.service.CompanyService;
 import com.example.service.InstructorService;
+import com.example.service.TrainingService;
 
 @Controller
 @RequestMapping("/adminInstructor")
@@ -31,7 +34,7 @@ public class AdminInstructorController {
 	private InstructorService instructorService;
 	
 	@Autowired
-	private CompanyService companyService;
+    private TrainingService trainingService;
 	
 	@ModelAttribute
 	public AdminLoginForm setUpForm() {
@@ -47,29 +50,42 @@ public class AdminInstructorController {
 	 * 管理者ログイン初期画面.
 	 * @return
 	 */
-	@RequestMapping("")
-	public String index() {
-		return "admin/admin_login";
-	}
+//	@RequestMapping("")
+//	public String index() {
+//		return "admin/admin_login";
+//	}
 	
 	/**
 	 * 管理者がログインするためのコントローラー.
 	 * @param form
 	 * @return
 	 */
-	@RequestMapping("/login")
-	public String login(@Validated AdminLoginForm form, BindingResult result, Model model) {
-		Admin admin = adminService.findByEmailAndPassword(form);
+//	@RequestMapping("/admin_login")
+//	public String login(@Validated AdminLoginForm form, BindingResult result, Model model) {
+//		Admin admin = adminService.findByEmailAndPassword(form);
+//		
+//		if(admin == null) {
+//			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
+//			return index();
+//		}
+//		
+//		if(result.hasErrors()) {
+//			return index();
+//		}
+//		List<Training> trainingList = trainingService.findAll();
+//		model.addAttribute("trainingList", trainingList);
+//		return "admin/admin_training_list";
+//	}
+	
+	@RequestMapping("/admin_login")
+	public String login(Model model,@RequestParam(required = false) String error) {
 		
-		if(admin == null) {
-			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
-			return index();
+		if (error != null) {
+			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+
+			
 		}
-		
-		if(result.hasErrors()) {
-			return index();
-		}
-		return "admin/admin_training_list";
+		return "admin/admin_login";
 	}
 	
 	/**
@@ -77,7 +93,7 @@ public class AdminInstructorController {
 	 * @return
 	 */
 	@RequestMapping("/instructor_list") 
-	public String instructorList(String name, Model model) {
+	public String instructorList(String name, Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) {
 		List<Instructor> instructorList = null;
 		if(name == null) {
 			instructorList = instructorService.findAll(); //全件検索

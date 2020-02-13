@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,39 +14,8 @@
 </head>
 <body onload="responsibleCompanies();">
 	<div class="container">
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#"> <!-- 企業ロゴ --> <img
-						alt="main log" src="../img/header_logo.png">
-					</a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="admin_training_list.html">研修コース</a></li>
-						<li><a href="facility_manager_list.html">運営管理者</a></li>
-						<li><a href="company_list.html">企業(企業担当者)</a></li>
-						<li><a href="instructor_list.html">講師</a></li>
-					</ul>
-					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
-					</p>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="instructorFragment::hedder3"></span>
 
 		<!-- print button -->
 		<div class="row">
@@ -62,49 +32,20 @@
 		<div class="row">
 			<!-- search form -->
 			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
+						<form method="post" th:action="@{/instructor/daily_search}" class="form-horizontal" id="form">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="panel-title">日付</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
+						<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<select class="form-control">
-										<option selected="selected">2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
+									<select class="form-control" name="date">
+										<option th:each="date:${dates}" th:text="${date}" th:value="${date}">2016/07/01</option>
 									</select>
 								</div>
 							</div>
-						</form>
 					</div>
 				</div>
 				<div class="panel panel-default">
@@ -112,35 +53,17 @@
 						<div class="panel-title">受講生</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<select class="form-control">
-										<option selected="selected">山田太郎</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
+									<select class="form-control" name="name">
+										<option th:each="student:${training.studentList}" th:text="${student.name}" th:value="${student.name}">山田太郎</option>
 									</select>
 								</div>
 							</div>
-						</form>
 					</div>
 				</div>
+				<button>送信</button>
+						</form>
 			</div>
 			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
 				<div class="well">

@@ -3,12 +3,17 @@ package com.example.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Instructor;
@@ -161,6 +166,25 @@ public class StudentRepository {
 	}
 	
 	/**
+	 * 受講生がログインするためのリポジトリ.
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public Student findByEmail(String email) {
+		String sql = "SELECT id, name, kana, email, password, company_id FROM students WHERE email = :email";
+//		StringBuilder sql = new StringBuilder();
+//		sql.append(join3Table());
+//		sql.append(" WHERE A.email = :email AND A.password = :password ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
+		List<Student> studentList = template.query(sql.toString(), param, STUDENT_ROW_MAPPER);
+		if(studentList.size() == 0) {
+			return null;
+		}
+		return studentList.get(0);
+	}
+	
+	/**
 	 * 受講生の研修一覧のためのリポジトリ.
 	 * @param id
 	 * @return
@@ -172,9 +196,33 @@ public class StudentRepository {
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 		List<Student> studentList = template.query(sql.toString(), param, STUDENT_RESULT_SET_EXTRACTOR);
 		if(studentList.size() == 0) {
-			return null;
+			return null; 
 		}
 		return studentList.get(0);
+	}
+	
+	private SimpleJdbcInsert insert;
+	/**
+	 * INSERT時に採番されたIDを取得する方法.
+	 */
+	@PostConstruct
+	public void init() {
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert((JdbcTemplate)template.getJdbcOperations());
+		SimpleJdbcInsert withTableName = simpleJdbcInsert.withTableName("students");
+		insert = withTableName.usingGeneratedKeyColumns("id");
+	}
+	
+	/**
+	 * 管理者画面で生徒を登録するためのリポジトリ.
+	 * @param student
+	 */
+	public Student insert(Student student) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(student);
+//		String sql = "INSERT INTO students(name,kana,email,password,company_id) VALUES (:name, :kana, :email, :password, :companyId)";
+//		template.update(sql, param);
+		Number key = insert.executeAndReturnKey(param);
+		student.setId(key.intValue());
+		return student;
 	}
 	
 	

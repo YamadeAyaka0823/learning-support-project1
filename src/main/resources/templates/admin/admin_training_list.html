@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,23 +26,18 @@
 						<div class="panel-title">検索条件</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
+						<form method="post" th:action="@{/adminTraining/training_list}" class="form-horizontal">
 							<div class="form-group">
 								<label for="code" class="control-label col-sm-2">コース名</label>
 								<div class="col-sm-9">
-									<input type="text" name="code" id="code"
+									<input type="text" name="name" id="code"
 										class="form-control input-sm" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="name" class="control-label col-sm-2">期間</label>
 								<div class="col-sm-4">
-									<input type="date" name="name" id="name"
-										class="form-control input-sm" />
-								</div>
-								<label for="continent" class="control-label col-sm-1">～</label>
-								<div class="col-sm-4">
-									<input type="date" name="continent" id="continent"
+									<input type="month" name="startDate" id="name"
 										class="form-control input-sm" />
 								</div>
 							</div>
@@ -59,9 +55,9 @@
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<form method="post" action="admin_training_detail.html">
+				<a th:href="@{/adminTraining/register}">
 				<button type="submit" class="btn btn-primary">新規登録</button>
-				</form>
+				</a>
 			</div>
 		</div>
 		<!-- table -->
@@ -85,10 +81,10 @@
 							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
 							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
 							<td th:text="${training.instructor.name}">鈴木一郎</td>
-							<td><form action="admin_view_daily_report.html" method="post"><button type="submit">日報</button></form></td>
-							<td><form action="admin_view_weekly_report.html" method="post"><button type="submit">週報</button></form></td>
-							<td><form action="admin_training_detail.html" method="post"><button type="submit">編集</button></form></td>
-							<td><form action="admin_training_import_students.html" method="post"><button type="submit">受講者登録</button></form></td>
+							<td><a th:href="@{'/adminTraining/view_dailyReport?id=' + ${training.id}}"><button type="submit">日報</button></a></td>
+							<td><a th:href="@{'/adminTraining/view_weeklyReport?id=' + ${training.id}}"><button type="submit">週報</button></a></td>
+							<td><a th:href="@{'/adminTraining/edit?id=' + ${training.id}}"><button type="submit">編集</button></a></td>
+							<td><a th:href="@{'/adminTraining/student_register?id=' + ${training.id}}"><button type="submit">受講者登録</button></a></td>
 						</tr>
 					</tbody>
 				</table>

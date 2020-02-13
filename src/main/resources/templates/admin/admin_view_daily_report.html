@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,49 +32,20 @@
 		<div class="row">
 			<!-- search form -->
 			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
+				<form method="post" th:action="@{/adminTraining/view_search_dailyReport}" class="form-horizontal">
+				<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="panel-title">日付</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<select class="form-control">
-										<option selected="selected">2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
-										<option>2016/07/01</option>
-										<option>2016/07/02</option>
-										<option>2016/07/03</option>
-										<option>2016/07/04</option>
-										<option>2016/07/05</option>
-										<option>2016/07/06</option>
-										<option>2016/07/07</option>
-										<option>2016/07/08</option>
-										<option>2016/07/09</option>
-										<option>2016/07/10</option>
+									<select class="form-control" name="date">
+										<option th:each="date:${dates}" th:text="${date}" th:value="${date}">2016/07/01</option>
 									</select>
 								</div>
 							</div>
-						</form>
 					</div>
 				</div>
 				<div class="panel panel-default">
@@ -81,46 +53,28 @@
 						<div class="panel-title">受講生</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" action="#" class="form-horizontal">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<select class="form-control">
-										<option selected="selected">山田太郎</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
-										<option>山田次郎</option>
-										<option>山田三郎</option>
-										<option>山田四朗</option>
+									<select class="form-control" name="name">
+										<option th:each="student:${training.studentList}" th:text="${student.name}" th:value="${student.name}">山田太郎</option>
 									</select>
 								</div>
 							</div>
-						</form>
 					</div>
 				</div>
+				<button>送信</button>
+				</form>
 			</div>
 			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
 				<div class="well">
 					<form method="post" action="register_daily_report.html">
 						<fieldset>
-							<legend>○月○日の鈴木一郎さんの日報</legend>
+							<legend th:text="${formattedDate} + 'の' + ${dailyReport.student.name} + 'さんの日報'">○月○日の鈴木一郎さんの日報</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">学んだ内容:</label>
-										<pre>
+										<pre th:text="${dailyReport.content}">
 オブジェクト指向入門
 クラスとオブジェクト
 継承
@@ -135,7 +89,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">理解度</label>
-										<pre>
+										<pre th:text="${intelligibility}">
 概ね理解できた
 										</pre>
 									</div>
@@ -145,7 +99,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysIntelligibilityDetail">理解度(詳細):</label><br />
-										<pre>
+										<pre th:text="${dailyReport.detailIntelligibillity}">
 ポリモーフィズムの概念(同じ操作で違う振る舞いというもの)がとても難しく感じました。
 
 
@@ -157,7 +111,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">講師の対応の丁寧さ</label>
-										<pre>
+										<pre th:text="${aboutInstructor}">
 とても丁寧だった
 										</pre>
 									</div>
@@ -167,7 +121,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysQuestion">本日の研修内容についてのご質問:</label><br />
-										<pre>
+										<pre th:text="${dailyReport.question}">
 ポリモーフィズムがわかりませんでした。
 
 もう一度説明をお願いしたいです。

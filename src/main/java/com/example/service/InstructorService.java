@@ -29,6 +29,15 @@ public class InstructorService {
 	}
 	
 	/**
+	 * 講師がログインするためのサービス.
+	 * @param form
+	 * @return
+	 */
+	public Instructor findByEmail(String email) {
+		return instructorRepository.findByEmail(email);
+	}
+	
+	/**
 	 * 講師の研修一覧のためのサービス.
 	 * @param id
 	 * @return

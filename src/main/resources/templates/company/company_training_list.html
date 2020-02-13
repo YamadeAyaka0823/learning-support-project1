@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,36 +14,8 @@
 </head>
 <body>
 	<div class="container">
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#"> <!-- 企業ロゴ --> <img
-						alt="main log" src="../img/header_logo.png">
-					</a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="instructor_training_list.html">研修コース</a></li>
-					</ul>
-					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
-					</p>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="companyFragment::hedder4"></span>
 
 		<!-- table -->
 		<div class="row">
@@ -54,8 +27,8 @@
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>週報閲覧</th>
 							<th>日報閲覧</th>
+							<th>週報閲覧</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,12 +36,10 @@
 							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
 							<td th:text=${training.name}>〇〇企業様向け Java新人研修</td>
 							<td>
-							<span th:each="student:${training.studentList}">
-							<span th:text="${student.name}"></span>
-							</span>
+							<span th:text="${training.instructor.name}"></span>
 							</td>
-							<td><form action="../admin/admin_view_daily_report.html" method="post"><button type="submit">日報閲覧</button></form></td>
-							<td><form action="../admin/admin_view_weekly_report.html" method="post"><button type="submit">週報閲覧</button></form></td>
+							<td><a th:href="@{'/company/view_daily_report?id=' + ${training.id}}"><button type="submit">日報閲覧</button></a></td>
+							<td><a th:href="@{'/company/view_weekly_report?id=' + ${training.id}}"><button type="submit">週報閲覧</button></a></td>
 						</tr>
 
 					</tbody>

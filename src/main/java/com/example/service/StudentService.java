@@ -35,6 +35,15 @@ public class StudentService {
 	}
 	
 	/**
+	 * 受講者がログインするためのサービス.
+	 * @param form
+	 * @return
+	 */
+	public Student findByEmail(String email) {
+		return studentRepository.findByEmail(email);
+	}
+	
+	/**
 	 * 受講生の研修一覧のためのサービス.
 	 * @param id
 	 * @return
@@ -68,8 +77,8 @@ public class StudentService {
 	 * @param id
 	 * @return
 	 */
-	public DailyReport dailyLoad(Integer id) {
-		return dailyReportRepository.load(id);
+	public DailyReport dailyLoad(Integer id, Integer studentId) {
+		return dailyReportRepository.load(id, studentId);
 	}
 	
 	/**
@@ -79,6 +88,23 @@ public class StudentService {
 	 */
 	public DailyReport dateLoad(Integer trainingId,Date date2) {
 		return dailyReportRepository.dateLoad(trainingId,date2);
+	}
+	
+	/**
+	 * 管理者画面で生徒を登録するためのサービス.
+	 * @param student
+	 */
+	public Student insert(Student student) {
+		return studentRepository.insert(student);
+	}
+	
+	/**
+	 * 管理者画面で受講生の日報の一覧のためのサービス.
+	 * @param id
+	 * @return
+	 */
+	public DailyReport loadForAdmin(Integer id) {
+		return dailyReportRepository.loadForAdmin(id);
 	}
 
 }

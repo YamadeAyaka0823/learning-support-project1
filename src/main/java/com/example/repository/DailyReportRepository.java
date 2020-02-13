@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.example.domain.DailyReport;
 import com.example.domain.Student;
 import com.example.domain.Training;
+import com.example.domain.TrainingStudent;
 
 @Repository
 public class DailyReportRepository {
@@ -149,12 +150,11 @@ public class DailyReportRepository {
 	 * @param id
 	 * @return
 	 */
-	public DailyReport load(Integer id) {
+	public DailyReport load(Integer id, Integer studentId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
-		sql.append(" WHERE A.id = :id ");
-//		String sql = "SELECT id, date, training_id, student_id, content, intelligibility, detail_intelligibillity, about_instructor, question FROM daily_reports WHERE training_id = :trainingId";
-		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		sql.append(" WHERE B.id = :id AND A.student_id = :studentId ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id).addValue("studentId", studentId);
 		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
 		if(dailyReportList.size() == 0) {
 			return null;
@@ -188,8 +188,44 @@ public class DailyReportRepository {
 	public DailyReport instructorViewDailyReport(Integer id) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
-		sql.append(" WHERE A.id = :id ");
+		sql.append(" WHERE B.id = :id ");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
+		if(dailyReportList.size() == 0) {
+			return null;
+		}
+		return dailyReportList.get(0);
+	}
+	
+	/**
+	 * 管理者画面で受講生の日報の一覧のためのリポジトリ.
+	 * @param id
+	 * @return
+	 */
+	public DailyReport loadForAdmin(Integer id) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE B.id = :id ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
+		if(dailyReportList.size() == 0) {
+			return null;
+		}
+		return dailyReportList.get(0);
+	}
+	
+	/**
+	 * 講師画面で受講生の日報を日付と名前のプルダウンを選択して閲覧するためのリポジトリ.
+	 * @param trainingId
+	 * @param date
+	 * @param name
+	 * @return
+	 */
+	public DailyReport dateAndNameLoad(Integer trainingId, Date date, String name) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE A.training_id = :trainingId AND A.date = :date AND C.name = :name ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("trainingId", trainingId).addValue("date", date).addValue("name", name);
 		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
 		if(dailyReportList.size() == 0) {
 			return null;

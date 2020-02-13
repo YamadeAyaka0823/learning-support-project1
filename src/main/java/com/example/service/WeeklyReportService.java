@@ -2,16 +2,13 @@ package com.example.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.StudentImpression;
-import com.example.domain.Training;
 import com.example.domain.WeeklyReport;
 import com.example.form.StudentImpressionForm;
 import com.example.form.WeeklyReportForm;
@@ -41,7 +38,7 @@ public class WeeklyReportService {
 		weeklyReport.setInstructorName(form.getInstructorName());
 		weeklyReport.setTrainingId(form.getTrainingId());
 		
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy年MM月dd日");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdFormat.parse(form.getStartDate());
 		weeklyReport.setStartDate(date);
 		weeklyReportRepository.insert(weeklyReport);
@@ -74,6 +71,19 @@ public class WeeklyReportService {
 	 */
 	public WeeklyReport maxStartDate(Date startDate) {
 		return weeklyReportRepository.maxStartDate(startDate);
+	}
+	
+	/**
+	 * 週報を日付で1件検索するためのサービス.
+	 * @param weeklyReportId
+	 * @param date
+	 * @return
+	 * @throws ParseException
+	 */
+	public WeeklyReport loadByDate(String date) throws ParseException {
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = sdFormat.parse(date);
+        return weeklyReportRepository.loadByDate(startDate);
 	}
 
 }

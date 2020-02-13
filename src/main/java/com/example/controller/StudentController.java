@@ -11,15 +11,18 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.domain.DailyReport;
+import com.example.domain.LoginStudent;
 import com.example.domain.Student;
 import com.example.domain.Training;
 import com.example.form.DailyReportForm;
@@ -49,28 +52,39 @@ public class StudentController {
 	 * 受講生ログイン初期画面.
 	 * @return
 	 */
-	@RequestMapping("")
-	public String index() {
-		return "student/student_login";
-	}
+//	@RequestMapping("")
+//	public String index() {
+//		return "student/student_login";
+//	}
 	
 	/**
 	 * 受講生のログイン.
 	 * @param form
 	 * @return
 	 */
-	@RequestMapping("/login")
-	public String login(@Validated StudentLoginForm form, BindingResult result, Model model) {
-		Student student = studentService.findByEmailAndPassword(form);
-		if(student == null) {
-			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
-			return index();
+//	@RequestMapping("/login")
+//	public String login(@Validated StudentLoginForm form, BindingResult result, Model model) {
+//		Student student = studentService.findByEmailAndPassword(form);
+//		if(student == null) {
+//			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
+//			return index();
+//		}
+//		if(result.hasErrors()) {
+//			return index();
+//		}
+//		session.setAttribute("id", student.getId());
+//		return "forward:/student/load";
+//	}
+	
+	@RequestMapping("/student_login")
+	public String login(Model model,@RequestParam(required = false) String error) {
+		
+		if (error != null) {
+			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+
+			
 		}
-		if(result.hasErrors()) {
-			return index();
-		}
-		session.setAttribute("id", student.getId());
-		return "forward:/student/load";
+		return "student/student_login";
 	}
 	
 	/**
@@ -79,8 +93,8 @@ public class StudentController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/load")
-	public String load(Model model) {
+	@RequestMapping("/student_load")
+	public String load(Model model, @AuthenticationPrincipal LoginStudent loginStudent) {
 		Integer id = (Integer) session.getAttribute("id"); //sessionに入れたstudent_idで検索.
 		Student student = studentService.load(id);
 		model.addAttribute("student", student);
@@ -121,7 +135,8 @@ public class StudentController {
 	 */
 	@RequestMapping("/daily_load")
 	public String dailyLoad(Integer id, Model model) {
-		DailyReport dailyReport = studentService.dailyLoad(id);
+		Integer studentId = (Integer) session.getAttribute("id");
+		DailyReport dailyReport = studentService.dailyLoad(id, studentId);
 		//日付を年月日形式に変換
 		Date date = dailyReport.getDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
@@ -164,7 +179,9 @@ public class StudentController {
 		List<LocalDate> dates = new ArrayList<>();
 		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(1)) {
 			dates.add(startDate);
-		}	
+		}
+		//講義最終日のみ最後に追加.
+		dates.add(end);
 		model.addAttribute("dates", dates);
 		return "student/student_view_daily_report";
 	}
@@ -216,15 +233,17 @@ public class StudentController {
 		  //研修の開始日と終了日を取得する
 //		  Training training = trainingService.instructorIdLoad(id);
 		  //DateをLocalDateに変換
-		  Date date4 = dailyReport.getTraining().getStartDate();
-		  LocalDate start = ((java.sql.Date)date4).toLocalDate();
-		  Date date5 = dailyReport.getTraining().getEndDate();
-		  LocalDate end = ((java.sql.Date)date5).toLocalDate();
-		  //１週間ごとに表示させる.
+		  Date startDate = dailyReport.getTraining().getStartDate();
+		  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
+		  Date endDate = dailyReport.getTraining().getEndDate();
+		  LocalDate end = ((java.sql.Date)endDate).toLocalDate();
+		  //１日ごとに表示させる.
 		  List<LocalDate> dates = new ArrayList<>();
-		  for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(1)) {
-			  dates.add(startDate);
-		  }	
+		  for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(1)) {
+			  dates.add(startDay);
+		  }
+		  //講義最終日のみ最後に追加.
+		  dates.add(end);
 		  model.addAttribute("dates", dates);
 		  return "student/student_view_daily_report";
 	}
