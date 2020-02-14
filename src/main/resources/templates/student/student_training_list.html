@@ -37,11 +37,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
 							<td th:text="${training.instructor.name}">鈴木一郎</td>
 							<td>
-							   <a th:href="@{'/student/daily_load?id=' + ${training.id}}">
+							   <a th:href="@{/student/daily_load(id=${training.id},studentId=${student.id})}">
 							　　<button type="submit">日報(閲覧)</button>　
 							   </a>
 							　　<!-- <a th:href="@{'/student/daily?id=' + ${training.id} + 'studentId=’ + ${student.id}}"> -->
-							　　<a th:href="@{/student/daily(id=${training.id},studentId=${session.id})}">
+							　　<a th:href="@{/student/daily(id=${training.id},studentId=${student.id})}">
 							   <button type="submit">日報(登録)</button>
 							   </a>　　
 							　　

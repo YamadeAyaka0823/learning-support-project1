@@ -17,7 +17,7 @@ import com.example.domain.CompanyMember;
 import com.example.domain.LoginCompanyMember;
 import com.example.repository.CompanyMemberRepository;
 @Service
-//@Component("com.example.service.CompanyDetailServiceImpl")
+//@Component("CompanyDetailServiceImpl")
 public class CompanyDetailServiceImpl implements UserDetailsService {
 	
 	/** DBから情報を得るためのリポジトリ */
@@ -31,7 +31,6 @@ public class CompanyDetailServiceImpl implements UserDetailsService {
 	 * loadUserByUsername(java.lang.String) DBから検索をし、ログイン情報を構成して返す。
 	 */
 	@Override
-	@Bean("company")
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 		CompanyMember companyMember = companyMemberRepository.findByEmail(email);

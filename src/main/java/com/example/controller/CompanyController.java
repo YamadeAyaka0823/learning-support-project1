@@ -109,7 +109,8 @@ public class CompanyController {
 	 */
 	@RequestMapping("/list")
 	public String list(Model model, @AuthenticationPrincipal LoginCompanyMember loginCompanyMember) {
-		Integer id = (Integer) session.getAttribute("company_id"); //sessionに入れたcompany_idで検索.
+		Integer id = loginCompanyMember.getCompanyMember().getCompanyId(); //company_idで検索.
+//		Integer id = (Integer) session.getAttribute("company_id"); 
 		List<Training> trainingList = companyService.load(id);
 		model.addAttribute("trainingList", trainingList);
 		return "company/company_training_list";

@@ -17,7 +17,7 @@ import com.example.domain.Instructor;
 import com.example.domain.LoginInstructor;
 import com.example.repository.InstructorRepository;
 @Service
-//@Component("com.example.service.InstructorDetailServiceImpl")
+//@Component("InstructorDetailServiceImpl")
 public class InstructorDetailServiceImpl implements UserDetailsService {
 	
 	/** DBから情報を得るためのリポジトリ */
@@ -31,7 +31,6 @@ public class InstructorDetailServiceImpl implements UserDetailsService {
 	 * loadUserByUsername(java.lang.String) DBから検索をし、ログイン情報を構成して返す。
 	 */
 	@Override
-	@Bean("instructor")
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 		Instructor instructor = instructorRepository.findByEmail(email);

@@ -26,7 +26,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					<form method="post" th:action="@{/student/insert}">
 					<input type="hidden" name="formattedDate" th:value="${formattedDate}">
 					<input type="hidden" name="trainingId" th:value="${id}">
-					<input type="hidden" name="studentId" th:value="${session.id}">
+					<input type="hidden" name="studentId" th:value="${studentId}">
 						<fieldset>
 							<legend th:text="${formattedDate} + 'の日報を入力してください'">の日報を入力してください</legend>
 							<div class="form-group">

@@ -19,6 +19,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,6 +61,9 @@ public class AdminTrainingController {
 	
 	@Autowired
 	private DailyReportService dailyReportService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private HttpSession session;
@@ -141,13 +145,12 @@ public class AdminTrainingController {
 	@RequestMapping("/student_register")
 	public String studentRegister(Integer id, Model model) {
 		Training training = trainingService.loadJoin2Table(id);
-		System.out.println(training);
 		model.addAttribute("training", training);
 		return "admin/admin_training_import_students";
 	}
 	
 	@RequestMapping("/student_import")
-	public String studentImport(StudentRegisterForm form, Model model, Integer id) throws IOException {
+	public String studentImport(StudentRegisterForm form, Model model, Integer id, TrainingStudent trainingStudent) throws IOException {
 		int dot = form.getCsv().getOriginalFilename().lastIndexOf(".");
 		String extention = "";
 		if (dot > 0) {
@@ -195,14 +198,17 @@ public class AdminTrainingController {
 	    	student.setName(studentList.get(i).getName());
 	    	student.setKana(studentList.get(i).getKana());
 	    	student.setEmail(studentList.get(i).getEmail());
-	    	student.setPassword(studentList.get(i).getPassword());
+	    	// パスワードをハッシュ化する
+	    	String encodePassword = passwordEncoder.encode(studentList.get(i).getPassword());
+	    	student.setPassword(encodePassword);
 	    	student.setCompanyId(studentList.get(i).getCompanyId());
 	    	Student studentInsert = studentService.insert(student);
 	    	trainingStudent.setStudentId(studentInsert.getId());
 	    	trainingStudent.setTrainingId(id);
 	    	trainingStudentService.insert(trainingStudent);
 	    }
-	    session.invalidate();
+//	    session.invalidate();
+	    session.removeAttribute("studentList");
 		return "redirect:/adminTraining/training_list";
 	}
 	

@@ -17,7 +17,7 @@ import com.example.domain.Admin;
 import com.example.domain.LoginAdmin;
 import com.example.repository.AdminRepository;
 @Service
-//@Component("com.example.service.AdminDetailServiceImpl")
+//@Component("AdminDetailServiceImpl")
 public class AdminDetailServiceImpl implements UserDetailsService {
 	
 	/** DBから情報を得るためのリポジトリ */
@@ -31,7 +31,6 @@ public class AdminDetailServiceImpl implements UserDetailsService {
 	 * loadUserByUsername(java.lang.String) DBから検索をし、ログイン情報を構成して返す。
 	 */
 	@Override
-	@Bean("admin")
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 		Admin admin = adminRepository.findByEmail(email);

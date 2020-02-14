@@ -177,11 +177,8 @@ public class StudentRepository {
 //		sql.append(join3Table());
 //		sql.append(" WHERE A.email = :email AND A.password = :password ");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
-		List<Student> studentList = template.query(sql.toString(), param, STUDENT_ROW_MAPPER);
-		if(studentList.size() == 0) {
-			return null;
-		}
-		return studentList.get(0);
+		Student student = template.queryForObject(sql.toString(), param, STUDENT_ROW_MAPPER);
+		return student;
 	}
 	
 	/**

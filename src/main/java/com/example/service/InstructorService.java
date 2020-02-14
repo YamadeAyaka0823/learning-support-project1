@@ -3,6 +3,7 @@ package com.example.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ public class InstructorService {
 	
 	@Autowired
 	private InstructorRepository instructorRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	/**
 	 * 講師がログインするためのサービス.
@@ -63,7 +67,9 @@ public class InstructorService {
 		instructor.setName(form.getName());
 		instructor.setKana(form.getKana());
 		instructor.setEmail(form.getEmail());
-		instructor.setPassword(form.getPassword());
+		// パスワードをハッシュ化する
+		String encodePassword = passwordEncoder.encode(form.getPassword());
+		instructor.setPassword(encodePassword);
 		instructor.setAffiliation(form.getAffiliation());
 		instructor.setRemarks(form.getRemarks());
 		instructorRepository.insert(instructor);
@@ -88,7 +94,6 @@ public class InstructorService {
 		instructor.setName(form.getName());
 		instructor.setKana(form.getKana());
 		instructor.setEmail(form.getEmail());
-		instructor.setPassword(form.getPassword());
 		instructor.setAffiliation(form.getAffiliation());
 		instructor.setRemarks(form.getRemarks());
 		instructorRepository.update(instructor);

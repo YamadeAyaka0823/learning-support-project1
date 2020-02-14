@@ -3,6 +3,7 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,9 @@ public class AdminCompanyController {
 	
 	@Autowired
 	private CompanyMemberService companyMemberService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@ModelAttribute
 	public CompanyRegisterForm setUpForm() {
@@ -130,7 +134,9 @@ public class AdminCompanyController {
 		companyMember.setKana(form.getKana());
 		companyMember.setName(form.getName());
 		if(form.getPassword().equals(form.getConfirmPassword())) {
-			companyMember.setPassword(form.getPassword());
+			// パスワードをハッシュ化する
+			String encodePassword = passwordEncoder.encode(form.getPassword());
+			companyMember.setPassword(encodePassword);
 		}else {
 			model.addAttribute("error", "確認用パスワードが間違っています");
 			return companyMemberRegister(companyId, model);

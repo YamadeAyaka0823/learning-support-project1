@@ -16,7 +16,7 @@ import com.example.domain.LoginStudent;
 import com.example.domain.Student;
 import com.example.repository.StudentRepository;
 @Service
-//@Component("com.example.service.StudentDetailServiceImpl")
+//@Component("studentDetailServiceImpl")
 public class StudentDetailServiceImpl implements UserDetailsService {
 	
 	/** DBから情報を得るためのリポジトリ */

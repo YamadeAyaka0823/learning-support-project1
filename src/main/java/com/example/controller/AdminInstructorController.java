@@ -126,7 +126,7 @@ public class AdminInstructorController {
 			return register();
 		}
 		instructorService.insert(form);
-		return "redirect:/admin/instructor_list";
+		return "redirect:/adminInstructor/instructor_list";
 	}
 	
 	/**
@@ -152,7 +152,7 @@ public class AdminInstructorController {
 	@RequestMapping("/instructor_edit")
 	public String instructorEdit(InstructorUpdateForm form) {
 		instructorService.update(form);
-		return "redirect:/admin/instructor_list";
+		return "redirect:/adminInstructor/instructor_list";
 	}
 	
 	/**

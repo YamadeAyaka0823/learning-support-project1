@@ -103,7 +103,8 @@ public class InstructorController {
 	 */
 	@RequestMapping("/load")
 	public String load(Model model, @AuthenticationPrincipal LoginInstructor loginInstructor) {
-		Integer id = (Integer) session.getAttribute("id");
+		Integer id = loginInstructor.getInstructor().getId();
+//		Integer id = (Integer) session.getAttribute("id");
 		Instructor instructor = instructorService.load(id);
 		model.addAttribute("instructor", instructor);
 		return "instructor/instructor_training_list";

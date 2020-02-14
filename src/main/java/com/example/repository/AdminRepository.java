@@ -198,7 +198,7 @@ public class AdminRepository {
 	 */
 	public void update(Admin admin) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(admin);
-		String sql = "UPDATE admins SET name = :name, kana = :kana, email = :email, password = :password, can_show_all_company = :canShowAllCompany WHERE id = :id";
+		String sql = "UPDATE admins SET name = :name, kana = :kana, email = :email, can_show_all_company = :canShowAllCompany WHERE id = :id";
 		template.update(sql, param);
 	}
 

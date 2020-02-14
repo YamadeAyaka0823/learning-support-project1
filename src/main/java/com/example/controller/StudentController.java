@@ -95,7 +95,8 @@ public class StudentController {
 	 */
 	@RequestMapping("/student_load")
 	public String load(Model model, @AuthenticationPrincipal LoginStudent loginStudent) {
-		Integer id = (Integer) session.getAttribute("id"); //sessionに入れたstudent_idで検索.
+		Integer id = loginStudent.getStudent().getId(); //student_idで検索.
+//		Integer id = (Integer) session.getAttribute("id"); //sessionに入れたstudent_idで検索.
 		Student student = studentService.load(id);
 		model.addAttribute("student", student);
 		return "student/student_training_list";
@@ -112,6 +113,7 @@ public class StudentController {
 		String formattedDate=dateFormat.format(date);
 		model.addAttribute("formattedDate", formattedDate);
 		model.addAttribute("id", id); //トレーニングのID
+		model.addAttribute("studentId", studentId); //受講生のID
 		return "student/student_register_daily_report";
 	}
 	
@@ -124,7 +126,7 @@ public class StudentController {
 	@RequestMapping("/insert")
 	public String insert(DailyReportForm form, Model model, RedirectAttributes redirectAttributes) throws ParseException {
 		studentService.insert(form);
-		return "redirect:/student/load";
+		return "redirect:/student/student_load";
 	}
 	
 	/**
@@ -134,8 +136,8 @@ public class StudentController {
 	 * @return
 	 */
 	@RequestMapping("/daily_load")
-	public String dailyLoad(Integer id, Model model) {
-		Integer studentId = (Integer) session.getAttribute("id");
+	public String dailyLoad(Integer id, Integer studentId, Model model) {
+//		Integer studentId = (Integer) session.getAttribute("id");
 		DailyReport dailyReport = studentService.dailyLoad(id, studentId);
 		//日付を年月日形式に変換
 		Date date = dailyReport.getDate();

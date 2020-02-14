@@ -23,7 +23,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<div class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<div class="well">
-					<form method="post" th:action="@{/excuteLogin}" th:object="${instructorLoginForm}">
+					<form method="post" th:action="@{/instructor/login}" th:object="${instructorLoginForm}">
 						<fieldset>
 							<legend>講師ログイン </legend>
 							<span th:text="${error}" style="color:red"></span>

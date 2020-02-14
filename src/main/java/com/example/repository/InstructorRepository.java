@@ -198,7 +198,7 @@ public class InstructorRepository {
 	 */
 	public void update(Instructor instructor) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(instructor);
-		String sql = "UPDATE instructors SET name = :name, kana = :kana, email = :email, password = :password, affiliation = :affiliation, remarks = :remarks WHERE id = :id";
+		String sql = "UPDATE instructors SET name = :name, kana = :kana, email = :email, affiliation = :affiliation, remarks = :remarks WHERE id = :id";
 		template.update(sql, param);
 	}
 	

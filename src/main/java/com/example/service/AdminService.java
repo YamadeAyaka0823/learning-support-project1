@@ -3,6 +3,7 @@ package com.example.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,8 @@ public class AdminService {
 	private AdminRepository adminRepository;
 	@Autowired
 	private AdminCompanyRepository adminCompanyRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	
 	
@@ -65,7 +68,9 @@ public class AdminService {
 		admin.setName(form.getName());
 		//もし入力されたパスワードと確認用パスワードが同じなら
 		if(form.getPassword().equals(form.getConfirmPassword())) {
-			admin.setPassword(form.getPassword());
+			// パスワードをハッシュ化する
+			String encodePassword = passwordEncoder.encode(form.getPassword());
+			admin.setPassword(encodePassword);
 		}
 		//canShowAllCompanyがtrueかfalseか
 		if(form.getResponsibleCompany().equals("true")) {
@@ -103,10 +108,6 @@ public class AdminService {
 		admin.setEmail(form.getEmail());
 		admin.setKana(form.getKana());
 		admin.setName(form.getName());
-		//もし入力されたパスワードと確認用パスワードが同じなら
-		if(form.getPassword().equals(form.getConfirmPassword())) {
-			admin.setPassword(form.getPassword());
-		}
 		//canShowAllCompanyがtrueかfalseか
 		if(form.getResponsibleCompany().equals("true")) {
 			admin.setCanShowAllCompany(true);
