@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -28,9 +29,9 @@
 					<ul class="nav navbar-nav">
 						<li class="active"><a th:href="@{/instructor/load}">研修コース</a></li>
 					</ul>
-					<span sec:authentication="principal.administrator.name">山田</span>さんこんにちは！
 					<p class="navbar-text navbar-right">
-						<a href="admin_login.html" class="navbar-link">ログアウト</a>
+					    <span sec:authentication="principal.instructor.name"></span>さんこんにちは！
+						<a th:href="@{/instructor/logout}" class="navbar-link">ログアウト</a>
 					</p>
 				</div>
 				<!-- /.navbar-collapse -->

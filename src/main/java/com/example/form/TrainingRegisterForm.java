@@ -1,21 +1,30 @@
 package com.example.form;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class TrainingRegisterForm {
 	
 	/** 名前 */
+	@NotBlank(message="研修コース名を入力してください")
 	private String name;
 	/** 開始日 */
+	@NotBlank(message="開始日を入力してください")
 	private String startDate;
 	/** 終了日 */
+	@NotBlank(message="終了日を入力してください")
 	private String endDate;
 	/** メイン講師 */
+	@NotNull(message="いずれかを選択してください")
 	private Integer instructorId;
 	/** サブ講師1 */
+	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId1;
 	/** サブ講師2 */
+	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId2;
 	/** サブ講師3 */
+	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId3;
 	
 	public String getName() {

@@ -41,10 +41,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<form method="post" th:action="@{/student/date_load}" class="form-horizontal" id="form">
 						<!--  <input type="hidden" name="date" th:value="${ymd}"> -->
 						<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
+						<input type="hidden" name="studentId" th:value="${dailyReport.studentId}">
 							<div class="form-group">
 								<div class="col-sm-12">
 									<select class="form-control" name="date" id="pulldown" onchange="change()">
-										<option th:each="date:${dates}" th:text="${date}">2016/07/01</option>
+										<option id="day" th:each="date:${dates}" th:text="${date}">2016/07/01</option>
 									</select>
 								</div>
 							</div>

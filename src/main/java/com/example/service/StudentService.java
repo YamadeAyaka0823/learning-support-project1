@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.DailyReport;
+import com.example.domain.PasswordResetToken;
 import com.example.domain.Student;
 import com.example.form.DailyReportForm;
 import com.example.form.StudentLoginForm;
+import com.example.form.StudentUpdateForm;
 import com.example.repository.DailyReportRepository;
 import com.example.repository.StudentRepository;
 
@@ -86,8 +88,8 @@ public class StudentService {
 	 * @param date
 	 * @return
 	 */
-	public DailyReport dateLoad(Integer trainingId,Date date2) {
-		return dailyReportRepository.dateLoad(trainingId,date2);
+	public DailyReport dateLoad(Integer trainingId, Integer studentId, Date date2) {
+		return dailyReportRepository.dateLoad(trainingId,studentId,date2);
 	}
 	
 	/**
@@ -106,5 +108,33 @@ public class StudentService {
 	public DailyReport loadForAdmin(Integer id) {
 		return dailyReportRepository.loadForAdmin(id);
 	}
+	
+	/**
+	 * 管理者画面で受講生を1件検索するためのサービス.
+	 * @param studentId
+	 * @return
+	 */
+	public Student findByStudentId(Integer studentId) {
+		return studentRepository.loadByStudentId(studentId);
+	}
+	
+	/**
+	 * 管理者画面で受講生を編集するためのサービス.
+	 * @param form
+	 */
+	public void update(StudentUpdateForm form) {
+		Student student = new Student();
+		student.setId(form.getStudentId());
+		student.setEmail(form.getEmail());
+		student.setKana(form.getKana());
+		student.setName(form.getName());
+		studentRepository.update(student);
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+//	public void createPasswordResetTokenForStudent(Student student, String token) {
+//		PasswordResetToken myToken = new PasswordResetToken(token, student);
+//		passwordTokenRepository.save(myToken);
+//	}
 
 }

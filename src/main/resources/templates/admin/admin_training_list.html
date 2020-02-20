@@ -26,7 +26,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<div class="panel-title">検索条件</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" th:action="@{/adminTraining/training_list}" class="form-horizontal">
+						<form method="post" th:action="@{/admin/training_list}" class="form-horizontal">
 							<div class="form-group">
 								<label for="code" class="control-label col-sm-2">コース名</label>
 								<div class="col-sm-9">
@@ -55,7 +55,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<a th:href="@{/adminTraining/register}">
+				<a th:href="@{/admin/t_register}">
 				<button type="submit" class="btn btn-primary">新規登録</button>
 				</a>
 			</div>
@@ -74,6 +74,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<th>週報</th>
 							<th>編集</th>
 							<th>受講者登録</th>
+							<th>受講者編集</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -81,10 +82,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
 							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
 							<td th:text="${training.instructor.name}">鈴木一郎</td>
-							<td><a th:href="@{'/adminTraining/view_dailyReport?id=' + ${training.id}}"><button type="submit">日報</button></a></td>
-							<td><a th:href="@{'/adminTraining/view_weeklyReport?id=' + ${training.id}}"><button type="submit">週報</button></a></td>
-							<td><a th:href="@{'/adminTraining/edit?id=' + ${training.id}}"><button type="submit">編集</button></a></td>
-							<td><a th:href="@{'/adminTraining/student_register?id=' + ${training.id}}"><button type="submit">受講者登録</button></a></td>
+							<td><a th:href="@{'/admin/view_dailyReport?id=' + ${training.id}}"><button type="submit">日報</button></a></td>
+							<td><a th:href="@{'/admin/view_weeklyReport?id=' + ${training.id}}"><button type="submit">週報</button></a></td>
+							<td><a th:href="@{'/admin/edit?id=' + ${training.id}}"><button type="submit">編集</button></a></td>
+							<td><a th:href="@{'/admin/student_register?id=' + ${training.id}}"><button type="submit">受講者登録</button></a></td>
+							<td><a th:href="@{'/admin/student_list?trainingId=' + ${training.id}}"><button type="submit">受講者編集</button></a></td>
 						</tr>
 					</tbody>
 				</table>

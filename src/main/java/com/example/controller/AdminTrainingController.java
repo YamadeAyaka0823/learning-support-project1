@@ -19,18 +19,26 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.domain.DailyReport;
 import com.example.domain.Instructor;
+import com.example.domain.LoginAdmin;
 import com.example.domain.Student;
 import com.example.domain.Training;
 import com.example.domain.TrainingStudent;
 import com.example.domain.WeeklyReport;
 import com.example.form.StudentRegisterForm;
+import com.example.form.StudentUpdateForm;
 import com.example.form.TrainingRegisterForm;
 import com.example.form.TrainingUpdateForm;
 import com.example.service.DailyReportService;
@@ -41,7 +49,7 @@ import com.example.service.TrainingStudentService;
 import com.example.service.WeeklyReportService;
 
 @Controller
-@RequestMapping("/adminTraining")
+@RequestMapping("/admin")
 public class AdminTrainingController {
 	
 	@Autowired
@@ -68,6 +76,26 @@ public class AdminTrainingController {
 	@Autowired
 	private HttpSession session;
 	
+	@ModelAttribute
+	public TrainingRegisterForm setUpForm() {
+		return new TrainingRegisterForm();
+	}
+	
+	/**
+	 * 管理者ログイン初期画面.
+	 * @return
+	 */
+	@RequestMapping("/admin_login")
+	public String login(Model model,@RequestParam(required = false) String error) {
+		
+		if (error != null) {
+			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+
+			
+		}
+		return "admin/admin_login";
+	}
+	
 	
 	/**
 	 * 管理者画面で研修一覧画面.
@@ -75,7 +103,11 @@ public class AdminTrainingController {
 	 * @throws ParseException 
 	 */
 	@RequestMapping("/training_list")
-	public String trainingList(String name, String startDate, Model model) throws ParseException {
+	public String trainingList(String name, String startDate, Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) throws ParseException {
+		//ログインしている管理者のIDを取得
+		Integer adminId = loginAdmin.getAdmin().getId();
+		model.addAttribute("adminId", adminId);
+		
 		List<Training> trainingList = null;
 		if(name == null && startDate == null) {
 			trainingList = trainingService.findAll();//研修名と日付が選択されてなければ全件検索.
@@ -94,7 +126,7 @@ public class AdminTrainingController {
 	 * 管理者画面で研修を新規登録する初期画面.
 	 * @return
 	 */
-	@RequestMapping("/register")
+	@RequestMapping("/t_register")
 	public String register(Model model) {
 		List<Instructor> instructorList = instructorService.findAll();
 		model.addAttribute("instructorList", instructorList);
@@ -108,16 +140,19 @@ public class AdminTrainingController {
 	 * @throws ParseException 
 	 */
 	@RequestMapping("/training_register")
-	public String trainingRegister(TrainingRegisterForm form) throws ParseException {
+	public String trainingRegister(@Validated TrainingRegisterForm form, BindingResult result, Model model) throws ParseException {
+		if(result.hasErrors()) {
+			return register(model);
+		}
 		trainingService.insert(form);
-		return "redirect:/adminTraining/training_list";
+		return "redirect:/admin/training_list";
 	}
 	
 	/**
 	 * 管理者画面で研修を編集する初期画面.
 	 * @return
 	 */
-	@RequestMapping("/edit")
+	@RequestMapping("/t_edit")
 	public String edit(Integer id, Model model) {
 		Training training = trainingService.oneLoad(id); //元から情報を入れとくための1件検索
 		model.addAttribute("training", training);
@@ -135,7 +170,7 @@ public class AdminTrainingController {
 	@RequestMapping("/training_edit")
 	public String trainingEdit(TrainingUpdateForm form) throws ParseException {
 		trainingService.update(form);
-		return "redirect:/adminTraining/training_list";
+		return "redirect:/admin/training_list";
 	}
 	
 	/**
@@ -209,7 +244,7 @@ public class AdminTrainingController {
 	    }
 //	    session.invalidate();
 	    session.removeAttribute("studentList");
-		return "redirect:/adminTraining/training_list";
+		return "redirect:/admin/training_list";
 	}
 	
 	/**
@@ -373,8 +408,8 @@ public class AdminTrainingController {
 	 * @throws ParseException
 	 */
 	@RequestMapping("/view_search_weeklyReport")
-	public String viewSearchWeeklyReport(String date, Model model) throws ParseException {
-		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date);
+	public String viewSearchWeeklyReport(String date, Integer trainingId, Model model) throws ParseException {
+		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date, trainingId);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
 		Date dateStart = weeklyReport.getStartDate();
@@ -382,7 +417,7 @@ public class AdminTrainingController {
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-		Integer trainingId = (Integer) session.getAttribute("trainingId");
+//		Integer trainingId = (Integer) session.getAttribute("trainingId");
 		//研修の開始日と終了日を取得する
 		Training training = trainingService.load(trainingId);
 		//DateをLocalDateに変換
@@ -400,19 +435,43 @@ public class AdminTrainingController {
 	}
 	
 	/**
-	 * 管理者画面で研修を曖昧検索する.
-	 * @param name
-	 * @param startDate
-	 * @param endDate
+	 * 管理者画面で受講生を編集するために受講生一覧を取得するためのコントローラー.
+	 * @param trainingId
 	 * @param model
 	 * @return
-	 * @throws ParseException 
 	 */
-//	@RequestMapping("/findByNameOrDate")
-//	public String findByNameOrDate(String name, String startDate, String endDate, Model model) throws ParseException {
-//		List<Training> trainingList = trainingService.findByNameOrDate(name, startDate, endDate);
-//		model.addAttribute("trainingList", trainingList);
-//		return trainingList(model);
-//	}
+	@RequestMapping("/student_list")
+	public String studentList(Integer trainingId, Model model) {
+		System.out.println(trainingId);
+		List<Training> trainingList = trainingService.selectStudent(trainingId);
+		model.addAttribute("trainingList", trainingList);
+		return "admin/admin_student_list";
+	}
+	
+	/**
+	 * 管理者画面で受講生を編集するために1件検索するコントローラー.
+	 * @param studentId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/s_edit")
+	public String studentEdit(Integer studentId, Integer trainingId, Model model) {
+		Student student = studentService.findByStudentId(studentId);
+		model.addAttribute("student", student);
+		model.addAttribute("trainingId", trainingId);
+		return "admin/admin_student_edit";
+	}
+	
+	/**
+	 * 管理者画面で受講生を編集する.
+	 * @param form
+	 * @return
+	 */
+	@RequestMapping("/student_edit")
+	public String studentEdit(RedirectAttributes redirectAttributes,StudentUpdateForm form, Integer trainingId, Model model) {
+		studentService.update(form);
+		redirectAttributes.addAttribute("trainingId", trainingId);
+		return "redirect:/admin/student_list";
+	}
 
 }

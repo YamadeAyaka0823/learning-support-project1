@@ -3,6 +3,7 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,16 +12,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.domain.Admin;
 import com.example.domain.Company;
 import com.example.domain.CompanyMember;
+import com.example.domain.LoginAdmin;
 import com.example.form.CompanyMemberRegisterForm;
 import com.example.form.CompanyRegisterForm;
 import com.example.form.CompanyUpdateForm;
+import com.example.service.AdminService;
 import com.example.service.CompanyMemberService;
 import com.example.service.CompanyService;
 
 @Controller
-@RequestMapping("/adminCompany")
+@RequestMapping("/admin")
 public class AdminCompanyController {
 	
 	@Autowired
@@ -28,6 +32,9 @@ public class AdminCompanyController {
 	
 	@Autowired
 	private CompanyMemberService companyMemberService;
+	
+	@Autowired
+	private AdminService adminService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -47,15 +54,33 @@ public class AdminCompanyController {
 	 * @return
 	 */
 	@RequestMapping("/company_list")
-	public String companyList(String name, Model model) {
+	public String companyList(String name, Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) {
+		//ログインしている管理者のIDを取得
+		Integer adminId = loginAdmin.getAdmin().getId();
+		model.addAttribute("adminId", adminId);
+		
 		List<Company> companyList = null;
+		List<Admin> adminList = null;
 		if(name == null) {
+			Admin admin = adminService.load(adminId);
+			if(admin.getCanShowAllCompany() == true) {
 			companyList = companyService.companyFindAll(); //全件検索
+			model.addAttribute("companyList", companyList);
+			}else {
+			adminList = adminService.loadByAdminId(adminId);
+     		model.addAttribute("adminList", adminList);
+			}
 		}else {
-			companyList = companyService.findByName(name); //曖昧検索
+			Admin admin = adminService.load(adminId);
+			if(admin.getCanShowAllCompany() == true) {
+				companyList = companyService.findByName(name); //曖昧検索
+				model.addAttribute("companyList", companyList);
+			}else {
+				adminList = adminService.findByNameAndAdminId(name, adminId);
+				model.addAttribute("adminList", adminList);
+			}
 		}
 		
-		model.addAttribute("companyList", companyList);
 		return "admin/company_list";
 	}
 	
@@ -63,7 +88,7 @@ public class AdminCompanyController {
 	 * 企業新規登録初期画面.
 	 * @return
 	 */
-	@RequestMapping("/register")
+	@RequestMapping("/c_register")
 	public String register() {
 		return "admin/company_detail";
 	}
@@ -79,14 +104,14 @@ public class AdminCompanyController {
 			return register();
 		}
 		companyService.insert(form);
-		return "redirect:/adminCompany/company_list";
+		return "redirect:/admin/company_list";
 	}
 	
 	/**
 	 * 企業を編集する初期画面.
 	 * @return
 	 */
-	@RequestMapping("/edit")
+	@RequestMapping("/c_edit")
 	public String edit(Integer id, Model model) {
 		Company company = companyService.oneLoad(id);
 		model.addAttribute("company", company);
@@ -101,7 +126,7 @@ public class AdminCompanyController {
 	@RequestMapping("/company_edit")
 	public String companyEdit(CompanyUpdateForm form) {
 		companyService.update(form);
-		return "redirect:/adminCompany/company_list";
+		return "redirect:/admin/company_list";
 	}
 	
 	/**
@@ -142,7 +167,7 @@ public class AdminCompanyController {
 			return companyMemberRegister(companyId, model);
 		}
 		companyMemberService.insert(companyMember);
-		return "redirect:/adminCompany/company_list";
+		return "redirect:/admin/company_list";
 	}
 	
 	/**
@@ -153,7 +178,7 @@ public class AdminCompanyController {
 	@RequestMapping("/delete")
 	public String delete(Integer id, Model model) {
 		companyMemberService.delete(id);
-		return "redirect:/adminCompany/company_list";
+		return "redirect:/admin/company_list";
 	}
 
 }

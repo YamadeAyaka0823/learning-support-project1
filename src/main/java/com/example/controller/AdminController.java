@@ -3,6 +3,7 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.domain.Admin;
 import com.example.domain.AdminCompany;
 import com.example.domain.Company;
+import com.example.domain.LoginAdmin;
 import com.example.form.AdminRegisterForm;
 import com.example.form.AdminUpdateForm;
 import com.example.service.AdminService;
@@ -38,7 +40,11 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/admin_list")
-	public String adminList(Model model) {
+	public String adminList(Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) {
+		//ログインしている管理者のIDを取得
+		Integer adminId = loginAdmin.getAdmin().getId();
+		model.addAttribute("adminId", adminId);
+		
 		List<Admin> adminList = adminService.findAll();
 		model.addAttribute("adminList", adminList);
 		return "admin/facility_manager_list";
@@ -48,7 +54,7 @@ public class AdminController {
 	 * 管理者画面で管理者を新規登録する初期画面.
 	 * @return
 	 */
-	@RequestMapping("/register")
+	@RequestMapping("/a_register")
 	public String register(Model model) {
 		List<Company> companyList = companyService.findAllName();
 		model.addAttribute("companyList", companyList);
@@ -74,7 +80,7 @@ public class AdminController {
 	 * 管理者画面で管理者情報変更の初期画面.
 	 * @return
 	 */
-	@RequestMapping("/edit")
+	@RequestMapping("/a_edit")
 	public String edit(Integer id, Model model) {
 		Admin admin = adminService.load(id);
 		model.addAttribute("admin", admin);

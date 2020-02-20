@@ -167,12 +167,12 @@ public class DailyReportRepository {
 	 * @param date
 	 * @return
 	 */
-	public DailyReport dateLoad(Integer trainingId,Date date2) {
+	public DailyReport dateLoad(Integer trainingId, Integer studentId, Date date2) {
 //		String sql = "SELECT id, date, training_id, student_id, content, intelligibility, detail_intelligibillity, about_instructor, question FROM daily_reports WHERE date = :date AND training_id = :trainingId";
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
-		sql.append(" WHERE A.training_id = :trainingId AND A.date = :date ");
-		SqlParameterSource param = new MapSqlParameterSource().addValue("trainingId", trainingId).addValue("date", date2);
+		sql.append(" WHERE A.training_id = :trainingId AND A.date = :date AND A.student_id = :studentId ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("trainingId", trainingId).addValue("date", date2).addValue("studentId", studentId);
 		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
 		if(dailyReportList.size() == 0) {
 			return null;
@@ -231,6 +231,16 @@ public class DailyReportRepository {
 			return null;
 		}
 		return dailyReportList.get(0);
+	}
+	
+	/**
+	 * 日報を変更するためのリポジトリ.
+	 * @param dailyReport
+	 */
+	public void update(DailyReport dailyReport) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(dailyReport);
+		String sql = "UPDATE daily_reports SET date = :date, training_id = :trainingId, student_id = :studentId, content = :content, intelligibility = :intelligibility, detail_intelligibillity = :detailIntelligibillity, about_instructor = :aboutInstructor, question = :question WHERE training_id = :trainingId AND student_id = :studentId AND date = :date";
+	    template.update(sql, param);
 	}
 
 }

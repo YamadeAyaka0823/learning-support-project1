@@ -250,11 +250,9 @@ public class WeeklyReportRepository {
 	 */
 	public WeeklyReport insert(WeeklyReport weeklyReport) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
-//		String sql = "INSERT INTO weekly_reports (start_date, instructor_name, content) VALUES(:startDate, :instructorName, :content)";
 		Number key = insert.executeAndReturnKey(param);
 		weeklyReport.setId(key.intValue());
 		return weeklyReport;
-//		template.update(sql, param);
 	}
 	
 	/**
@@ -279,11 +277,11 @@ public class WeeklyReportRepository {
 	 * @param id
 	 * @return
 	 */
-	public WeeklyReport loadByDate(Date date) {
+	public WeeklyReport loadByDate(Date date, Integer trainingId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
-		sql.append(" WHERE B.start_date = :startDate ");
-		SqlParameterSource param = new MapSqlParameterSource().addValue("startDate", date);
+		sql.append(" WHERE B.start_date = :startDate AND A.id = :id ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("startDate", date).addValue("id", trainingId);
 		List<WeeklyReport> weeklyReportList = template.query(sql.toString(), param, WEEKLY_REPORT_RESULT_SET_EXTRACTOR);
 		if(weeklyReportList.size() == 0) {
 			return null;
@@ -303,6 +301,16 @@ public class WeeklyReportRepository {
 			return null;
 		}
 		return weeklyReportList.get(0);
+	}
+	
+	/**
+	 * 週報を編集するためのリポジトリ.
+	 * @param weeklyReport
+	 */
+	public void update(WeeklyReport weeklyReport) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
+		String sql = "UPDATE weekly_reports SET content = :content WHERE id = :id AND training_id = :trainingId";
+		template.update(sql, param);
 	}
 
 }

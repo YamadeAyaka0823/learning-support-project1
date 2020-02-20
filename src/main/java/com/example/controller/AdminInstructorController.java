@@ -24,7 +24,7 @@ import com.example.service.InstructorService;
 import com.example.service.TrainingService;
 
 @Controller
-@RequestMapping("/adminInstructor")
+@RequestMapping("/admin")
 public class AdminInstructorController {
 	
 	@Autowired
@@ -47,53 +47,15 @@ public class AdminInstructorController {
 	}
 	
 	/**
-	 * 管理者ログイン初期画面.
-	 * @return
-	 */
-//	@RequestMapping("")
-//	public String index() {
-//		return "admin/admin_login";
-//	}
-	
-	/**
-	 * 管理者がログインするためのコントローラー.
-	 * @param form
-	 * @return
-	 */
-//	@RequestMapping("/admin_login")
-//	public String login(@Validated AdminLoginForm form, BindingResult result, Model model) {
-//		Admin admin = adminService.findByEmailAndPassword(form);
-//		
-//		if(admin == null) {
-//			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
-//			return index();
-//		}
-//		
-//		if(result.hasErrors()) {
-//			return index();
-//		}
-//		List<Training> trainingList = trainingService.findAll();
-//		model.addAttribute("trainingList", trainingList);
-//		return "admin/admin_training_list";
-//	}
-	
-	@RequestMapping("/admin_login")
-	public String login(Model model,@RequestParam(required = false) String error) {
-		
-		if (error != null) {
-			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-
-			
-		}
-		return "admin/admin_login";
-	}
-	
-	/**
 	 * 講師一覧画面
 	 * @return
 	 */
 	@RequestMapping("/instructor_list") 
 	public String instructorList(String name, Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) {
+		//ログインしている管理者のIDを取得
+		Integer adminId = loginAdmin.getAdmin().getId();
+		model.addAttribute("adminId", adminId);
+		
 		List<Instructor> instructorList = null;
 		if(name == null) {
 			instructorList = instructorService.findAll(); //全件検索
@@ -109,7 +71,7 @@ public class AdminInstructorController {
 	 * 講師の新規登録初期画面.
 	 * @return
 	 */
-	@RequestMapping("/register")
+	@RequestMapping("/i_register")
 	public String register() {
 		return "admin/instructor_detail";
 	}
@@ -126,7 +88,7 @@ public class AdminInstructorController {
 			return register();
 		}
 		instructorService.insert(form);
-		return "redirect:/adminInstructor/instructor_list";
+		return "redirect:/admin/instructor_list";
 	}
 	
 	/**
@@ -135,7 +97,7 @@ public class AdminInstructorController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/edit")
+	@RequestMapping("/i_edit")
 	public String edit(Integer id, Model model) {
 		Instructor instructor = instructorService.oneLoad(id); //講師の情報
 		model.addAttribute("instructor", instructor);
@@ -152,7 +114,7 @@ public class AdminInstructorController {
 	@RequestMapping("/instructor_edit")
 	public String instructorEdit(InstructorUpdateForm form) {
 		instructorService.update(form);
-		return "redirect:/adminInstructor/instructor_list";
+		return "redirect:/admin/instructor_list";
 	}
 	
 	/**

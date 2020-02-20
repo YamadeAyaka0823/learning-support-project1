@@ -17,13 +17,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
 
-		<!-- add training -->
-		<div class="row">
-			<div
-				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<a th:href="@{/admin/a_register}"><button type="submit" class="btn btn-primary">新規登録</button></a>
-			</div>
-		</div>
 		<!-- table -->
 		<div class="row">
 			<div
@@ -32,23 +25,20 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					<thead>
 						<tr>
 							<th>氏名</th>
+							<th>かな</th>
 							<th>メール</th>
-							<th>担当企業</th>
 							<th>編集</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="admin:${adminList}">
-							<td th:text="${admin.name}">管理者一郎</td>
-							<td th:text="${admin.email}">ichiro@gmail.com</td>
-							<td>
-							<span th:each="company:${admin.companyList}">
-								<div th:unless="${admin.canShowAllCompany == true}" th:text="${company.name}"><br/></div>
-							</span>
-							<span th:if="${admin.canShowAllCompany == true}" th:text="すべて"></span>
-							</td>
-							<td><a th:href="@{'/admin/a_edit?id=' + ${admin.id}}"><button type="submit">編集</button></a></td>
+					    <span th:each="training:${trainingList}">
+						<tr th:each="student:${training.studentList}">
+							<td th:text="${student.name}">管理者一郎</td>
+							<td th:text="${student.kana}">管理者一郎</td>
+							<td th:text="${student.email}">ichiro@gmail.com</td>
+							<td><a th:href="@{/admin/s_edit(trainingId=${training.id},studentId=${student.id})}"><button type="submit">編集</button></a></td>
 						</tr>
+						</span>
 					</tbody>
 				</table>
 			</div>

@@ -11,6 +11,7 @@ public class CompanyRegisterForm {
 	@NotBlank(message="企業名(かな)を入力してください")
 	private String kana;
 	/** 備考 */
+	@NotBlank(message="備考を入力してください")
 	private String remarks;
 	
 	public String getName() {

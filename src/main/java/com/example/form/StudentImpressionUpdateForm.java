@@ -1,17 +1,21 @@
 package com.example.form;
 
-import javax.validation.constraints.NotBlank;
 
-public class StudentImpressionForm {
+public class StudentImpressionUpdateForm {
 	
+	/** ID */
+//	private Integer id;
 	/** 内容 */
-	@NotBlank(message="内容を入力してください")
 	private String studentContent;
 	/** 週報ID */
 	private Integer weeklyReportId;
-	/** 受講生名 */
-	private String studentName;
 	
+//	public Integer getId() {
+//		return id;
+//	}
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 	public String getStudentContent() {
 		return studentContent;
 	}
@@ -24,15 +28,13 @@ public class StudentImpressionForm {
 	public void setWeeklyReportId(Integer weeklyReportId) {
 		this.weeklyReportId = weeklyReportId;
 	}
-	public String getStudentName() {
-		return studentName;
-	}
-	public void setStudentName(String studentName) {
-		this.studentName = studentName;
+	@Override
+	public String toString() {
+		return "StudentImpressionUpdateForm [studentContent=" + studentContent + ", weeklyReportId=" + weeklyReportId
+				+ "]";
 	}
 	
 	
-
 	
 	
 	

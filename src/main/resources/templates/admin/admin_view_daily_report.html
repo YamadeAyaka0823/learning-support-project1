@@ -32,7 +32,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<!-- search form -->
 			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
-				<form method="post" th:action="@{/adminTraining/view_search_dailyReport}" class="form-horizontal">
+				<form method="post" th:action="@{/admin/view_search_dailyReport}" class="form-horizontal">
 				<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
 				<div class="panel panel-default">
 					<div class="panel-heading">

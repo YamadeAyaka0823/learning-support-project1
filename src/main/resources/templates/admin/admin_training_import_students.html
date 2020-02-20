@@ -46,7 +46,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				class="col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminTraining/student_import}" th:object="${studentRegisterForm}" enctype="multipart/form-data">
+					<form method="post" th:action="@{/admin/student_import}" th:object="${studentRegisterForm}" enctype="multipart/form-data">
 					<input type="hidden" name="id" th:value="${training.id}">
 						<fieldset>
 							<legend>受講者情報インポート</legend>
@@ -79,7 +79,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			</div>
 		</div>
 
-		<form th:action="@{/adminTraining/student_insert}" method="post">
+		<form th:action="@{/admin/student_insert}" method="post">
 		<input type="hidden" name="id" th:value="${training.id}">
 			<div class="form-group">
 				<div class="row">

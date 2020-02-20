@@ -275,8 +275,8 @@ public class CompanyController {
 	 * @throws ParseException
 	 */
 	@RequestMapping("/weekly_search")
-	public String weeklySearch(String date, Model model) throws ParseException {
-		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date);
+	public String weeklySearch(String date, Integer trainingId, Model model) throws ParseException {
+		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date, trainingId);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
 		Date dateStart = weeklyReport.getStartDate();
@@ -284,7 +284,7 @@ public class CompanyController {
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-		Integer trainingId = (Integer) session.getAttribute("trainingId");
+//		Integer trainingId = (Integer) session.getAttribute("trainingId");
 		//研修の開始日と終了日を取得する
 		Training training = trainingService.load(trainingId);
 		//DateをLocalDateに変換

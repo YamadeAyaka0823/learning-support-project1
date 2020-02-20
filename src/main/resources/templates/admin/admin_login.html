@@ -24,7 +24,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			<div class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/admin/login}" th:object="${adminLoginForm}">
+					<form method="post" th:action="@{/admin/login}">
 						<fieldset>
 							<legend>運営管理者ログイン </legend>
 							<div class="alert alert-danger" style="color: red" th:if="${errorMessage}">
@@ -32,19 +32,13 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 									</div>
 							<div class="form-group">
 								<label for="inputEmail">Email:</label> 
-								<div th:if="${#fields.hasErrors('email')}"
-									         th:errors="*{email}"
-									         style="color:red"></div>
 								<input type="text" name="email" id="inputEmail" class="form-control"
-									placeholder="Email" th:field="*{email}">
+									placeholder="Email">
 							</div>
 							<div class="form-group">
 								<label for="inputPassword">Password:</label> 
-								<div th:if="${#fields.hasErrors('password')}"
-									         th:errors="*{password}"
-									         style="color:red"></div>
 								<input type="password" name="password" id="inputPassword" class="form-control"
-									placeholder="Password" th:field="*{password}">
+									placeholder="Password">
 							</div>
 							<div class="form-group">
 								<button type="submit" class="btn btn-primary">Login</button>

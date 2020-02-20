@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.domain.StudentImpression;
 import com.example.domain.WeeklyReport;
 import com.example.form.StudentImpressionForm;
+import com.example.form.StudentImpressionUpdateForm;
 import com.example.form.WeeklyReportForm;
+import com.example.form.WeeklyReportUpdateForm;
 import com.example.repository.StudentImpressionRepository;
 import com.example.repository.WeeklyReportRepository;
 
@@ -80,10 +82,33 @@ public class WeeklyReportService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public WeeklyReport loadByDate(String date) throws ParseException {
+	public WeeklyReport loadByDate(String date, Integer trainingId) throws ParseException {
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = sdFormat.parse(date);
-        return weeklyReportRepository.loadByDate(startDate);
+        return weeklyReportRepository.loadByDate(startDate, trainingId);
+	}
+	
+	/**
+	 * 週報を編集するためのサービス.
+	 * @param weeklyReportForm
+	 * @param studentImpressionForm
+	 */
+	public void update(WeeklyReportUpdateForm weeklyReportForm) {
+		//週報をupdateする
+		WeeklyReport weeklyReport = new WeeklyReport();
+		weeklyReport.setContent(weeklyReportForm.getInstructorContent());
+		weeklyReport.setId(weeklyReportForm.getWeeklyReportId());
+		weeklyReport.setTrainingId(weeklyReportForm.getTrainingId());
+		weeklyReportRepository.update(weeklyReport);
+		
+		//受講生所感をupdateする
+		for(int i =0; weeklyReportForm.getStudentImpressionList().size() > i; i++) {
+			StudentImpression studentImpression = new StudentImpression();
+			studentImpression.setId(weeklyReportForm.getStudentImpressionList().get(i).getId());
+			studentImpression.setContent(weeklyReportForm.getStudentImpressionList().get(i).getContent());
+			studentImpression.setWeeklyReportId(weeklyReport.getId());
+			studentImpressionRepository.update(studentImpression);
+		}
 	}
 
 }

@@ -7,6 +7,8 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>学習サポートシステム</title>
 <link href="../css/bootstrap.css" rel="stylesheet">
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/pulldown_oneweek.js}"></script>
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -20,23 +22,47 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 		<!-- register form -->
 		<div class="row">
+		<!-- search form -->
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="panel-title">週選択</div>
+					</div>
+					<div class="panel-body">
+						<form method="post" th:action="@{/instructor/weekly_report_edit_search}" class="form-horizontal" id="form">
+						<input type="hidden" name="trainingId" th:value="${weeklyReport.trainingId}">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<select class="form-control" name="date" id="oneWeek" onchange="change()">
+										<!-- <option th:text="${training.startDate}" th:value="${training.startDate}" selected="selected">2016/07/04～</option>
+										<option th:text="${training.endDate}" th:value="${training.endDate}">2016/07/11～</option> -->
+										<option th:each="date:${dates}" th:text="${date}" >2016/07/18～</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 			<div
-				class="col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
+				class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
 				<div class="well">
-					<form method="post" th:action="@{/instructor/insert}" th:object="${weeklyReportForm}">
+					<form method="post" th:action="@{/instructor/update}" th:object="${weeklyReportForm}">
+					 <input type="hidden" name="trainingId" th:value="${weeklyReport.trainingId}">
+					<input type="hidden" name="weeklyReportId" th:value="${weeklyReport.id}"> 
 						<fieldset>
-							<legend th:text="${monday} + '〜の週報を入力してください'">○月○日～の週報を入力してください</legend>
-							<input type="hidden" name="instructorName" th:value="${training.instructor.name}">
-							<input type="hidden" name="startDate" th:value="${monday}">
+							<legend th:text="${formattedDate} + '〜の週報を入力してください'">○月○日～の週報を入力してください</legend>
+							  <input type="hidden" name="instructorName" th:value="${weeklyReport.instructorName}"> 
+							<input type="hidden" name="startDate" th:value="${monday}"> 
 							<!--  <span th:each="student:${training.studentList}">
 							<input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].studentName'}" th:value="${student.name}">
 							</span> -->
-							<input type="hidden" name="trainingId" th:value="${training.id}">
+							<!-- <input type="hidden" name="trainingId" th:value="${training.id}"> -->
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">今週の研修内容について:</label> 
-										<textarea name="instructorContent" rows="10" cols="30" class="form-control" th:text="${instructorContent}"
+										<textarea name="instructorContent" rows="10" cols="30" class="form-control" th:text="${weeklyReport.content}"
 											id="inputTodaysContent"></textarea>
 									</div>
 								</div>
@@ -60,13 +86,16 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-									<span th:each="student, stat:${training.studentList}">
+									<!-- <span th:each="student, stat:${training.studentList}"> -->
+										<span th:each="studentImpression, stat:${weeklyReport.studentImpressionList}">
+										<input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].id'}" th:value="${studentImpression.id}">
 									
-										<label th:text="${student.name} + '様:'" for="inputTodaysContent">山田太郎様:</label> 
-										<input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].studentName'}" th:value="${student.name}">
-										<textarea th:name="${'studentImpressionList[' + stat.index + '].content'}" rows="5" cols="30" class="form-control"
-											id="inputTodaysContent"></textarea>
-									</span>
+										<label th:text="${studentImpression.studentName} + '様:'" for="inputTodaysContent">山田太郎様:</label> 
+										<textarea rows="5" cols="30" class="form-control" th:name="${'studentImpressionList[' + stat.index + '].content'}"
+											id="inputTodaysContent" th:text="${studentImpression.content}"></textarea>
+										<!--  <input type="hidden" th:name="${'studentImpressionList[' + stat.index + '].studentContent'}" th:value="${studentImpression.content}"> -->
+									    </span>
+									<!-- </span> -->
 									</div>
 								</div>
 							</div>

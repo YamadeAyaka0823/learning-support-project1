@@ -69,7 +69,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				<div class="well">
 					<form method="post" action="register_daily_report.html">
 						<fieldset>
-							<legend th:text="${dailyReport.date} + 'の' + ${dailyReport.student.name} + 'さんの日報'">○月○日の鈴木一郎さんの日報</legend>
+							<legend th:text="${formattedDate} + 'の' + ${dailyReport.student.name} + 'さんの日報'">○月○日の鈴木一郎さんの日報</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">

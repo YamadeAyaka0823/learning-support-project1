@@ -28,7 +28,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>　　日報(閲覧)　　　　日報(登録)</th>
+							<th>　　日報(閲覧)　　　　日報(登録)　　　　日報(編集)</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -39,11 +39,13 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<td>
 							   <a th:href="@{/student/daily_load(id=${training.id},studentId=${student.id})}">
 							　　<button type="submit">日報(閲覧)</button>　
-							   </a>
-							　　<!-- <a th:href="@{'/student/daily?id=' + ${training.id} + 'studentId=’ + ${student.id}}"> -->
+							   </a> 
 							　　<a th:href="@{/student/daily(id=${training.id},studentId=${student.id})}">
 							   <button type="submit">日報(登録)</button>
-							   </a>　　
+							   </a>&emsp;&emsp;&emsp;
+							   <a th:href="@{/student/daily_edit(id=${training.id},studentId=${student.id})}">
+							   <button type="submit">日報(編集)</button>
+							   </a>　　　
 							　　
 							</td>
 						</tr>

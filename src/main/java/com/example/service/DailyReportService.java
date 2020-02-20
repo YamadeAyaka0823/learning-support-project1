@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.DailyReport;
+import com.example.form.DailyReportUpdateForm;
 import com.example.repository.DailyReportRepository;
 
 @Service
@@ -41,6 +42,26 @@ public class DailyReportService {
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date dateOfDailyReport = sdFormat.parse(date);
         return dailyReportRepository.dateAndNameLoad(trainingId, dateOfDailyReport, name);
+	}
+	
+	/**
+	 * 日報を変更するためのサービス.
+	 * @param form
+	 * @throws ParseException
+	 */
+	public void update(DailyReportUpdateForm form) throws ParseException {
+		DailyReport dailyReport = new DailyReport();
+		dailyReport.setAboutInstructor(form.getIntAboutInstructor());
+		dailyReport.setContent(form.getContent());
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        Date date = sdFormat.parse(form.getFormattedDate());
+		dailyReport.setDate(date);
+		dailyReport.setDetailIntelligibillity(form.getDetailIntelligibillity());
+		dailyReport.setIntelligibility(form.getIntIntelligibility());
+		dailyReport.setQuestion(form.getQuestion());
+		dailyReport.setStudentId(form.getStudentId());
+		dailyReport.setTrainingId(form.getTrainingId());
+		dailyReportRepository.update(dailyReport);
 	}
 
 }

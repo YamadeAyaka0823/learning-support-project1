@@ -51,25 +51,25 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/admin/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/adminInstructor/admin_login").permitAll() //「/」などのパスは全てのユーザに許可
-//			.antMatchers("/adminInstructor/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
+			.antMatchers("/admin/admin_login").permitAll() //「/」などのパスは全てのユーザに許可
+//			.antMatchers("/adminInstructor/").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			.anyRequest().authenticated(); // それ以外のパスは認証が必要
 
 		http.formLogin() // ログインに関する設定
-			.loginPage("/adminInstructor/admin_login") // ログイン画面に遷移させるパス(ログイン認証が必要なパスを指定してかつログインされていないとこのパスに遷移される)
+			.loginPage("/admin/admin_login") // ログイン画面に遷移させるパス(ログイン認証が必要なパスを指定してかつログインされていないとこのパスに遷移される)
 			.loginProcessingUrl("/admin/login") // ログインボタンを押した際に遷移させるパス(ここに遷移させれば自動的にログインが行われる)
-			.failureUrl("/adminInstructor/admin_login?error=true") //ログイン失敗に遷移させるパス
-			.defaultSuccessUrl("/adminTraining/training_list", true) // 第1引数:デフォルトでログイン成功時に遷移させるパス
+			.failureUrl("/admin/admin_login?error=true") //ログイン失敗に遷移させるパス
+			.defaultSuccessUrl("/admin/training_list", true) // 第1引数:デフォルトでログイン成功時に遷移させるパス
 			                                        // 第2引数: true :認証後常に第1引数のパスに遷移 
 			                                        //         false:認証されてなくて一度ログイン画面に飛ばされてもログインしたら指定したURLに遷移
 			.usernameParameter("email") // 認証時に使用するユーザ名のリクエストパラメータ名(今回はメールアドレスを使用)
 			.passwordParameter("password"); // 認証時に使用するパスワードのリクエストパラメータ名
 		
 		http.logout() // ログアウトに関する設定
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout**")) // ログアウトさせる際に遷移させるパス
-			.logoutSuccessUrl("/adminInstructor/admin_login") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout")) // ログアウトさせる際に遷移させるパス
+			.logoutSuccessUrl("/admin/admin_login") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
 			.deleteCookies("JSESSIONID") // ログアウト後、Cookieに保存されているセッションIDを削除
 			.invalidateHttpSession(true); // true:ログアウト後、セッションを無効にする false:セッションを無効にしない
 		    
@@ -138,8 +138,8 @@ public class StudentSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/student/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/student/student_login").permitAll() //「/」などのパスは全てのユーザに許可
-			.antMatchers("/student/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
+			.antMatchers("/student/student_login", "/student/forgot_password", "/student/resetPassword").permitAll() //「/」などのパスは全てのユーザに許可
+//			.antMatchers("/student/**").hasRole("USER")s // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			.anyRequest().authenticated(); // それ以外のパスは認証が必要
@@ -155,8 +155,8 @@ public class StudentSecurityConfig extends WebSecurityConfigurerAdapter {
 			.passwordParameter("password").permitAll(); // 認証時に使用するパスワードのリクエストパラメータ名
 		
 		http.logout() // ログアウトに関する設定
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout**")) // ログアウトさせる際に遷移させるパス
-			.logoutSuccessUrl("/") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/student/logout")) // ログアウトさせる際に遷移させるパス
+			.logoutSuccessUrl("/student/student_login") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
 			.deleteCookies("JSESSIONID") // ログアウト後、Cookieに保存されているセッションIDを削除
 			.invalidateHttpSession(true); // true:ログアウト後、セッションを無効にする false:セッションを無効にしない
 		
@@ -210,7 +210,7 @@ public class InstructorSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.antMatcher("/instructor/**")
 		    .authorizeRequests() // 認可に関する設定
 			.antMatchers("/instructor/instructor_login").permitAll() //「/」などのパスは全てのユーザに許可
-			.antMatchers("/instructor/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
+//			.antMatchers("/instructor/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			.anyRequest().authenticated(); // それ以外のパスは認証が必要
@@ -226,8 +226,8 @@ public class InstructorSecurityConfig extends WebSecurityConfigurerAdapter {
 			.passwordParameter("password"); // 認証時に使用するパスワードのリクエストパラメータ名
 		
 		http.logout() // ログアウトに関する設定
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout**")) // ログアウトさせる際に遷移させるパス
-			.logoutSuccessUrl("/") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/instructor/logout")) // ログアウトさせる際に遷移させるパス
+			.logoutSuccessUrl("/instructor/login") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
 			.deleteCookies("JSESSIONID") // ログアウト後、Cookieに保存されているセッションIDを削除
 			.invalidateHttpSession(true); // true:ログアウト後、セッションを無効にする false:セッションを無効にしない
 		
@@ -281,7 +281,7 @@ public class CompanySecurityConfig extends WebSecurityConfigurerAdapter {
 		http.antMatcher("/company/**")
 		    .authorizeRequests() // 認可に関する設定
 			.antMatchers("/company/company_login").permitAll() //「/」などのパスは全てのユーザに許可
-			.antMatchers("/company/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
+//			.antMatchers("/company/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			.anyRequest().authenticated(); // それ以外のパスは認証が必要
@@ -297,8 +297,8 @@ public class CompanySecurityConfig extends WebSecurityConfigurerAdapter {
 			.passwordParameter("password"); // 認証時に使用するパスワードのリクエストパラメータ名
 		
 		http.logout() // ログアウトに関する設定
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout**")) // ログアウトさせる際に遷移させるパス
-			.logoutSuccessUrl("/") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/company/logout")) // ログアウトさせる際に遷移させるパス
+			.logoutSuccessUrl("/company/login") // ログアウト後に遷移させるパス(ここではログイン画面を設定)
 			.deleteCookies("JSESSIONID") // ログアウト後、Cookieに保存されているセッションIDを削除
 			.invalidateHttpSession(true); // true:ログアウト後、セッションを無効にする false:セッションを無効にしない
 		

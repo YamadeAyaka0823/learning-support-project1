@@ -26,7 +26,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<div class="panel-title">検索条件</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" th:action="@{/adminInstructor/instructor_list}" class="form-horizontal">
+						<form method="post" th:action="@{/admin/instructor_list}" class="form-horizontal">
 							<div class="form-group">
 								<label for="code" class="control-label col-sm-2">講師名</label>
 								<div class="col-sm-9">
@@ -48,7 +48,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<form method="post" th:action="@{/adminInstructor/register}">
+				<form method="post" th:action="@{/admin/i_register}">
 				<button type="submit" class="btn btn-primary">新規登録</button>
 				</form>
 			</div>
@@ -69,7 +69,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<tr th:each="instructor:${instructorList}">
 							<td th:text="${instructor.name}">講師一郎</td>
 							<td th:text="${instructor.email}">ichiro@gmail.com</td>
-							<td><a th:href="@{'/adminInstructor/edit?id=' + ${instructor.id}}"><button type="submit">編集</button></a></td>
+							<td><a th:href="@{'/admin/i_edit?id=' + ${instructor.id}}"><button type="submit">編集</button></a></td>
 						</tr>
 					</tbody>
 				</table>

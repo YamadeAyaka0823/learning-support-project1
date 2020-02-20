@@ -29,6 +29,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					</div>
 					<div class="panel-body">
 						<form method="post" th:action="@{/instructor/weekly_report_search}" class="form-horizontal" id="form">
+						<input type="hidden" name="trainingId" th:value="${weeklyReport.trainingId}">
 							<div class="form-group">
 								<div class="col-sm-12">
 									<select class="form-control" name="date" id="oneWeek" onchange="change()">

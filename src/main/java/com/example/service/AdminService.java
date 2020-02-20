@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Admin;
 import com.example.domain.AdminCompany;
+import com.example.domain.Company;
 import com.example.form.AdminLoginForm;
 import com.example.form.AdminRegisterForm;
 import com.example.form.AdminUpdateForm;
 import com.example.repository.AdminCompanyRepository;
 import com.example.repository.AdminRepository;
+import com.example.repository.CompanyRepository;
 
 @Service
 @Transactional
@@ -23,6 +25,8 @@ public class AdminService {
 	private AdminRepository adminRepository;
 	@Autowired
 	private AdminCompanyRepository adminCompanyRepository;
+	@Autowired
+	private CompanyRepository companyRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -80,15 +84,25 @@ public class AdminService {
 		}
 		Admin administrator = adminRepository.insert(admin);
 		
-		if(administrator.getCanShowAllCompany() == true) {
-			return;
-		}
 			adminCompany.setAdminId(administrator.getId()); //insertしたadminのIDをadminCompanyテーブルのadmin_idにいれる
 			
-			for(Integer companyId : form.getCompanyList()) {
-				adminCompany.setCompanyId(companyId); //insertしたcompanyのIDをadminCompanyテーブルのcompany_idにいれる
-				adminCompanyRepository.insert(adminCompany);
+			//getCanShowAllCompanyがtrueだった場合
+			if(admin.getCanShowAllCompany() == true) {
+//				List<Company> companyList = companyRepository.findAllName();
+//				for(int i = 0; i < companyList.size(); i++) {
+//					Integer companyId = companyList.get(i).getId();
+//					adminCompany.setCompanyId(companyId);
+//					adminCompanyRepository.insert(adminCompany);
+//				}
+				return;
 			}
+			
+				//getCanShowAllCompanyがfalseだった場合
+				for(Integer companyId : form.getCompanyList()) {
+					adminCompany.setCompanyId(companyId); //insertしたcompanyのIDをadminCompanyテーブルのcompany_idにいれる
+					adminCompanyRepository.insert(adminCompany);
+				}
+			
 		
 		
 	}
@@ -117,15 +131,45 @@ public class AdminService {
 		adminRepository.update(admin); //adminテーブルupdate
 		adminCompanyRepository.delete(form.getIntId()); //中間テーブルを消す
 		
+		adminCompany.setAdminId(form.getIntId()); //insertしたadminのIDをadminCompanyテーブルのadmin_idにいれる
+		
+		//getCanShowAllCompanyがtrueだった場合
 		if(admin.getCanShowAllCompany() == true) {
-			return;
-		}
-			adminCompany.setAdminId(form.getIntId()); //insertしたadminのIDをadminCompanyテーブルのadmin_idにいれる
-			
+//			List<Company> companyList = companyRepository.findAllName();
+//			for(int i = 0; i < companyList.size(); i++) {
+//				Integer companyId = companyList.get(i).getId();
+//				adminCompany.setCompanyId(companyId);
+//				adminCompanyRepository.insert(adminCompany);
+		return;
+			}
+		
+	
+			//getCanShowAllCompanyがfalseだった場合
 			for(Integer companyId : form.getCompanyList()) {
 				adminCompany.setCompanyId(companyId); //insertしたcompanyのIDをadminCompanyテーブルのcompany_idにいれる
 				adminCompanyRepository.insert(adminCompany);
 			}
+		
+			
+	}
+	
+	/**
+	 * 管理者IDで担当している企業を検索するためのサービス.
+	 * @param id
+	 * @return
+	 */
+	public List<Admin> loadByAdminId(Integer id){
+		return adminRepository.loadByAdminId(id);
+	}
+	
+	/**
+	 * 名前とadminIdで企業を曖昧検索するためのサービス.
+	 * @param name
+	 * @param id
+	 * @return
+	 */
+	public List<Admin> findByNameAndAdminId(String name, Integer id){
+		return adminRepository.findByNameAndAdminId(name, id);
 	}
 
 }

@@ -24,5 +24,15 @@ public class StudentImpressionRepository {
 		String sql = "INSERT INTO student_impressions (weekly_report_id, student_name, content) VALUES (:weeklyReportId, :studentName, :content)";
 		template.update(sql, param);
 	}
+	
+	/**
+	 * 週報を編集するためのリポジトリ.
+	 * @param studentImpression
+	 */
+	public void update(StudentImpression studentImpression) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(studentImpression);
+		String sql = "UPDATE student_impressions SET content = :content WHERE weekly_report_id = :weeklyReportId AND id = :id";
+		template.update(sql, param);
+	}
 
 }

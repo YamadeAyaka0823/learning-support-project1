@@ -149,5 +149,22 @@ public class TrainingService {
 	public List<Training> findByDate(String startDate){
 		return trainingRepository.findByDate(startDate);
 	}
+	
+	/**
+	 * 管理者画面で研修を全件検索するためのサービス.
+	 * @return
+	 */
+	public List<Training> findAllTraining(){
+		return trainingRepository.findAllTraining();
+	}
+	
+	/**
+	 * 管理者画面で研修idを使って生徒一覧を取得するためのサービス.
+	 * @param trainingId
+	 * @return
+	 */
+	public List<Training> selectStudent(Integer trainingId){
+		return trainingRepository.selectStudent(trainingId);
+	}
 
 }

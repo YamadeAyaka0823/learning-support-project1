@@ -20,6 +20,7 @@ public class InstructorRegisterForm {
 	@NotBlank(message="所属名を入力してください")
 	private String affiliation;
 	/** 備考 */
+	@NotBlank(message="備考を入力してください")
 	private String remarks;
 	
 	public String getName() {

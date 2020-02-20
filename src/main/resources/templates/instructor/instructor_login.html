@@ -26,6 +26,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					<form method="post" th:action="@{/instructor/login}" th:object="${instructorLoginForm}">
 						<fieldset>
 							<legend>講師ログイン </legend>
+							<div class="alert alert-danger" style="color: red" th:if="${errorMessage}">
+							  <span th:text="${errorMessage}">メールアドレスまたはパスワードが間違っています</span>
+									</div>
 							<span th:text="${error}" style="color:red"></span>
 							<div class="form-group">
 								<label for="inputEmail">Email:</label> 

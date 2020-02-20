@@ -24,7 +24,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminCompany/company_register}" th:object="${companyRegisterForm}">
+					<form method="post" th:action="@{/admin/company_register}" th:object="${companyRegisterForm}">
 						<fieldset>
 							<legend>企業(企業担当者)</legend>
 							<div class="form-group">
@@ -53,7 +53,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputRemarks">備考</label>
-										<textarea rows="10" cols="30" name="remarks" class="form-control" id="inputRemarks"></textarea>
+										<div th:if="${#fields.hasErrors('remarks')}"
+									         th:errors="*{remarks}"
+									         style="color:red"></div>
+										<textarea rows="10" cols="30" name="remarks" th:field="*{remarks}" class="form-control" id="inputRemarks"></textarea>
 									</div>
 								</div>
 							</div>

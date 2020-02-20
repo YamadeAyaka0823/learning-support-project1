@@ -173,9 +173,6 @@ public class StudentRepository {
 	 */
 	public Student findByEmail(String email) {
 		String sql = "SELECT id, name, kana, email, password, company_id FROM students WHERE email = :email";
-//		StringBuilder sql = new StringBuilder();
-//		sql.append(join3Table());
-//		sql.append(" WHERE A.email = :email AND A.password = :password ");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
 		Student student = template.queryForObject(sql.toString(), param, STUDENT_ROW_MAPPER);
 		return student;
@@ -215,11 +212,31 @@ public class StudentRepository {
 	 */
 	public Student insert(Student student) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(student);
-//		String sql = "INSERT INTO students(name,kana,email,password,company_id) VALUES (:name, :kana, :email, :password, :companyId)";
-//		template.update(sql, param);
 		Number key = insert.executeAndReturnKey(param);
 		student.setId(key.intValue());
 		return student;
+	}
+	
+	/**
+	 * 管理者画面で受講生を1件検索するためのリポジトリ.
+	 * @param studentId
+	 * @return
+	 */
+	public Student loadByStudentId(Integer studentId) {
+		String sql = "SELECT id, name, kana, email, password, company_id FROM students WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", studentId);
+		Student student = template.queryForObject(sql, param, STUDENT_ROW_MAPPER);
+		return student;
+	}
+	
+	/**
+	 * 管理者画面で受講生を編集するためのリポジトリ.
+	 * @param student
+	 */
+	public void update(Student student) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(student);
+		String sql = "UPDATE students SET name = :name, kana = :kana, email = :email WHERE id = :id";
+		template.update(sql, param);
 	}
 	
 	

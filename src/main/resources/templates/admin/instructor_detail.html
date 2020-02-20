@@ -24,7 +24,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminInstructor/instructor_register}" th:object="${instructorRegisterForm}">
+					<form method="post" th:action="@{/admin/instructor_register}" th:object="${instructorRegisterForm}">
 						<fieldset>
 							<legend>講師情報</legend>
 							<div class="form-group">
@@ -87,7 +87,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputRemarks">備考</label>
-										<textarea rows="10" cols="30" class="form-control"
+										<div th:if="${#fields.hasErrors('remarks')}"
+									         th:errors="*{remarks}"
+									         style="color:red"></div>
+										<textarea rows="10" cols="30" class="form-control" th:field="*{remarks}"
 											id="inputRemarks" name="remarks"></textarea>
 									</div>
 								</div>
@@ -104,50 +107,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				</div>
 			</div>
 		</div>
-
-		<!-- table -->
-		<div class="row">
-			<div
-				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>担当研修一覧</th>
-							<th>コース名</th>
-							<th>講師</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-						<tr>
-							<td>2016/04/01 ～ 2016/06/30</td>
-							<td>〇〇企業様向け Java新人研修</td>
-							<td>鈴木一郎</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
 	</div>
 	<!-- end container -->
 	<script

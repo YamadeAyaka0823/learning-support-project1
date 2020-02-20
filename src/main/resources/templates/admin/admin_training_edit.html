@@ -24,7 +24,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-10 col-xs-12">
 				<!-- 背景をグレーに、埋め込んだようなコンポーネント -->
 				<div class="well">
-					<form method="post" th:action="@{/adminTraining/training_edit}">
+					<form method="post" th:action="@{/admin/training_edit}">
 					<input type="hidden" name="id" th:value="${training.id}">
 						<fieldset>
 							<legend>研修管理 </legend>

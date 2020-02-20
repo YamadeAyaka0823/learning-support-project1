@@ -26,7 +26,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<div class="panel-title">検索条件</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" th:action="@{/adminCompany/company_list}" class="form-horizontal">
+						<form method="post" th:action="@{/admin/company_list}" class="form-horizontal">
 							<div class="form-group">
 								<label for="code" class="control-label col-sm-2">企業名</label>
 								<div class="col-sm-9">
@@ -48,7 +48,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
-				<form method="post" th:action="@{/adminCompany/register}">
+				<form method="post" th:action="@{/admin/c_register}">
 				<button type="submit" class="btn btn-primary">新規登録</button>
 				</form>
 			</div>
@@ -67,6 +67,18 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						</tr>
 					</thead>
 					<tbody>
+					    	<span th:each="admin:${adminList}">
+						<tr th:each="company:${admin.companyList}">
+								<td th:text="${company.name}">株式会社AAA</td>
+								<td>
+								<span th:each="companyMember:${company.companyMemberList}">
+									<div th:text="${companyMember.name} + '(' + ${companyMember.email} + ')'"><br></div>
+								</span>
+								</td>
+								<td><a th:href="@{'/admin/c_edit?id=' + ${company.id}}"><button type="submit">編集</button></a></td>
+								<td><a th:href="@{'/admin/companyMember_register?id=' + ${company.id}}"><button type="submit">担当者登録</button></a></td>
+						</tr>
+							</span>
 						<tr th:each="company:${companyList}">
 							<td th:text="${company.name}">株式会社AAA</td>
 							<td>
@@ -74,8 +86,8 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div th:text="${companyMember.name} + '(' + ${companyMember.email} + ')'"><br/></div>
 							</span>
 							</td>
-							<td><a th:href="@{'/adminCompany/edit?id=' + ${company.id}}"><button type="submit">編集</button></a></td>
-							<td><a th:href="@{'/adminCompany/companyMember_register?id=' + ${company.id}}"><button type="submit">担当者登録</button></a></td>
+							<td><a th:href="@{'/admin/c_edit?id=' + ${company.id}}"><button type="submit">編集</button></a></td>
+							<td><a th:href="@{'/admin/companyMember_register?id=' + ${company.id}}"><button type="submit">担当者登録</button></a></td>
 						</tr>
 					</tbody>
 				</table>

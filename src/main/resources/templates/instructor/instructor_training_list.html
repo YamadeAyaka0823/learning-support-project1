@@ -27,7 +27,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>　　週報(閲覧)　　　　週報(登録)　　　　日報(閲覧)</th>
+							<th>　　週報(閲覧)　　　　週報(登録)　　　　週報(編集)　　　　日報(閲覧)</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -41,6 +41,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							   </a>
 							　　<a th:href="@{'/instructor/weekly_report?id=' + ${training.id}}">
 							   <button type="submit">週報(登録)</button>
+							   </a>&nbsp;&nbsp;&nbsp;&nbsp;
+							   <a th:href="@{'/instructor/weekly_report_edit?id=' + ${training.id}}">
+							   <button type="submit">週報(編集)</button>
 							   </a>&nbsp;&nbsp;&nbsp;&nbsp;
 							   <a th:href="@{'/instructor/view_daily_report?id=' + ${training.id}}">
 							   <button type="submit">日報(閲覧)</button>
