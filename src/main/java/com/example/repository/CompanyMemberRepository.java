@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.CompanyMember;
+import com.example.domain.Student;
 
 @Repository
 public class CompanyMemberRepository {
@@ -92,6 +93,16 @@ public class CompanyMemberRepository {
 	public void delete(Integer id) {
 		String sql = "DELETE FROM company_members WHERE id = :id";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 新しいパスワードをインサートするためのリポジトリ.
+	 * @param student
+	 */
+	public void saveNewPassword(CompanyMember companyMember) {
+		String sql = "UPDATE company_members SET password = :password WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("password", companyMember.getPassword()).addValue("id", companyMember.getId());
 		template.update(sql, param);
 	}
 

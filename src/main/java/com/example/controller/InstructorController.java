@@ -7,17 +7,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.domain.DailyReport;
@@ -25,12 +33,13 @@ import com.example.domain.Instructor;
 import com.example.domain.LoginInstructor;
 import com.example.domain.Training;
 import com.example.domain.WeeklyReport;
+import com.example.form.ChangePasswordForm;
 import com.example.form.InstructorLoginForm;
 import com.example.form.StudentImpressionForm;
-import com.example.form.StudentImpressionUpdateForm;
 import com.example.form.WeeklyReportForm;
 import com.example.form.WeeklyReportUpdateForm;
 import com.example.service.DailyReportService;
+import com.example.service.InstructorSecurityService;
 import com.example.service.InstructorService;
 import com.example.service.TrainingService;
 import com.example.service.WeeklyReportService;
@@ -52,7 +61,16 @@ public class InstructorController {
 	private DailyReportService dailyReportService;
 	
 	@Autowired
+	private InstructorSecurityService instructorSecurityService;
+	
+	@Autowired
     private HttpSession session;
+	
+	@Autowired
+	private MailSender mailSender;
+	
+	@Autowired
+    private MessageSource messages;
 	
 	@ModelAttribute
 	public InstructorLoginForm setUpForm() {
@@ -423,5 +441,92 @@ public class InstructorController {
 	public String update(WeeklyReportUpdateForm weeklyReportForm) {
 		weeklyReportService.update(weeklyReportForm);
 		return "redirect:/instructor/load";
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+	/**
+	 * パスワード変更初期画面.
+	 * @return
+	 */
+	@RequestMapping("/instructor_forgot_password")
+	public String forgotPassword() {
+		return "instructor/instructor_forgotPassword";
+	}
+	
+	/**
+	 * パスワードを変更するためのリンク付きメールを送るためのコントローラー.
+	 * @param request
+	 * @param email
+	 * @return
+	 */
+	@RequestMapping(value="/instructor_resetPassword", method= RequestMethod.POST)
+//	@ResponseBody
+	public String resetPassword(HttpServletRequest request,@RequestParam("email") String email) {
+		Instructor instructor = instructorService.findByEmail(email); //入力されたメールアドレスからstudentを検索する.
+		String token = UUID.randomUUID().toString(); //トークンを発行.
+		instructorService.createPasswordResetTokenForInstructor(instructor, token); //studentとtokenをstudent_tokenテーブルにinsertする.
+		mailSender.send(constructResetTokenEmail(request.getLocale(), token, instructor)); //メールを送る.
+		return "success";
+	}
+	
+	/**
+	 * メールを送るためのメソッド.
+	 * @param contextPath
+	 * @param locale
+	 * @param token
+	 * @param student
+	 * @return
+	 */
+	private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, Instructor instructor) {
+		String url = "http://localhost:8080/instructor/instructor_changePassword?id=" + instructor.getId() + "&token=" + token; //トークンとstudentID付きのURL.
+		String message = messages.getMessage("message.resetPassword", null, Locale.JAPANESE); //リンク付きURLと一緒に送るメッセージ(メッセージは別途、messages.propertiesに記載).
+		return constructEmail("Reset Password", message + " \r\n" + url, instructor);
+	}
+	
+	/**
+	 * メールを送るためのメソッド.
+	 * @param subject
+	 * @param body
+	 * @param student
+	 * @return
+	 */
+	private SimpleMailMessage constructEmail(String subject, String body, Instructor instructor) {
+		SimpleMailMessage email = new SimpleMailMessage();
+	    email.setSubject(subject); //タイトルの設定
+	    email.setText(body); //メールの本文
+	    email.setTo(instructor.getEmail());
+	    return email;
+	}
+	
+	/**
+	 * メールに送られてきたリンクをクリックすると飛んでくるコントローラー.
+	 * @param locale
+	 * @param model
+	 * @param id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value="/instructor_changePassword", method= RequestMethod.GET)
+	public String showChangePasswordPage(Locale locale, Model model, @RequestParam("id") long id, @RequestParam("token") String token) {
+		String result = instructorSecurityService.validatePasswordResetToken(id, token);
+		if(result != null) {
+			model.addAttribute("message", messages.getMessage("auth.message." + result, null, locale));
+			return "redirect:/login?lang=" + locale.getLanguage();
+		}
+		return "instructor/instructor_updatePassword";
+	}
+	
+	/**
+	 * 新しいパスワードを保存するためのコントローラー.
+	 * @param locale
+	 * @param form
+	 * @return
+	 */
+	@RequestMapping(value="/instructor_savePassword", method= RequestMethod.POST)
+//	@ResponseBody
+	public String savePassword(Locale locale, ChangePasswordForm form) {
+		Instructor instructor = (Instructor) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //生徒の情報を取得.
+		instructorService.changeStudentPassword(instructor,form.getNewPassword()); //新しいパスワードをインサートする.
+		return "changePasswordComplete";
 	}
 }

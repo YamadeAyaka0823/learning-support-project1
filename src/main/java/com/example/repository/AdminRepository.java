@@ -20,6 +20,7 @@ import com.example.domain.Admin;
 import com.example.domain.AdminCompany;
 import com.example.domain.Company;
 import com.example.domain.CompanyMember;
+import com.example.domain.Student;
 
 @Repository
 public class AdminRepository {
@@ -324,6 +325,16 @@ public class AdminRepository {
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id).addValue("name", "%" + name + "%");
 		List<Admin> adminList = template.query(sql.toString(), param, ADMIN_RESULT_SET_EXTRACTOR2);
 		return adminList;
+	}
+	
+	/**
+	 * 新しいパスワードをインサートするためのリポジトリ.
+	 * @param student
+	 */
+	public void saveNewPassword(Admin admin) {
+		String sql = "UPDATE admins SET password = :password WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("password", admin.getPassword()).addValue("id", admin.getId());
+		template.update(sql, param);
 	}
 
 }

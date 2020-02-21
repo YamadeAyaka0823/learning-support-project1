@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,10 +34,12 @@ import com.example.domain.GenericResponse;
 import com.example.domain.LoginStudent;
 import com.example.domain.Student;
 import com.example.domain.Training;
+import com.example.form.ChangePasswordForm;
 import com.example.form.DailyReportForm;
 import com.example.form.DailyReportUpdateForm;
 import com.example.form.StudentLoginForm;
 import com.example.service.DailyReportService;
+import com.example.service.SecurityService;
 import com.example.service.StudentService;
 import com.example.service.TrainingService;
 
@@ -52,6 +55,9 @@ public class StudentController {
 	
 	@Autowired
 	private DailyReportService dailyReportService;
+	
+	@Autowired
+	private SecurityService securityService;
 	
 	@Autowired
 	private MailSender mailSender;
@@ -389,27 +395,52 @@ public class StudentController {
 	}
 
 	////////////////////////////////////////////////////////////////////////
+	/**
+	 * パスワード変更初期画面.
+	 * @return
+	 */
 	@RequestMapping("/forgot_password")
 	public String forgotPassword() {
-		return "/student/forgotPassword";
+		return "forgotPassword";
 	}
 	
+	/**
+	 * パスワードを変更するためのリンク付きメールを送るためのコントローラー.
+	 * @param request
+	 * @param email
+	 * @return
+	 */
 	@RequestMapping(value="/resetPassword", method= RequestMethod.POST)
-	@ResponseBody
-	public GenericResponse resetPassword(HttpServletRequest request,@RequestParam("email") String email) {
-		Student student = studentService.findByEmail(email);
-		String token = UUID.randomUUID().toString();
-//		studentService.createPasswordResetTokenForStudent(student, token);
-		mailSender.send(constructResetTokenEmail(request.getContextPath(), request.getLocale(), token, student));
-		return new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
+//	@ResponseBody
+	public String resetPassword(HttpServletRequest request,@RequestParam("email") String email) {
+		Student student = studentService.findByEmail(email); //入力されたメールアドレスからstudentを検索する.
+		String token = UUID.randomUUID().toString(); //トークンを発行.
+		studentService.createPasswordResetTokenForStudent(student, token); //studentとtokenをstudent_tokenテーブルにinsertする.
+		mailSender.send(constructResetTokenEmail(request.getLocale(), token, student)); //メールを送る.
+		return "success";
 	}
 	
-	private SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, Student student) {
-		String url = contextPath + "/student/changePassword?id=" + student.getId() + "&token=" + token;
-		String message = messages.getMessage("message.resetPassword", null, Locale.JAPANESE);
+	/**
+	 * メールを送るためのメソッド.
+	 * @param contextPath
+	 * @param locale
+	 * @param token
+	 * @param student
+	 * @return
+	 */
+	private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, Student student) {
+		String url = "http://localhost:8080/student/changePassword?id=" + student.getId() + "&token=" + token; //トークンとstudentID付きのURL.
+		String message = messages.getMessage("message.resetPassword", null, Locale.JAPANESE); //リンク付きURLと一緒に送るメッセージ(メッセージは別途、messages.propertiesに記載).
 		return constructEmail("Reset Password", message + " \r\n" + url, student);
 	}
 	
+	/**
+	 * メールを送るためのメソッド.
+	 * @param subject
+	 * @param body
+	 * @param student
+	 * @return
+	 */
 	private SimpleMailMessage constructEmail(String subject, String body, Student student) {
 		SimpleMailMessage email = new SimpleMailMessage();
 	    email.setSubject(subject); //タイトルの設定
@@ -418,15 +449,37 @@ public class StudentController {
 	    return email;
 	}
 	
-//	@RequestMapping("/resetPassword")
-//	public String sendEmail(String email) {
-//		SimpleMailMessage mail = new SimpleMailMessage();
-//		mail.setSubject("ヤッホー");
-//		mail.setText("わーい");
-//		mail.setTo(email);
-//		mailSender.send(mail);
-//		return "success";
-//	}
+	/**
+	 * メールに送られてきたリンクをクリックすると飛んでくるコントローラー.
+	 * @param locale
+	 * @param model
+	 * @param id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value="/changePassword", method= RequestMethod.GET)
+	public String showChangePasswordPage(Locale locale, Model model, @RequestParam("id") long id, @RequestParam("token") String token) {
+		String result = securityService.validatePasswordResetToken(id, token);
+		if(result != null) {
+			model.addAttribute("message", messages.getMessage("auth.message." + result, null, locale));
+			return "redirect:/login?lang=" + locale.getLanguage();
+		}
+		return "updatePassword";
+	}
+	
+	/**
+	 * 新しいパスワードを保存するためのコントローラー.
+	 * @param locale
+	 * @param form
+	 * @return
+	 */
+	@RequestMapping(value="/savePassword", method= RequestMethod.POST)
+//	@ResponseBody
+	public String savePassword(Locale locale, ChangePasswordForm form) {
+		Student student = (Student) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //生徒の情報を取得.
+		studentService.changeStudentPassword(student,form.getNewPassword()); //新しいパスワードをインサートする.
+		return "changePasswordComplete";
+	}
 	
 	
 

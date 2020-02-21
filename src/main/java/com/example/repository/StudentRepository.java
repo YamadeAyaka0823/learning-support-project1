@@ -239,6 +239,16 @@ public class StudentRepository {
 		template.update(sql, param);
 	}
 	
+	/**
+	 * 新しいパスワードをインサートするためのリポジトリ.
+	 * @param student
+	 */
+	public void saveNewPassword(Student student) {
+		String sql = "UPDATE students SET password = :password WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("password", student.getPassword()).addValue("id", student.getId());
+		template.update(sql, param);
+	}
+	
 	
 
 }

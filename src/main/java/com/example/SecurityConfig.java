@@ -15,10 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.example.service.CompanyDetailServiceImpl;
-import com.example.service.InstructorDetailServiceImpl;
-import com.example.service.StudentDetailServiceImpl;
-
 @EnableWebSecurity
 public class SecurityConfig{
 	
@@ -51,7 +47,7 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/admin/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/admin/admin_login").permitAll() //「/」などのパスは全てのユーザに許可
+			.antMatchers("/admin/admin_login", "/admin/admin_forgot_password", "/admin/admin_resetPassword","/admin/admin_changePassword", "/admin/admin_savePassword").permitAll() //「/」などのパスは全てのユーザに許可
 //			.antMatchers("/adminInstructor/").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
@@ -138,7 +134,7 @@ public class StudentSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/student/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/student/student_login", "/student/forgot_password", "/student/resetPassword").permitAll() //「/」などのパスは全てのユーザに許可
+			.antMatchers("/student/student_login", "/student/forgot_password", "/student/resetPassword","/student/changePassword", "/student/savePassword").permitAll() //「/」などのパスは全てのユーザに許可
 //			.antMatchers("/student/**").hasRole("USER")s // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
@@ -209,7 +205,7 @@ public class InstructorSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/instructor/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/instructor/instructor_login").permitAll() //「/」などのパスは全てのユーザに許可
+			.antMatchers("/instructor/instructor_login", "/instructor/instructor_forgot_password", "/instructor/instructor_resetPassword","/instructor/instructor_changePassword", "/instructor/instructor_savePassword").permitAll() //「/」などのパスは全てのユーザに許可
 //			.antMatchers("/instructor/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
@@ -280,7 +276,7 @@ public class CompanySecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.antMatcher("/company/**")
 		    .authorizeRequests() // 認可に関する設定
-			.antMatchers("/company/company_login").permitAll() //「/」などのパスは全てのユーザに許可
+			.antMatchers("/company/company_login", "/company/companyMember_forgot_password", "/company/companyMember_resetPassword","/company/companyMember_changePassword", "/company/companyMember_savePassword").permitAll() //「/」などのパスは全てのユーザに許可
 //			.antMatchers("/company/**").hasRole("USER") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/admin/**").hasRole("ADMIN") // /admin/から始まるパスはADMIN権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)
 			//.antMatchers("/user/**").hasRole("USER") // /user/から始まるパスはUSER権限でログインしている場合のみアクセス可(権限設定時の「ROLE_」を除いた文字列を指定)

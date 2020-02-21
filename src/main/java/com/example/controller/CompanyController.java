@@ -6,17 +6,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.domain.CompanyMember;
@@ -24,7 +30,9 @@ import com.example.domain.DailyReport;
 import com.example.domain.LoginCompanyMember;
 import com.example.domain.Training;
 import com.example.domain.WeeklyReport;
+import com.example.form.ChangePasswordForm;
 import com.example.form.CompanyMemberLoginForm;
+import com.example.service.CompanyMemberSecurityService;
 import com.example.service.CompanyMemberService;
 import com.example.service.CompanyService;
 import com.example.service.DailyReportService;
@@ -55,6 +63,15 @@ public class CompanyController {
 	private DailyReportService dailyReportService;
 	
 	@Autowired
+	private CompanyMemberSecurityService companyMemberSecurityService;
+	
+	@Autowired
+	private MailSender mailSender;
+	
+	@Autowired
+    private MessageSource messages;
+	
+	@Autowired
 	private HttpSession session;
 	
 	@ModelAttribute
@@ -66,30 +83,6 @@ public class CompanyController {
 	 * 企業のログイン初期画面.
 	 * @return
 	 */
-//	@RequestMapping("")
-//	public String index() {
-//		return "company/company_login";
-//	}
-	
-	/**
-	 * ログインするためのコントローラー.
-	 * @param form
-	 * @return
-	 */
-//	@RequestMapping("/company_login")
-//	public String login(@Validated CompanyMemberLoginForm form, BindingResult result, Model model) {
-//		CompanyMember companyMember = companyMemberService.findByEmailAndPassword(form);
-//		if(companyMember == null) {
-//			model.addAttribute("error", "メールアドレスかパスワードが間違っています");
-//			return index();
-//		}
-//		if(result.hasErrors()) {
-//			return index();
-//		}
-//		session.setAttribute("company_id", companyMember.getCompanyId());
-//		return "forward:/company/list";
-//	}
-	
 	@RequestMapping("/company_login")
 	public String login(Model model,@RequestParam(required = false) String error) {
 		
@@ -301,5 +294,91 @@ public class CompanyController {
 		return "company/company_view_weekly_report";
 	}
 	
+	////////////////////////////////////////////////////////////////////////
+	/**
+	 * パスワード変更初期画面.
+	 * @return
+	 */
+	@RequestMapping("/companyMember_forgot_password")
+	public String forgotPassword() {
+		return "company/company_forgotPassword";
+	}
+
+	/**
+	 * パスワードを変更するためのリンク付きメールを送るためのコントローラー.
+	 * @param request
+	 * @param email
+	 * @return
+	 */
+	@RequestMapping(value="/companyMember_resetPassword", method= RequestMethod.POST)
+	//@ResponseBody
+	public String resetPassword(HttpServletRequest request,@RequestParam("email") String email) {
+		CompanyMember companyMember = companyMemberService.findByEmail(email); //入力されたメールアドレスからstudentを検索する.
+		String token = UUID.randomUUID().toString(); //トークンを発行.
+		companyMemberService.createPasswordResetTokenForStudent(companyMember, token); //studentとtokenをstudent_tokenテーブルにinsertする.
+		mailSender.send(constructResetTokenEmail(request.getLocale(), token, companyMember)); //メールを送る.
+		return "success";
+	}
+
+	/**
+	 * メールを送るためのメソッド.
+	 * @param contextPath
+	 * @param locale
+	 * @param token
+	 * @param student
+	 * @return
+	 */
+	private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, CompanyMember companyMember) {
+		String url = "http://localhost:8080/company/companyMember_changePassword?id=" + companyMember.getId() + "&token=" + token; //トークンとstudentID付きのURL.
+		String message = messages.getMessage("message.resetPassword", null, Locale.JAPANESE); //リンク付きURLと一緒に送るメッセージ(メッセージは別途、messages.propertiesに記載).
+		return constructEmail("Reset Password", message + " \r\n" + url, companyMember);
+	}
+
+	/**
+	 * メールを送るためのメソッド.
+	 * @param subject
+	 * @param body
+	 * @param student
+	 * @return
+	 */
+	private SimpleMailMessage constructEmail(String subject, String body, CompanyMember companyMember) {
+		SimpleMailMessage email = new SimpleMailMessage();
+		email.setSubject(subject); //タイトルの設定
+		email.setText(body); //メールの本文
+		email.setTo(companyMember.getEmail());
+		return email;
+	}
+
+	/**
+	 * メールに送られてきたリンクをクリックすると飛んでくるコントローラー.
+	 * @param locale
+	 * @param model
+	 * @param id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value="/companyMember_changePassword", method= RequestMethod.GET)
+	public String showChangePasswordPage(Locale locale, Model model, @RequestParam("id") long id, @RequestParam("token") String token) {
+		String result = companyMemberSecurityService.validatePasswordResetToken(id, token);
+		if(result != null) {
+			model.addAttribute("message", messages.getMessage("auth.message." + result, null, locale));
+			return "redirect:/login?lang=" + locale.getLanguage();
+		}
+		return "company/company_updatePassword";
+	}
+
+	/**
+	 * 新しいパスワードを保存するためのコントローラー.
+	 * @param locale
+	 * @param form
+	 * @return
+	 */
+	@RequestMapping(value="/companyMember_savePassword", method= RequestMethod.POST)
+	//@ResponseBody
+	public String savePassword(Locale locale, ChangePasswordForm form) {
+		CompanyMember companyMember = (CompanyMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //生徒の情報を取得.
+		companyMemberService.changeStudentPassword(companyMember,form.getNewPassword()); //新しいパスワードをインサートする.
+		return "changePasswordComplete";
+	}
 	
 }

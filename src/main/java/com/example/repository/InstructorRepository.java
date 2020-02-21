@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Instructor;
+import com.example.domain.Student;
 import com.example.domain.Training;
 
 @Repository
@@ -212,6 +213,16 @@ public class InstructorRepository {
 		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
 		List<Instructor> instructorList = template.query(sql, param, INSTRUCTOR_ROW_MAPPER);
 		return instructorList;
+	}
+	
+	/**
+	 * 新しいパスワードをインサートするためのリポジトリ.
+	 * @param student
+	 */
+	public void saveNewPassword(Instructor instructor) {
+		String sql = "UPDATE instructors SET password = :password WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("password", instructor.getPassword()).addValue("id", instructor.getId());
+		template.update(sql, param);
 	}
 	
 

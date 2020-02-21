@@ -9,11 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Admin;
 import com.example.domain.AdminCompany;
-import com.example.domain.Company;
+import com.example.domain.AdminPasswordResetToken;
 import com.example.form.AdminLoginForm;
 import com.example.form.AdminRegisterForm;
 import com.example.form.AdminUpdateForm;
 import com.example.repository.AdminCompanyRepository;
+import com.example.repository.AdminPasswordTokenRepository;
 import com.example.repository.AdminRepository;
 import com.example.repository.CompanyRepository;
 
@@ -27,6 +28,8 @@ public class AdminService {
 	private AdminCompanyRepository adminCompanyRepository;
 	@Autowired
 	private CompanyRepository companyRepository;
+	@Autowired
+	private AdminPasswordTokenRepository adminPasswordTokenRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -170,6 +173,29 @@ public class AdminService {
 	 */
 	public List<Admin> findByNameAndAdminId(String name, Integer id){
 		return adminRepository.findByNameAndAdminId(name, id);
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+	/**
+	 * student_tokenテーブルにinsertするためのサービス.
+	 * @param student
+	 * @param token
+	 */
+	public void createPasswordResetTokenForStudent(Admin admin, String token) {
+		AdminPasswordResetToken myToken = new AdminPasswordResetToken();
+		myToken.setAdmin(admin);
+		myToken.setToken(token);
+		adminPasswordTokenRepository.save(myToken);
+	}
+
+	/**
+	 * 新しいパスワードをインサートするためのサービス.
+	 * @param student
+	 * @param password
+	 */
+	public void changeStudentPassword(Admin admin, String password) {
+		admin.setPassword(passwordEncoder.encode(password));
+		adminRepository.saveNewPassword(admin);
 	}
 
 }

@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Instructor;
+import com.example.domain.InstructorPasswordResetToken;
 import com.example.form.InstructorLoginForm;
 import com.example.form.InstructorRegisterForm;
 import com.example.form.InstructorUpdateForm;
+import com.example.repository.InstructorPasswordTokenRepository;
 import com.example.repository.InstructorRepository;
 
 @Service
@@ -19,6 +21,9 @@ public class InstructorService {
 	
 	@Autowired
 	private InstructorRepository instructorRepository;
+	
+	@Autowired
+	private InstructorPasswordTokenRepository instructorPasswordTokenRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -106,6 +111,29 @@ public class InstructorService {
 	 */
 	public List<Instructor> findByName(String name){
 		return instructorRepository.findByName(name);
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+	/**
+	 * student_tokenテーブルにinsertするためのサービス.
+	 * @param student
+	 * @param token
+	 */
+	public void createPasswordResetTokenForInstructor(Instructor instructor, String token) {
+		InstructorPasswordResetToken myToken = new InstructorPasswordResetToken();
+		myToken.setInstructor(instructor);
+		myToken.setToken(token);
+		instructorPasswordTokenRepository.save(myToken);
+	}
+
+	/**
+	 * 新しいパスワードをインサートするためのサービス.
+	 * @param student
+	 * @param password
+	 */
+	public void changeStudentPassword(Instructor instructor, String password) {
+		instructor.setPassword(passwordEncoder.encode(password));
+		instructorRepository.saveNewPassword(instructor);
 	}
 	
 	

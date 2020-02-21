@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import com.example.form.DailyReportForm;
 import com.example.form.StudentLoginForm;
 import com.example.form.StudentUpdateForm;
 import com.example.repository.DailyReportRepository;
+import com.example.repository.PasswordTokenRepository;
 import com.example.repository.StudentRepository;
 
 @Service
@@ -26,6 +28,12 @@ public class StudentService {
 	
 	@Autowired
 	private DailyReportRepository dailyReportRepository;
+	
+	@Autowired
+	private PasswordTokenRepository passwordTokenRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	/**
 	 * 受講者がログインするためのサービス.
@@ -132,9 +140,26 @@ public class StudentService {
 	}
 	
 	////////////////////////////////////////////////////////////////////////
-//	public void createPasswordResetTokenForStudent(Student student, String token) {
-//		PasswordResetToken myToken = new PasswordResetToken(token, student);
-//		passwordTokenRepository.save(myToken);
-//	}
+	/**
+	 * student_tokenテーブルにinsertするためのサービス.
+	 * @param student
+	 * @param token
+	 */
+	public void createPasswordResetTokenForStudent(Student student, String token) {
+		PasswordResetToken myToken = new PasswordResetToken(token, student);
+		myToken.setStudent(student);
+		myToken.setToken(token);
+		passwordTokenRepository.save(myToken);
+	}
+	
+	/**
+	 * 新しいパスワードをインサートするためのサービス.
+	 * @param student
+	 * @param password
+	 */
+	public void changeStudentPassword(Student student, String password) {
+		student.setPassword(passwordEncoder.encode(password));
+		studentRepository.saveNewPassword(student);
+	}
 
 }

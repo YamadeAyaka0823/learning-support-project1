@@ -12,3 +12,6 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+  messages: 
+    basename: messages
+    encoding: UTF-8
