@@ -136,7 +136,7 @@ public class DailyReportRepository {
 	
 	
 	/**
-	 * 受講生の日報をインサートするためのリポジトリ.
+	 * 生徒を登録する際に、日報の一部もインサートするためのリポジトリ.
 	 * @param dailyReport
 	 */
 	public void insert(DailyReport dailyReport) {
@@ -239,8 +239,36 @@ public class DailyReportRepository {
 	 */
 	public void update(DailyReport dailyReport) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(dailyReport);
-		String sql = "UPDATE daily_reports SET date = :date, training_id = :trainingId, student_id = :studentId, content = :content, intelligibility = :intelligibility, detail_intelligibillity = :detailIntelligibillity, about_instructor = :aboutInstructor, question = :question WHERE training_id = :trainingId AND student_id = :studentId AND date = :date";
+		String sql = "UPDATE daily_reports SET content = :content, intelligibility = :intelligibility, detail_intelligibillity = :detailIntelligibillity, about_instructor = :aboutInstructor, question = :question WHERE training_id = :trainingId AND student_id = :studentId AND date = :date";
 	    template.update(sql, param);
+	}
+	
+	/**
+	 * 管理者画面で研修を変更した際に一旦daily_reportをdeleteするためのリポジトリ.
+	 * @param trainingId
+	 */
+	public void deleteDailyReport(Integer trainingId) {
+		String sql = "DELETE FROM daily_reports WHERE training_id = :trainingId";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("trainingId", trainingId);
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 日報の印刷の初期画面のための1件検索.
+	 * @param dailyReportId
+	 * @return
+	 */
+	public DailyReport printDailyReport(Integer dailyReportId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE A.id = :id ");
+//		String sql = "SELECT id, date, training_id, student_id, content, intelligibility, detail_intelligibillity, about_instructor, question FROM daily_reports WHERE id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", dailyReportId);
+		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
+		if(dailyReportList.size() == 0) {
+			return null;
+		}
+		return dailyReportList.get(0);
 	}
 
 }

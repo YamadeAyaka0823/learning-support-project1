@@ -3,6 +3,7 @@ package com.example.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,10 +155,16 @@ public class CompanyController {
 		  Date endDate = dailyReport.getTraining().getEndDate();
 		  LocalDate end = ((java.sql.Date)endDate).toLocalDate();
 		  //１日ごとに表示させる.
-		  List<LocalDate> dates = new ArrayList<>();
+		  List<String> dates = new ArrayList<>();
 		  for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(1)) {
-			  dates.add(startDay);
+			  DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+			  String formatStartDate = datetimeformatter.format(startDay);
+			  dates.add(formatStartDate);
 		  }	
+		  //講義最終日のみ最後に追加.
+		  DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+		  String formatEndDate = datetimeformatter.format(end);
+		  dates.add(formatEndDate);
 		  model.addAttribute("dates", dates);
 		  //日報閲覧画面で生徒一覧のプルダウン.
 		  Training training = trainingService.loadForAdmin(id);
@@ -176,7 +183,9 @@ public class CompanyController {
 	 */
 	@RequestMapping("/daily_search")
 	public String dailySearch(Integer trainingId, String date, String name, Model model) throws ParseException {
-        DailyReport dailyReport = dailyReportService.dateAndNameLoad(trainingId, date, name);
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date changeDate = sdFormat.parse(date);
+        DailyReport dailyReport = dailyReportService.dateAndNameLoad(trainingId, changeDate, name);
 		
 		//日付を年月日形式に変換
 				Date date3 = dailyReport.getDate();
@@ -217,12 +226,16 @@ public class CompanyController {
 				  Date endDate = dailyReport.getTraining().getEndDate();
 				  LocalDate end = ((java.sql.Date)endDate).toLocalDate();
 				  //１日ごとに表示させる.
-				  List<LocalDate> dates = new ArrayList<>();
+				  List<String> dates = new ArrayList<>();
 				  for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(1)) {
-					  dates.add(startDay);
+					  DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+					  String formatStartDate = datetimeformatter.format(startDay);
+					  dates.add(formatStartDate);
 				  }
 				  //講義最終日のみ最後に追加.
-				  dates.add(end);
+				  DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+				  String formatEndDate = datetimeformatter.format(end);
+				  dates.add(formatEndDate);
 				  model.addAttribute("dates", dates);
 				  
 				//日報閲覧画面で生徒一覧のプルダウン.
@@ -237,6 +250,8 @@ public class CompanyController {
 	 */
 	@RequestMapping("/view_weekly_report")
 	public String viewWeeklyReport(Integer id, Model model) {
+		session.setAttribute("trainingId", id);
+		
 		WeeklyReport weeklyReport = weeklyReportService.load(id);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
@@ -251,9 +266,11 @@ public class CompanyController {
 		LocalDate start = ((java.sql.Date)startDate).toLocalDate();
 		Date endDate = training.getEndDate();
 		LocalDate end = ((java.sql.Date)endDate).toLocalDate();
-		List<LocalDate> dates = new ArrayList<>();
+		List<String> dates = new ArrayList<>();
 		for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(7)) {
-			dates.add(startDay);
+			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+		    String formatStartDate = datetimeformatter.format(startDay);
+			dates.add(formatStartDate);
 			model.addAttribute("dates", dates);
 	    }
 		model.addAttribute("training", training);
@@ -268,8 +285,12 @@ public class CompanyController {
 	 * @throws ParseException
 	 */
 	@RequestMapping("/weekly_search")
-	public String weeklySearch(String date, Integer trainingId, Model model) throws ParseException {
-		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date, trainingId);
+	public String weeklySearch(String date, Model model) throws ParseException {
+		Integer trainingId = (Integer) session.getAttribute("trainingId");
+		//String型からDate型へ変換
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date changeDate = sdFormat.parse(date);
+		WeeklyReport weeklyReport = weeklyReportService.loadByDate(changeDate, trainingId);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
 		Date dateStart = weeklyReport.getStartDate();
@@ -286,12 +307,77 @@ public class CompanyController {
 		Date date3 = training.getEndDate();
 		LocalDate end = ((java.sql.Date)date3).toLocalDate();
 		//１週間ごとに表示させる.
-		List<LocalDate> dates = new ArrayList<>();
+		List<String> dates = new ArrayList<>();
 		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-			dates.add(startDate);
+			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
+		    String formatStartDate = datetimeformatter.format(startDate);
+			dates.add(formatStartDate);
 			  }
 		model.addAttribute("dates", dates);
 		return "company/company_view_weekly_report";
+	}
+	
+	/**
+	 * 日報を印刷するための初期画面.
+	 * @param dailyReportId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/company_daily_report_print")
+	public String companyDailyReportPrint(Integer dailyReportId, Model model) {
+		DailyReport dailyReport = dailyReportService.printDailyReport(dailyReportId);
+
+		//日付を年月日形式に変換
+		Date date = dailyReport.getDate();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+		String formattedDate = dateFormat.format(date);
+		model.addAttribute("formattedDate", formattedDate);
+
+		if(dailyReport.getIntelligibility() == 1) {
+			model.addAttribute("intelligibility", "良く理解できた");
+		}else if(dailyReport.getIntelligibility() == 2) {
+			model.addAttribute("intelligibility", "概ね理解できた");
+		}else if(dailyReport.getIntelligibility() == 3) {
+			model.addAttribute("intelligibility", "ふつう");
+		}else if(dailyReport.getIntelligibility() == 4) {
+			model.addAttribute("intelligibility", "少し難しかった");
+		}else if(dailyReport.getIntelligibility() == 5) {
+			model.addAttribute("intelligibility", "とても難しかった");
+		}
+
+		if(dailyReport.getAboutInstructor() == 1) {
+			model.addAttribute("aboutInstructor", "とても丁寧だった");
+		}else if(dailyReport.getAboutInstructor() == 2) {
+			model.addAttribute("aboutInstructor", "概ね丁寧だった");
+		}else if(dailyReport.getAboutInstructor() == 3) {
+			model.addAttribute("aboutInstructor", "どちらともいえない");
+		}else if(dailyReport.getAboutInstructor() == 4) {
+			model.addAttribute("aboutInstructor", "やや丁寧ではなかった");
+		}else if(dailyReport.getAboutInstructor() == 5) {
+			model.addAttribute("aboutInstructor", "全く丁寧ではなかった");
+		}
+		model.addAttribute("dailyReport", dailyReport);
+		return "company/company_print_daily_report";
+	}
+	
+	/**
+	 * 週報を印刷するための初期画面.
+	 * @param weeklyReportId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/company_weekly_report_print")
+	public String companyWeeklyReportPrint(Integer weeklyReportId, Model model) {
+		WeeklyReport weeklyReport = weeklyReportService.printWeeklyReport(weeklyReportId);
+
+		//日付を年月日形式に変換
+		Date date = weeklyReport.getStartDate();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+		String formattedDate = dateFormat.format(date);
+		model.addAttribute("formattedDate", formattedDate);
+
+		model.addAttribute("weeklyReport", weeklyReport);
+		return "company/company_print_weekly_report";
 	}
 	
 	////////////////////////////////////////////////////////////////////////

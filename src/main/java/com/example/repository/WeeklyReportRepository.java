@@ -185,10 +185,10 @@ public class WeeklyReportRepository {
 		sb.append(" C.content C_content ");
 		sb.append(" FROM ");
 		sb.append(" trainings A ");
-		sb.append(" INNER JOIN ");
+		sb.append(" LEFT OUTER JOIN ");
 		sb.append(" weekly_reports B ");
 		sb.append(" ON A.id = B.training_id ");
-		sb.append(" INNER JOIN ");
+		sb.append(" LEFT OUTER JOIN ");
 		sb.append(" student_impressions C ");
 		sb.append(" ON B.id = C.weekly_report_id ");
 		
@@ -256,7 +256,21 @@ public class WeeklyReportRepository {
 	}
 	
 	/**
-	 * 週報を1件検索するためのリポジトリ.
+	 * 週報を研修登録と同時にinsert.
+	 * @param weeklyReport
+	 */
+	public WeeklyReport weeklyReportInsert(WeeklyReport weeklyReport) {
+//		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
+//		String sql = "INSERT INTO weekly_reports (start_date, instructor_name, content, training_id ) VALUES (:startDate, :instructorName, :content, :trainingId )";
+//		template.update(sql, param);
+		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
+		Number key = insert.executeAndReturnKey(param);
+		weeklyReport.setId(key.intValue());
+		return weeklyReport;
+	}
+	
+	/**
+	 * 週報を1件検索するためのリポジトリ(trainingのidで検索).
 	 * @param id
 	 * @return
 	 */
@@ -311,6 +325,57 @@ public class WeeklyReportRepository {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
 		String sql = "UPDATE weekly_reports SET content = :content WHERE id = :id AND training_id = :trainingId";
 		template.update(sql, param);
+	}
+	
+	/**
+	 * 週報を編集するためのリポジトリ.
+	 * @param weeklyReport
+	 */
+	public void weeklyReportUpdate(WeeklyReport weeklyReport) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
+		String sql = "UPDATE weekly_reports SET content = :content WHERE training_id = :trainingId AND start_date = :startDate";
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 管理者画面の研修編集でstudentImpressionテーブルを削除するために使う.
+	 * @param trainingId
+	 * @return
+	 */
+	public List<WeeklyReport> listWeeklyReport(Integer trainingId){
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE A.id = :id ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", trainingId);
+		List<WeeklyReport> weeklyReportList = template.query(sql.toString(), param, WEEKLY_REPORT_RESULT_SET_EXTRACTOR);
+		return weeklyReportList;
+	}
+	
+	/**
+	 * 管理者画面の研修編集でweekly_reportを一旦削除するためのリポジトリ.
+	 * @param trainingId
+	 */
+	public void deleteWeeklyReport(Integer trainingId) {
+		String sql = "DELETE FROM weekly_reports WHERE training_id = :trainingId";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("trainingId", trainingId);
+		template.update(sql, param);
+	}
+	
+	/**
+	 * 週報を印刷するために1件検索するためのリポジトリ(weekly_reportのidで検索).
+	 * @param id
+	 * @return
+	 */
+	public WeeklyReport printWeeklyReport(Integer weeklyReportId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(joinTable());
+		sql.append(" WHERE B.id = :id ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", weeklyReportId);
+		List<WeeklyReport> weeklyReportList = template.query(sql.toString(), param, WEEKLY_REPORT_RESULT_SET_EXTRACTOR);
+		if(weeklyReportList.size() == 0) {
+			return null;
+		}
+		return weeklyReportList.get(0);
 	}
 
 }

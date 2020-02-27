@@ -17,6 +17,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/admin/training_list}">研修一覧</a></li>
+			<li class="active">研修編集</li>
+		</ol>
 
 		<!-- register form -->
 		<div class="row">
@@ -31,8 +37,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputCourse">コース名:</label> <label
-											class="control-label" style="color: red" for="inputError">コース名を入力してください</label>
+										<label for="inputCourse">コース名:</label>
 										<input type="text" name="name" th:value="${training.name}" id="inputCourse" class="form-control">
 									</div>
 								</div>
@@ -40,8 +45,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputPeriod">期間:</label> <label
-											class="control-label" style="color: red" for="inputPeriod">期間を入力してください</label>
+										<label for="inputPeriod">期間:</label>
 									</div>
 									<div class="col-sm-5">
 										<input type="date" name="startDate" id="name" th:value="${training.startDate}"
@@ -57,8 +61,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputLecturer">メイン講師:</label> <label
-											class="control-label" style="color: red" for="inputError">メイン講師を選択してください</label>
+										<label for="inputLecturer">メイン講師:</label>
 										<select name="instructorId" class="form-control">
 										    <option value="0">選択してください</option>
 											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:value="${instructor.id}">選択してください</option>
@@ -113,6 +116,31 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		</div>
 
 	</div>
+	<!-- table -->
+		<div class="row">
+			<div
+				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>氏名</th>
+							<th>かな</th>
+							<th>メール</th>
+						</tr>
+					</thead>
+					<tbody>
+					    <span th:each="training:${trainingList}">
+						<tr th:each="student:${training.studentList}">
+							<td th:text="${student.name}">管理者一郎</td>
+							<td th:text="${student.kana}">管理者一郎</td>
+							<td th:text="${student.email}">ichiro@gmail.com</td>
+							<!-- <td><a th:href="@{/admin/s_edit(trainingId=${training.id},studentId=${student.id})}"><button type="submit">編集</button></a></td> -->
+						</tr>
+						</span>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	<!-- end container -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

@@ -16,15 +16,19 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="instructorFragment::hedder3"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/instructor/load}">研修一覧</a></li>
+			<li class="active">日報閲覧</li>
+		</ol>
 
 		<!-- print button -->
 		<div class="row">
 			<div class="form-group">
 				<div
 					class="col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
-					<form method="post" action="admin_print_daily_report.html" class="form-horizontal">
-						<button type="submit" class="btn btn-primary">印刷</button>
-					</form>
+						<a th:href="@{'/instructor/instructor_daily_report_print?dailyReportId=' + ${dailyReport.id}}"><button type="submit" class="btn btn-primary">印刷</button></a>
 				</div>
 			</div>
 		</div>
@@ -42,6 +46,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="col-sm-12">
 									<select class="form-control" name="date">
+									    <option>日付を選択してください</option>
 										<option th:each="date:${dates}" th:text="${date}" th:value="${date}">2016/07/01</option>
 									</select>
 								</div>

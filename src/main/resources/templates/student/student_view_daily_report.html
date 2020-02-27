@@ -19,13 +19,19 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="studentFragment::hedder2"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/student/student_load}">研修一覧</a></li>
+			<li class="active">日報閲覧</li>
+		</ol>
 
 		<!-- print button -->
 		<div class="row">
 			<div class="form-group">
 				<div
 					class="col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
-					<button type="submit" class="btn btn-primary">印刷</button>
+					<a th:href="@{'/student/student_daily_report_print?dailyReportId=' + ${dailyReport.id}}"><button type="submit" class="btn btn-primary">印刷</button></a>
 				</div>
 			</div>
 		</div>
@@ -38,13 +44,14 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<div class="panel-title">日付</div>
 					</div>
 					<div class="panel-body">
-						<form method="post" th:action="@{/student/date_load}" class="form-horizontal" id="form">
+						<form method="post" th:action="@{/student/date_load_view}" class="form-horizontal" id="form">
 						<!--  <input type="hidden" name="date" th:value="${ymd}"> -->
 						<input type="hidden" name="trainingId" th:value="${dailyReport.training.id}">
 						<input type="hidden" name="studentId" th:value="${dailyReport.studentId}">
 							<div class="form-group">
 								<div class="col-sm-12">
 									<select class="form-control" name="date" id="pulldown" onchange="change()">
+									    <option>日付を選択してください</option>
 										<option id="day" th:each="date:${dates}" th:text="${date}">2016/07/01</option>
 									</select>
 								</div>

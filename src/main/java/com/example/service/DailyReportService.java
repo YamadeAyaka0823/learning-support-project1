@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.DailyReport;
-import com.example.form.DailyReportUpdateForm;
+import com.example.form.DailyReportForm;
 import com.example.repository.DailyReportRepository;
 
 @Service
@@ -37,11 +37,8 @@ public class DailyReportService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public DailyReport dateAndNameLoad(Integer trainingId, String date, String name) throws ParseException {
-		//String型のdateをDate型に変換.
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateOfDailyReport = sdFormat.parse(date);
-        return dailyReportRepository.dateAndNameLoad(trainingId, dateOfDailyReport, name);
+	public DailyReport dateAndNameLoad(Integer trainingId, Date date, String name) throws ParseException {
+        return dailyReportRepository.dateAndNameLoad(trainingId, date, name);
 	}
 	
 	/**
@@ -49,7 +46,7 @@ public class DailyReportService {
 	 * @param form
 	 * @throws ParseException
 	 */
-	public void update(DailyReportUpdateForm form) throws ParseException {
+	public void update(DailyReportForm form) throws ParseException {
 		DailyReport dailyReport = new DailyReport();
 		dailyReport.setAboutInstructor(form.getIntAboutInstructor());
 		dailyReport.setContent(form.getContent());
@@ -62,6 +59,23 @@ public class DailyReportService {
 		dailyReport.setStudentId(form.getStudentId());
 		dailyReport.setTrainingId(form.getTrainingId());
 		dailyReportRepository.update(dailyReport);
+	}
+	
+	/**
+	 * 生徒を登録する際に、日報の一部もインサートするためのサービス.
+	 * @param dailyReport
+	 */
+	public void insert(DailyReport dailyReport) {
+		dailyReportRepository.insert(dailyReport);
+	}
+	
+	/**
+	 * 日報の印刷の初期画面のための1件検索.
+	 * @param dailyReportId
+	 * @return
+	 */
+	public DailyReport printDailyReport(Integer dailyReportId) {
+		return dailyReportRepository.printDailyReport(dailyReportId);
 	}
 
 }

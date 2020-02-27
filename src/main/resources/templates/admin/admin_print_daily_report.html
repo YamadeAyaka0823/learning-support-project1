@@ -21,6 +21,13 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 	    <!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/admin/training_list}">研修一覧</a></li>
+			<li class="active"><a th:href="@{'/admin/view_dailyReport?id=' + ${dailyReport.trainingId}}">日報閲覧</a></li>
+			<li class="active">印刷</li>
+		</ol>
 
 		<!-- print button -->
 		<div class="row">
@@ -37,18 +44,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				<div class="well">
 					<form method="post" action="register_daily_report.html">
 						<fieldset>
-							<legend>○月○日の鈴木一郎さんの日報</legend>
+							<legend th:text="${formattedDate} + 'の' + ${dailyReport.student.name} + 'さんの日報'">○月○日の鈴木一郎さんの日報</legend>
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">学んだ内容:</label>
-										<pre>
-オブジェクト指向入門
-クラスとオブジェクト
-継承
-インターフェース
-ポリモーフィズム
-カプセル化
+										<pre th:text="${dailyReport.content}">
 										</pre>
 									</div>
 								</div>
@@ -57,8 +58,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">理解度</label>
-										<pre>
-概ね理解できた
+										<pre th:text="${intelligibility}">
 										</pre>
 									</div>
 								</div>
@@ -67,10 +67,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysIntelligibilityDetail">理解度(詳細):</label><br />
-										<pre>
-ポリモーフィズムの概念(同じ操作で違う振る舞いというもの)がとても難しく感じました。
-
-
+										<pre th:text="${dailyReport.detailIntelligibillity}">
 										</pre>
 									</div>
 								</div>
@@ -79,8 +76,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputEmail">講師の対応の丁寧さ</label>
-										<pre>
-とても丁寧だった
+										<pre th:text="${aboutInstructor}">
 										</pre>
 									</div>
 								</div>
@@ -89,10 +85,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputTodaysQuestion">本日の研修内容についてのご質問:</label><br />
-										<pre>
-ポリモーフィズムがわかりませんでした。
-
-もう一度説明をお願いしたいです。
+										<pre th:text="${dailyReport.question}">
 										</pre>
 									</div>
 								</div>

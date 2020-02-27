@@ -16,6 +16,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="instructorFragment::hedder3"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/instructor/load}">研修一覧</a></li>
+		</ol>
 
 		<!-- table -->
 		<div class="row">
@@ -27,12 +32,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<th>期間</th>
 							<th>コース名</th>
 							<th>講師</th>
-							<th>　　週報(閲覧)　　　　週報(登録)　　　　週報(編集)　　　　日報(閲覧)</th>
+							<th>　　週報(閲覧)　　　　週報(登録)　　　　日報(閲覧)</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="training:${instructor.trainingList}">
-							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text="${#dates.format(training.startDate,'yyyy/MM/dd')} + '〜' + ${#dates.format(training.endDate,'yyyy/MM/dd')}">2016/04/01 ～ 2016/06/30</td>
 							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
 							<td th:text="${instructor.name}">鈴木一郎</td>
 							<td>
@@ -41,9 +46,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							   </a>
 							　　<a th:href="@{'/instructor/weekly_report?id=' + ${training.id}}">
 							   <button type="submit">週報(登録)</button>
-							   </a>&nbsp;&nbsp;&nbsp;&nbsp;
-							   <a th:href="@{'/instructor/weekly_report_edit?id=' + ${training.id}}">
-							   <button type="submit">週報(編集)</button>
 							   </a>&nbsp;&nbsp;&nbsp;&nbsp;
 							   <a th:href="@{'/instructor/view_daily_report?id=' + ${training.id}}">
 							   <button type="submit">日報(閲覧)</button>

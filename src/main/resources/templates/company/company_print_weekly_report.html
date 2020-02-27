@@ -13,17 +13,23 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+<style type="text/css" media="print">
+<!-- 
+.noPrint{ display:none ;} 
+--> 
+</style>
 </head>
 <body onload="responsibleCompanies();">
 	<div class="container">
 	
 	    <!-- ヘッダーをまとめてる -->
-		<span th:include="fragment::hedder1"></span>
+		<span th:include="companyFragment::hedder4"></span>
 		
 		<!-- パンくずリスト -->
 		<ol class="breadcrumb">
-			<li><a href="list.html" th:href="@{/admin/training_list}">研修一覧</a></li>
-			<li class="active">週報閲覧</li>
+			<li><a href="list.html" th:href="@{/company/list}">研修一覧</a></li>
+			<li class="active"><a th:href="@{'/company/view_weekly_report?id=' + ${session.trainingId}}">週報閲覧</a></li>
+			<li class="active">印刷</li>
 		</ol>
 		
 		<!-- print button -->
@@ -31,33 +37,13 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			<div class="form-group">
 				<div
 					class="col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
-						<a th:href="@{'/admin/admin_weekly_report_print?weeklyReportId=' + ${weeklyReport.id}}"><button type="submit" class="btn btn-primary">印刷</button></a>
+					<button type="submit" class="btn btn-primary noPrint" onclick="window.print();">印刷</button>
 				</div>
 			</div>
 		</div>
 
 		<!-- register form -->
 		<div class="row">
-			<!-- search form -->
-			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<div class="panel-title">週選択</div>
-					</div>
-					<div class="panel-body">
-						<form method="post" th:action="@{/admin/view_search_weeklyReport}" class="form-horizontal" id="form">
-							<div class="form-group">
-								<div class="col-sm-12">
-									<select class="form-control" name="date" id="oneWeek" onchange="change()">
-									    <option>日付を選択してください</option>
-										<option th:each="date:${dates}" th:text="${date}" >2016/07/18～</option>
-									</select>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
 					<!-- <span th:each="weeklyReport:${training.weeklyReportList}"> -->
 			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
 				<div class="well">

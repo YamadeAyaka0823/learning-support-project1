@@ -16,6 +16,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{'/admin/company_list?id=' + ${session.adminId}}">企業一覧</a></li>
+		</ol>
 
 		<!-- search form -->
 		<div class="row">

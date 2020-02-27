@@ -3,16 +3,19 @@ package com.example.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import com.example.domain.Company;
 import com.example.domain.Instructor;
 import com.example.domain.Student;
 import com.example.domain.Training;
@@ -460,15 +463,27 @@ public class TrainingRepository {
 		List<Training> trainingList = template.query(sql.toString(), TRAINING_RESULT_SET_EXTRACTOR2);
 		return trainingList;
 	}
+	//insert時に採番されたIDを取得する
+	private SimpleJdbcInsert insert;
+	
+	@PostConstruct
+	public void init() {
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert((JdbcTemplate) template.getJdbcOperations());
+		SimpleJdbcInsert withTableName = simpleJdbcInsert.withTableName("trainings");
+		insert = withTableName.usingGeneratedKeyColumns("id");
+	}
 	
 	/**
 	 * 管理者画面で研修を新規登録するためのリポジトリ.
 	 * @param training
 	 */
-	public void insert(Training training) {
+	public Training insert(Training training) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(training);
-		String sql = "INSERT INTO trainings (name, start_date, end_date, instructor_id, sub_instructor_id1, sub_instructor_id2, sub_instructor_id3) VALUES (:name, :startDate, :endDate, :instructorId, :subInstructorId1, :subInstructorId2, :subInstructorId3)";
-		template.update(sql, param);
+		Number key = insert.executeAndReturnKey(param);
+		training.setId(key.intValue());
+//		String sql = "INSERT INTO trainings (name, start_date, end_date, instructor_id, sub_instructor_id1, sub_instructor_id2, sub_instructor_id3) VALUES (:name, :startDate, :endDate, :instructorId, :subInstructorId1, :subInstructorId2, :subInstructorId3)";
+//		template.update(sql, param);
+		return training;
 	}
 	
 	/**

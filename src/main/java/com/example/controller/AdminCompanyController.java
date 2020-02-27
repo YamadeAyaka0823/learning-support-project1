@@ -2,6 +2,8 @@ package com.example.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,9 @@ public class AdminCompanyController {
 	private AdminService adminService;
 	
 	@Autowired
+	private HttpSession session;
+	
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	@ModelAttribute
@@ -57,7 +62,7 @@ public class AdminCompanyController {
 	public String companyList(String name, Model model, @AuthenticationPrincipal LoginAdmin loginAdmin) {
 		//ログインしている管理者のIDを取得
 		Integer adminId = loginAdmin.getAdmin().getId();
-		model.addAttribute("adminId", adminId);
+		session.setAttribute("adminId", adminId);
 		
 		List<Company> companyList = null;
 		List<Admin> adminList = null;

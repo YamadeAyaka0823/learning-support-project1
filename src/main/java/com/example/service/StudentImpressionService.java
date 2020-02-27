@@ -27,5 +27,13 @@ public class StudentImpressionService {
 //		studentImpression.setWeeklyReportId(form.getWeeklyReportId());
 //		studentImpressionRepository.insert(studentImpression);
 //	}
+	
+	/**
+	 * 生徒の所感の１部をインサートするためのサービス.
+	 * @param studentImpression
+	 */
+	public void insert(StudentImpression studentImpression) {
+		studentImpressionRepository.insert(studentImpression);
+	}
 
 }

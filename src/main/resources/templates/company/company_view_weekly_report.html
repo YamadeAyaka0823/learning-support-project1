@@ -19,6 +19,22 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	
 	    <!-- ヘッダーをまとめてる -->
 		<span th:include="companyFragment::hedder4"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/company/list}">研修一覧</a></li>
+			<li class="active">週報閲覧</li>
+		</ol>
+		
+		<!-- print button -->
+		<div class="row">
+			<div class="form-group">
+				<div
+					class="col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
+						<a th:href="@{'/company/company_weekly_report_print?weeklyReportId=' + ${weeklyReport.id}}"><button type="submit" class="btn btn-primary">印刷</button></a>
+				</div>
+			</div>
+		</div>
 
 		<!-- register form -->
 		<div class="row">
@@ -33,8 +49,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="col-sm-12">
 									<select class="form-control" name="date" id="oneWeek" onchange="change()">
-										<!-- <option th:text="${training.startDate}" th:value="${training.startDate}" selected="selected">2016/07/04～</option>
-										<option th:text="${training.endDate}" th:value="${training.endDate}">2016/07/11～</option> -->
+									    <option>日付を選択してください</option>
 										<option th:each="date:${dates}" th:text="${date}">2016/07/18～</option>
 									</select>
 								</div>

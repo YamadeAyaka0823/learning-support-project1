@@ -37,21 +37,25 @@ public class WeeklyReportService {
 		//週報をインサートする
 		WeeklyReport weeklyReport = new WeeklyReport();
 		weeklyReport.setContent(form.getInstructorContent());
-		weeklyReport.setInstructorName(form.getInstructorName());
+//		weeklyReport.setInstructorName(form.getInstructorName());
 		weeklyReport.setTrainingId(form.getTrainingId());
 		
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy年MM月dd日");
         Date date = sdFormat.parse(form.getStartDate());
 		weeklyReport.setStartDate(date);
-		weeklyReportRepository.insert(weeklyReport);
+//		weeklyReportRepository.insert(weeklyReport);
+		weeklyReportRepository.weeklyReportUpdate(weeklyReport);
+		
+		//受講生所感をインサートするためにweeklyReportIdを検索.
+		WeeklyReport weeklyReport2 = weeklyReportRepository.loadByDate(date, form.getTrainingId());
 		
 		//受講生所感をインサートする
 		for(int i =0; form.getStudentImpressionList().size() > i; i++) {
 			StudentImpression studentImpression = new StudentImpression();
 			studentImpression.setStudentName(form.getStudentImpressionList().get(i).getStudentName());
 			studentImpression.setContent(form.getStudentImpressionList().get(i).getContent());
-			studentImpression.setWeeklyReportId(weeklyReport.getId());
-			studentImpressionRepository.insert(studentImpression);
+			studentImpression.setWeeklyReportId(weeklyReport2.getId());
+			studentImpressionRepository.update(studentImpression);
 		}
 		
 		
@@ -82,10 +86,8 @@ public class WeeklyReportService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public WeeklyReport loadByDate(String date, Integer trainingId) throws ParseException {
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdFormat.parse(date);
-        return weeklyReportRepository.loadByDate(startDate, trainingId);
+	public WeeklyReport loadByDate(Date date, Integer trainingId) throws ParseException {
+        return weeklyReportRepository.loadByDate(date, trainingId);
 	}
 	
 	/**
@@ -110,5 +112,22 @@ public class WeeklyReportService {
 			studentImpressionRepository.update(studentImpression);
 		}
 	}
-
+	
+	/**
+	 * 週報の１部をインサート.
+	 * @param weeklyReport
+	 */
+	public WeeklyReport weeklyReportInsert(WeeklyReport weeklyReport) {
+		return weeklyReportRepository.weeklyReportInsert(weeklyReport);
+	}
+	
+	/**
+	 * 週報を印刷するために1件検索するためのサービス.
+	 * @param weeklyReportId
+	 * @return
+	 */
+	public WeeklyReport printWeeklyReport(Integer weeklyReportId) {
+		return weeklyReportRepository.printWeeklyReport(weeklyReportId);
+	}
+	
 }

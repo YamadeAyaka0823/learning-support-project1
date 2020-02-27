@@ -16,6 +16,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/admin/instructor_list}">講師一覧</a></li>
+			<li class="active">講師編集</li>
+		</ol>
 
 
 		<!-- register form -->
@@ -97,7 +103,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 					</thead>
 					<tbody>
 						<tr th:each="training:${instructorTrainingList.trainingList}">
-							<td th:text="${training.startDate} + '〜' + ${training.endDate}">2016/04/01 ～ 2016/06/30</td>
+							<td th:text="${#dates.format(training.startDate,'yyyy/MM/dd')} + '〜' + ${#dates.format(training.endDate,'yyyy/MM/dd')}">2016/04/01 ～ 2016/06/30</td>
 							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
 							<td th:text="${instructorTrainingList.name}">鈴木一郎</td>
 						</tr>

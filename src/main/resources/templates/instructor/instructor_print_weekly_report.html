@@ -13,17 +13,22 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+<style type="text/css" media="print">
+<!-- 
+.noPrint{ display:none ;} 
+--> 
+</style>
 </head>
 <body onload="responsibleCompanies();">
 	<div class="container">
-	
-	    <!-- ヘッダーをまとめてる -->
-		<span th:include="fragment::hedder1"></span>
+		<!-- ヘッダーをまとめてる -->
+		<span th:include="instructorFragment::hedder3"></span>
 		
 		<!-- パンくずリスト -->
 		<ol class="breadcrumb">
-			<li><a href="list.html" th:href="@{/admin/training_list}">研修一覧</a></li>
-			<li class="active">週報閲覧</li>
+			<li><a href="list.html" th:href="@{/instructor/load}">研修一覧</a></li>
+			<li class="active"><a th:href="@{'/instructor/view?id=' + ${session.trainingId}}">週報閲覧</a></li>
+			<li class="active">印刷</li>
 		</ol>
 		
 		<!-- print button -->
@@ -31,36 +36,17 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			<div class="form-group">
 				<div
 					class="col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
-						<a th:href="@{'/admin/admin_weekly_report_print?weeklyReportId=' + ${weeklyReport.id}}"><button type="submit" class="btn btn-primary">印刷</button></a>
+					<button type="submit" class="btn btn-primary noPrint" onclick="window.print();">印刷</button>
 				</div>
 			</div>
 		</div>
 
 		<!-- register form -->
 		<div class="row">
-			<!-- search form -->
-			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-5">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<div class="panel-title">週選択</div>
-					</div>
-					<div class="panel-body">
-						<form method="post" th:action="@{/admin/view_search_weeklyReport}" class="form-horizontal" id="form">
-							<div class="form-group">
-								<div class="col-sm-12">
-									<select class="form-control" name="date" id="oneWeek" onchange="change()">
-									    <option>日付を選択してください</option>
-										<option th:each="date:${dates}" th:text="${date}" >2016/07/18～</option>
-									</select>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
 					<!-- <span th:each="weeklyReport:${training.weeklyReportList}"> -->
 			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
 				<div class="well">
+					<form method="post" action="register_daily_report.html">
 						<fieldset>
 							<legend th:text="${formattedDate} + '〜の' + ${weeklyReport.instructorName} + '講師の週報'">○月○日～の鈴木一郎講師の週報</legend>
 							<div class="form-group">
@@ -68,12 +54,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 									<div class="col-sm-12">
 										<label for="inputTodaysContent">実施内容:</label>
 										<pre th:text="${weeklyReport.content}">
-オブジェクト指向入門
-クラスとオブジェクト
-継承
-インターフェース
-ポリモーフィズム
-カプセル化
 										</pre>
 									</div>
 								</div>
@@ -83,19 +63,14 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label th:text="${studentImpression.studentName}" for="inputTodaysIntelligibilityDetail">山田太郎様:</label><br />
-<pre th:text="${studentImpression.content}">
-1.理解度・・・・・・・・・・特に問題ありません。
-2.熱意・意欲・・・・・・・休み時間も学習しており、家に帰ってからも2時間学習しています
-3.積極性・協調性・・・少しおとなしく、周りと話すのは話しかけられた時だけです
-4.研修態度・・・・・・・・とても熱心に聞いています。昼休み後は少し眠そうです
-5.モラルマナー・・・・・・・一般的なマナーは知っています
-6.その他・・・・・・・・・・・資格取得についての質問がありました。とてもやる気があります。
-</pre>
+                                             <pre th:text="${studentImpression.content}">
+                                             </pre>
                                   </span>
 									</div>
 								</div>
 							</div>
 						</fieldset>
+					</form>
 				</div>
 			</div>
 		</div>

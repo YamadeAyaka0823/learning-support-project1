@@ -46,6 +46,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
 		<span th:include="fragment::hedder1"></span>
+		
+		<!-- パンくずリスト -->
+		<ol class="breadcrumb">
+			<li><a href="list.html" th:href="@{/admin/admin_list}">管理者一覧</a></li>
+			<li class="active">管理者編集</li>
+		</ol>
 
 
 		<!-- register form -->
@@ -60,8 +66,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputName">氏名:</label> <label
-											class="control-label" style="color: red" for="inputName">氏名を入力してください</label>
+										<label for="inputName">氏名:</label>
 										<input type="text" name="name" th:value="${admin.name}" id="inputName" class="form-control">
 									</div>
 								</div>
@@ -69,8 +74,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputName">氏名(かな):</label> <label
-											class="control-label" style="color: red" for="inputName">氏名(かな)を入力してください</label>
+										<label for="inputName">氏名(かな):</label>
 										<input type="text" name="kana" th:value="${admin.kana}" id="inputName" class="form-control">
 									</div>
 								</div>
@@ -78,8 +82,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<label for="inputEmail">メール</label> <label
-											class="control-label" style="color: red" for="inputEmail">メールを入力してください</label>
+										<label for="inputEmail">メール</label>
 										<input type="text" name="email" th:value="${admin.email}" id="inputEmail" class="form-control">
 									</div>
 								</div>

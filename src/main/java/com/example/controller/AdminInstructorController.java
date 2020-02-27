@@ -10,31 +10,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.domain.Admin;
 import com.example.domain.Instructor;
 import com.example.domain.LoginAdmin;
-import com.example.domain.Training;
 import com.example.form.AdminLoginForm;
 import com.example.form.InstructorRegisterForm;
 import com.example.form.InstructorUpdateForm;
-import com.example.service.AdminService;
 import com.example.service.InstructorService;
-import com.example.service.TrainingService;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminInstructorController {
 	
 	@Autowired
-	private AdminService adminService;
-	
-	@Autowired
 	private InstructorService instructorService;
-	
-	@Autowired
-    private TrainingService trainingService;
 	
 	@ModelAttribute
 	public AdminLoginForm setUpForm() {
@@ -116,17 +105,6 @@ public class AdminInstructorController {
 		instructorService.update(form);
 		return "redirect:/admin/instructor_list";
 	}
-	
-	/**
-	 * 企業一覧初期画面.
-	 * @return
-	 */
-//	@RequestMapping("/company_list")
-//	public String companyList(Model model) {
-//		List<Company> companyList = companyService.companyFindAll();
-//		model.addAttribute("companyList", companyList);
-//		return "admin/company_list";
-//	}
 
 
 }
