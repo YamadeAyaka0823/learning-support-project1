@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,27 +15,12 @@ import org.springframework.stereotype.Repository;
 import com.example.domain.DailyReport;
 import com.example.domain.Student;
 import com.example.domain.Training;
-import com.example.domain.TrainingStudent;
 
 @Repository
 public class DailyReportRepository {
 	
 	@Autowired
 	private NamedParameterJdbcTemplate template;
-	
-	private static final RowMapper<DailyReport> DAILY_REPORT_ROW_MAPPER = (rs,i) -> {
-		DailyReport dailyReport = new DailyReport();
-		dailyReport.setAboutInstructor(rs.getInt("about_instructor"));
-		dailyReport.setContent(rs.getString("content"));
-		dailyReport.setDate(rs.getDate("date"));
-		dailyReport.setDetailIntelligibillity(rs.getString("detail_intelligibillity"));
-		dailyReport.setId(rs.getInt("id"));
-		dailyReport.setIntelligibility(rs.getInt("intelligibility"));
-		dailyReport.setQuestion(rs.getString("question"));
-		dailyReport.setStudentId(rs.getInt("student_id"));
-		dailyReport.setTrainingId(rs.getInt("training_id"));
-		return dailyReport;
-	};
 	
 	/**
 	 * dailyReportとtrainingとstudentのmapper.
@@ -168,7 +152,6 @@ public class DailyReportRepository {
 	 * @return
 	 */
 	public DailyReport dateLoad(Integer trainingId, Integer studentId, Date date2) {
-//		String sql = "SELECT id, date, training_id, student_id, content, intelligibility, detail_intelligibillity, about_instructor, question FROM daily_reports WHERE date = :date AND training_id = :trainingId";
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
 		sql.append(" WHERE A.training_id = :trainingId AND A.date = :date AND A.student_id = :studentId ");
@@ -262,7 +245,6 @@ public class DailyReportRepository {
 		StringBuilder sql = new StringBuilder();
 		sql.append(joinTable());
 		sql.append(" WHERE A.id = :id ");
-//		String sql = "SELECT id, date, training_id, student_id, content, intelligibility, detail_intelligibillity, about_instructor, question FROM daily_reports WHERE id = :id";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", dailyReportId);
 		List<DailyReport> dailyReportList = template.query(sql.toString(), param, DAILY_REPORT_RESULT_SET_EXTRACTOR);
 		if(dailyReportList.size() == 0) {

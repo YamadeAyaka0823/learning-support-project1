@@ -93,6 +93,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 		<div class="row">
 			<div
 				class="table-responsive col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-10 col-xs-12">
+				<span th:text="${error}" style="color:red"></span>
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -101,13 +102,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 							<th>講師</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr th:each="training:${instructorTrainingList.trainingList}">
-							<td th:text="${#dates.format(training.startDate,'yyyy/MM/dd')} + '〜' + ${#dates.format(training.endDate,'yyyy/MM/dd')}">2016/04/01 ～ 2016/06/30</td>
-							<td th:text="${training.name}">〇〇企業様向け Java新人研修</td>
-							<td th:text="${instructorTrainingList.name}">鈴木一郎</td>
-						</tr>
-					</tbody>
 				</table>
 			</div>
 		</div>

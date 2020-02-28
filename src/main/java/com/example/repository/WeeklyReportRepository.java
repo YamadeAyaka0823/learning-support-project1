@@ -51,72 +51,6 @@ public class WeeklyReportRepository {
 	};
 	
 	/**
-	 * 4つのテーブルのマッパー.
-	 */
-	private static final ResultSetExtractor<List<Training>> TRAINING_RESULT_SET_EXTRACTOR = (rs) -> {
-		List<Training> trainingList = new ArrayList<>();
-		List<WeeklyReport> weeklyReportList = null;
-		List<StudentImpression> studentImpressionList = null;
-		
-		int preId = -1;
-		
-		while(rs.next()) {
-			int id = rs.getInt("A_id");
-			
-			if(id != preId) {
-				Training training = new Training();
-				training.setId(rs.getInt("A_id"));
-				training.setEndDate(rs.getDate("A_end_date"));
-				training.setInstructorId(rs.getInt("A_instructor_id"));
-				training.setName(rs.getString("A_name"));
-				training.setStartDate(rs.getDate("A_start_date"));
-				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id1"));
-				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id2"));
-				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id3"));
-				
-				Instructor instructor = new Instructor();
-				instructor.setId(rs.getInt("D_id"));
-				instructor.setName(rs.getString("D_name"));
-				instructor.setKana(rs.getString("D_kana"));
-				instructor.setEmail(rs.getString("D_email"));
-				instructor.setAffiliation(rs.getString("D_affiliation"));
-				instructor.setPassword(rs.getString("D_password"));
-				instructor.setRemarks(rs.getString("D_remarks"));
-				training.setInstructor(instructor);
-				
-				weeklyReportList = new ArrayList<>();
-				training.setWeeklyReportList(weeklyReportList);
-				trainingList.add(training);
-			}
-			
-			int middleCheckId = rs.getInt("B_id");
-			
-			if(middleCheckId != 0) {
-				WeeklyReport weeklyReport = new WeeklyReport();
-				weeklyReport.setId(rs.getInt("B_id"));
-				weeklyReport.setInstructorName(rs.getString("B_instructor_name"));
-				weeklyReport.setContent(rs.getString("B_content"));
-				weeklyReport.setStartDate(rs.getDate("B_start_date"));
-				weeklyReport.setTrainingId(rs.getInt("B_training_id"));
-				
-				StudentImpression studentImpression = new StudentImpression();
-				studentImpression.setId(rs.getInt("C_id"));
-				studentImpression.setWeeklyReportId(rs.getInt("C_weekly_report_id"));
-				studentImpression.setStudentName(rs.getString("C_student_name"));
-				studentImpression.setContent(rs.getString("C_content"));
-				
-				studentImpressionList = new ArrayList<>();
-				weeklyReport.setStudentImpressionList(studentImpressionList);
-				studentImpressionList.add(studentImpression);
-				weeklyReportList.add(weeklyReport);
-			}
-			
-			preId = id;
-		}
-		return trainingList;
-	};
-	
-	/**
 	 * weeklyReportとstudentImpressionテーブルのマッパー.
 	 */
 	private static final ResultSetExtractor<List<WeeklyReport>> WEEKLY_REPORT_RESULT_SET_EXTRACTOR = (rs) -> {
@@ -196,11 +130,66 @@ public class WeeklyReportRepository {
 		return JoinSql;
 	}
 	
+	private static final ResultSetExtractor<List<Training>> TRAINING_RESULT_SET_EXTRACTOR = (rs) -> {
+		List<Training> trainingList = new ArrayList<>();
+		List<WeeklyReport> weeklyReportList = null;
+		
+		int preId = -1;
+		
+		while(rs.next()) {
+			int id = rs.getInt("A_id");
+			
+			if(id != preId) {
+				Training training = new Training();
+				training.setId(rs.getInt("A_id"));
+				training.setEndDate(rs.getDate("A_end_date"));
+				training.setInstructorId(rs.getInt("A_instructor_id"));
+				training.setName(rs.getString("A_name"));
+				training.setStartDate(rs.getDate("A_start_date"));
+				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id1"));
+				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id2"));
+				training.setSubInstructorId1(rs.getInt("A_sub_instructor_id3"));
+				
+				Instructor instructor = new Instructor();
+				instructor.setAffiliation(rs.getString("D_affiliation"));
+				instructor.setEmail(rs.getString("D_email"));
+				instructor.setId(rs.getInt("D_id"));
+				instructor.setKana(rs.getString("D_kana"));
+				instructor.setName(rs.getString("D_name"));
+				instructor.setPassword(rs.getString("D_password"));
+				instructor.setRemarks(rs.getString("D_remarks"));
+				
+				training.setInstructor(instructor);
+				
+				weeklyReportList = new ArrayList<>();
+				
+				training.setWeeklyReportList(weeklyReportList);
+				
+				trainingList.add(training);
+			}
+			
+			int middleCheckId = rs.getInt("B_id");
+			
+			if(middleCheckId != 0) {
+				WeeklyReport weeklyReport = new WeeklyReport();
+				weeklyReport.setId(rs.getInt("B_id"));
+				weeklyReport.setInstructorName(rs.getString("B_instructor_name"));
+				weeklyReport.setContent(rs.getString("B_content"));
+				weeklyReport.setStartDate(rs.getDate("B_start_date"));
+				weeklyReport.setTrainingId(rs.getInt("B_training_id"));
+				
+				weeklyReportList.add(weeklyReport);
+			}
+			preId = id;
+		}
+		return trainingList;
+	};
+	
 	/**
-	 * trainingとweeklyReportとstudentImpressionとinstructorを結合.
+	 * trainingとweeklyReportとinstructorを結合.
 	 * @return
 	 */
-	public String join4Table() {
+	public String join3Table() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT ");
 		sb.append(" A.id A_id, ");
@@ -216,10 +205,6 @@ public class WeeklyReportRepository {
 		sb.append(" B.content B_content, ");
 		sb.append(" B.start_date B_start_date, ");
 		sb.append(" B.training_id B_training_id, ");
-		sb.append(" C.id C_id, ");
-		sb.append(" C.weekly_report_id C_weekly_report_id, ");
-		sb.append(" C.student_name C_student_name, ");
-		sb.append(" C.content C_content, ");
 		sb.append(" D.id D_id, ");
 		sb.append(" D.name D_name, ");
 		sb.append(" D.kana D_kana, ");
@@ -229,13 +214,10 @@ public class WeeklyReportRepository {
 		sb.append(" D.remarks D_remarks ");
 		sb.append(" FROM ");
 		sb.append(" trainings A ");
-		sb.append(" INNER JOIN ");
+		sb.append(" LEFT OUTER JOIN ");
 		sb.append(" weekly_reports B ");
 		sb.append(" ON A.id = B.training_id ");
-		sb.append(" INNER JOIN ");
-		sb.append(" student_impressions C ");
-		sb.append(" ON B.id = C.weekly_report_id ");
-		sb.append(" INNER JOIN ");
+		sb.append(" LEFT OUTER JOIN ");
 		sb.append(" instructors D ");
 		sb.append(" ON D.id = A.instructor_id ");
 		
@@ -260,9 +242,6 @@ public class WeeklyReportRepository {
 	 * @param weeklyReport
 	 */
 	public WeeklyReport weeklyReportInsert(WeeklyReport weeklyReport) {
-//		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
-//		String sql = "INSERT INTO weekly_reports (start_date, instructor_name, content, training_id ) VALUES (:startDate, :instructorName, :content, :trainingId )";
-//		template.update(sql, param);
 		SqlParameterSource param = new BeanPropertySqlParameterSource(weeklyReport);
 		Number key = insert.executeAndReturnKey(param);
 		weeklyReport.setId(key.intValue());
@@ -376,6 +355,23 @@ public class WeeklyReportRepository {
 			return null;
 		}
 		return weeklyReportList.get(0);
+	}
+	
+	/**
+	 * 週報を検索するためのリポジトリ.
+	 * @param trainingId
+	 * @return
+	 */
+	public Training loadForWeeklyReport(Integer trainingId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(join3Table());
+		sql.append(" WHERE A.id = :id ORDER BY B.start_date ");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", trainingId);
+		List<Training> trainingList = template.query(sql.toString(), param, TRAINING_RESULT_SET_EXTRACTOR);
+		if(trainingList.size() == 0) {
+			return null;
+		}
+		return trainingList.get(0);
 	}
 
 }

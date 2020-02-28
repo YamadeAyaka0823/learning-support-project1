@@ -139,3 +139,56 @@ Create table admin_company (
   admin_id integer not null
  ,company_id integer not null
 );
+
+-- 管理者のパスワード変更の際に発行されるトークンを保存するテーブル
+Drop table if exists admin_token cascade;
+
+Create table admin_token (
+  Id serial
+ ,name text not null
+ ,kana text not null
+ ,email text not null
+ ,password text not null
+ ,can_show_all_company boolean
+ ,token text not null
+);
+
+-- 企業担当者のパスワード変更の際に発行されるトークンを保存するテーブル
+Drop table if exists company_member_token cascade;
+
+Create table company_member_token (
+  Id serial
+ ,name text not null
+ ,kana text not null
+ ,email text not null
+ ,password text not null
+ ,company_id integer not null
+ ,token text not null
+);
+
+-- 講師のパスワード変更の際に発行されるトークンを保存するテーブル
+Drop table if exists instructor_token cascade;
+
+Create table instructor_token (
+  Id serial
+ ,name text not null
+ ,kana text not null
+ ,email text not null
+ ,password text not null
+ ,affiliation text not null
+ ,remarks text 
+ ,token text not null
+);
+
+-- 受講生のパスワード変更の際に発行されるトークンを保存するテーブル
+Drop table if exists student_token cascade;
+
+Create table student_token (
+  Id serial
+  ,name text not null
+  ,kana text not null
+  ,email text not null
+  ,password text not null
+  ,company_id integer not null
+  ,token text not null
+);

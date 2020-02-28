@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Instructor;
-import com.example.domain.Student;
 import com.example.domain.Training;
 
 @Repository
@@ -107,22 +106,6 @@ public class InstructorRepository {
 		
 		String joinSql = sb.toString();
 		return joinSql;
-	}
-	
-	/**
-	 * 講師がログインするためのリポジトリ.
-	 * @param email
-	 * @param password
-	 * @return
-	 */
-	public Instructor findByEmailAndPassword(String email, String password) {
-		String sql = "SELECT id, name, kana, email, password, affiliation, remarks FROM instructors WHERE email = :email AND password = :password";
-		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email).addValue("password", password);
-		List<Instructor> instructorList = template.query(sql, param, INSTRUCTOR_ROW_MAPPER);
-		if(instructorList.size() == 0) {
-			return null;
-		}
-		return instructorList.get(0);
 	}
 	
 	/**

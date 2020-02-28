@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.Instructor;
 import com.example.domain.InstructorPasswordResetToken;
-import com.example.domain.PasswordResetToken;
 
 @Repository
 public class InstructorPasswordTokenRepository {

@@ -239,7 +239,8 @@ public class AdminTrainingController {
 	public String studentInsert(Integer id, TrainingStudent trainingStudent) {
 	    List<Student> studentList = (ArrayList)session.getAttribute("studentList");
 	    for(int i = 0; i < studentList.size(); i++) {
-	    	if(studentList.get(i).getEmail() == null) { //emailはunique制約があるため、もしDBにすでにemailが登録されていればstudentテーブルにはinsertしない処理.
+	    	Student studentSearch = studentService.findByEmail(studentList.get(i).getEmail());
+	    	if(studentSearch == null) { //emailはunique制約があるため、もしDBにすでにemailが登録されていればstudentテーブルにはinsertしない処理.
 	    		Student student = new Student();
 	    		student.setName(studentList.get(i).getName());
 	    		student.setKana(studentList.get(i).getKana());
@@ -355,6 +356,11 @@ public class AdminTrainingController {
 	@RequestMapping("/view_dailyReport")
 	public String viewDailyReport(Integer id, Model model) {
 		DailyReport dailyReport = studentService.loadForAdmin(id);
+		
+		if(dailyReport == null) { //もし受講生が登録されていない場合エラー画面に遷移
+			return "view_daily_report_error_page";
+		}
+		
 		//日付を年月日形式に変換
 		Date date = dailyReport.getDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
@@ -457,7 +463,6 @@ public class AdminTrainingController {
 				  model.addAttribute("dailyReport", dailyReport);
 				  
 				  //研修の開始日と終了日を取得する
-//				  Training training = trainingService.instructorIdLoad(id);
 				  //DateをLocalDateに変換
 				  Date startDate = dailyReport.getTraining().getStartDate();
 				  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
@@ -495,24 +500,23 @@ public class AdminTrainingController {
 		WeeklyReport weeklyReport = weeklyReportService.load(id);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
+		if(weeklyReport.getId() == 0) { //もし受講生が登録されていない場合エラー画面に遷移
+			return "view_weekly_report_error_page";
+		}
+		
 		Date date = weeklyReport.getStartDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 		String formattedDate = dateFormat.format(date);
 		model.addAttribute("formattedDate", formattedDate);
 		
-		//日付を１週間おきに表示させる.
-		Training training = trainingService.load(id);
-		Date startDate = training.getStartDate();
-		LocalDate start = ((java.sql.Date)startDate).toLocalDate();
-		Date endDate = training.getEndDate();
-		LocalDate end = ((java.sql.Date)endDate).toLocalDate();
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(id);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDay);
-			dates.add(formatStartDate);
-			model.addAttribute("dates", dates);
-	    }
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
 		model.addAttribute("training", training);
 		return "admin/admin_view_weekly_report";
 	}
@@ -538,23 +542,14 @@ public class AdminTrainingController {
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-//		Integer trainingId = (Integer) session.getAttribute("trainingId");
-		//研修の開始日と終了日を取得する
-		Training training = trainingService.load(trainingId);
-		//DateをLocalDateに変換
-		Date date2 = training.getStartDate();
-		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-		Date date3 = training.getEndDate();
-		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-		//１週間ごとに表示させる.
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(trainingId);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDay);
-			dates.add(formatStartDate);
-			model.addAttribute("dates", dates);
-	    }
-		model.addAttribute("dates", dates);
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
 		return "admin/admin_view_weekly_report";
 	}
 	

@@ -20,7 +20,6 @@ import com.example.domain.Admin;
 import com.example.domain.AdminCompany;
 import com.example.domain.Company;
 import com.example.domain.CompanyMember;
-import com.example.domain.Student;
 
 @Repository
 public class AdminRepository {
@@ -217,23 +216,6 @@ public class AdminRepository {
 			String JoinSql = sb.toString();
 			return JoinSql;
 		}
-	
-	
-	/**
-	 * 管理者がログインするためのリポジトリ.
-	 * @param email
-	 * @param password
-	 * @return
-	 */
-	public Admin findByEmailAndPassword(String email, String password) {
-		String sql = "SELECT id, name, kana, email, password, can_show_all_company FROM admins WHERE email = :email AND password = :password";
-		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email).addValue("password", password);
-		List<Admin> adminList = template.query(sql, param, ADMIN_ROW_MAPPER);
-		if(adminList.size() == 0) {
-			return null;
-		}
-		return adminList.get(0);
-	}
 	
 	/**
 	 * 管理者がログインするためのリポジトリ.

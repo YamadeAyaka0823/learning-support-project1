@@ -38,7 +38,6 @@ import com.example.form.ChangePasswordForm;
 import com.example.form.InstructorLoginForm;
 import com.example.form.StudentImpressionForm;
 import com.example.form.WeeklyReportForm;
-import com.example.form.WeeklyReportUpdateForm;
 import com.example.service.DailyReportService;
 import com.example.service.InstructorSecurityService;
 import com.example.service.InstructorService;
@@ -166,12 +165,16 @@ public class InstructorController {
 		WeeklyReport weeklyReport = weeklyReportService.loadByDate(changeDate, trainingId);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
+		if(weeklyReport == null) { //もし受講生が登録されていない場合はエラーを出す
+			model.addAttribute("error", "受講生を登録してください");
+			return weeklyReport(trainingId, model);
+		}
+		
 		Date dateStart = weeklyReport.getStartDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-//		Integer trainingId = (Integer) session.getAttribute("trainingId");
 		//研修の開始日と終了日を取得する
 		Training training = trainingService.load(trainingId);
 		//DateをLocalDateに変換
@@ -200,9 +203,6 @@ public class InstructorController {
 	 */
 	@RequestMapping("/insert")
 	public String insert(WeeklyReportForm form, StudentImpressionForm form2, BindingResult result, Model model) throws ParseException {
-//		if(result.hasErrors()) {
-//			return weeklyReport(form.getTrainingId(), model);
-//		}
 		weeklyReportService.insert(form, form2);
 		return "redirect:/instructor/load";
 	}
@@ -221,27 +221,23 @@ public class InstructorController {
 		WeeklyReport weeklyReport = weeklyReportService.load(id);
 		model.addAttribute("weeklyReport", weeklyReport);
 		
+		if(weeklyReport.getId() == 0) { //もし受講生が登録されていない場合エラー画面に遷移
+			return "view_weekly_report_error_page";
+		}
+		
 		Date date = weeklyReport.getStartDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 		String formattedDate = dateFormat.format(date);
 		model.addAttribute("formattedDate", formattedDate);
 		
-		//研修の開始日と終了日を取得する
-		Training training = trainingService.load(id);
-		//DateをLocalDateに変換
-		Date date2 = training.getStartDate();
-		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-		Date date3 = training.getEndDate();
-		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-		//１週間ごとに表示させる.
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(id);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDate);
-			dates.add(formatStartDate);
-	    }
-		model.addAttribute("dates", dates);
-
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
 
 		model.addAttribute("training", training);
 		return "instructor/instructor_view_weekly_report";
@@ -268,22 +264,14 @@ public class InstructorController {
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-//		Integer trainingId = (Integer) session.getAttribute("trainingId");
-		//研修の開始日と終了日を取得する
-		Training training = trainingService.load(trainingId);
-		//DateをLocalDateに変換
-		Date date2 = training.getStartDate();
-		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-		Date date3 = training.getEndDate();
-		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-		//１週間ごとに表示させる.
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(trainingId);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDate);
-			dates.add(formatStartDate);
-			  }
-		model.addAttribute("dates", dates);
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
 		return "instructor/instructor_view_weekly_report";
 	}
 	
@@ -296,6 +284,10 @@ public class InstructorController {
 	@RequestMapping("/view_daily_report")
 	public String viewDailyReport(Integer id, Model model) {
 		DailyReport dailyReport = dailyReportService.instructorViewDailyReport(id);
+		
+		if(dailyReport == null) { //もし受講生が登録されていない場合はエラー画面に遷移
+			return "view_daily_report_error_page";
+		}
 		//日付を年月日形式に変換
 		Date date = dailyReport.getDate();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
@@ -399,7 +391,6 @@ public class InstructorController {
 				  model.addAttribute("dailyReport", dailyReport);
 				  
 				  //研修の開始日と終了日を取得する
-//				  Training training = trainingService.instructorIdLoad(id);
 				  //DateをLocalDateに変換
 				  Date startDate = dailyReport.getTraining().getStartDate();
 				  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
@@ -484,90 +475,6 @@ public class InstructorController {
 		model.addAttribute("weeklyReport", weeklyReport);
 		return "instructor/instructor_print_weekly_report";
 	}
-	
-//	/**
-//	 * 週報編集の初期画面.
-//	 * @return
-//	 */
-//	@RequestMapping("/weekly_report_edit")
-//	public String weeklyReportEdit(Integer id, Model model) {
-//		//研修IDをセッションにいれる.
-//		session.setAttribute("trainingId", id);
-//				
-//		WeeklyReport weeklyReport = weeklyReportService.load(id);
-//		model.addAttribute("weeklyReport", weeklyReport);
-//		
-//		Date date = weeklyReport.getStartDate();
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-//		String formattedDate = dateFormat.format(date);
-//		model.addAttribute("formattedDate", formattedDate);
-//
-//		//研修の開始日と終了日を取得する
-//		Training training = trainingService.load(id);
-//		//DateをLocalDateに変換
-//		Date date2 = training.getStartDate();
-//		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-//		Date date3 = training.getEndDate();
-//		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-//		//１週間ごとに表示させる.
-//		List<LocalDate> dates = new ArrayList<>();
-//		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-//			dates.add(startDate);
-//		}
-//		model.addAttribute("dates", dates);
-//
-//
-//		model.addAttribute("training", training);
-//		return "instructor/instructor_edit_weekly_report";
-//	}
-	
-//	/**
-//	 * 週報を変更するために日付で1件検索する.
-//	 * @param trainingId
-//	 * @param date
-//	 * @param name
-//	 * @param model
-//	 * @return
-//	 * @throws ParseException
-//	 */
-//	@RequestMapping("/weekly_report_edit_search")
-//	public String weeklyReportEditSearch(String date, Integer trainingId, Model model) throws ParseException {
-//		WeeklyReport weeklyReport = weeklyReportService.loadByDate(date, trainingId);
-//		model.addAttribute("weeklyReport", weeklyReport);
-//		
-//		Date dateStart = weeklyReport.getStartDate();
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-//		String formattedDate = dateFormat.format(dateStart);
-//		model.addAttribute("formattedDate", formattedDate);
-//		
-////		Integer trainingId = (Integer) session.getAttribute("trainingId");
-//		//研修の開始日と終了日を取得する
-//		Training training = trainingService.load(trainingId);
-//		//DateをLocalDateに変換
-//		Date date2 = training.getStartDate();
-//		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-//		Date date3 = training.getEndDate();
-//		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-//		//１週間ごとに表示させる.
-//		List<LocalDate> dates = new ArrayList<>();
-//		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-//			dates.add(startDate);
-//			  }
-//		model.addAttribute("dates", dates);
-//		return "instructor/instructor_edit_weekly_report";
-//	}
-	
-//	/**
-//	 * 週報を編集する.
-//	 * @param weeklyReportForm
-//	 * @param studentImpressionForm
-//	 * @return
-//	 */
-//	@RequestMapping("/update")
-//	public String update(WeeklyReportUpdateForm weeklyReportForm) {
-//		weeklyReportService.update(weeklyReportForm);
-//		return "redirect:/instructor/load";
-//	}
 	
 	////////////////////////////////////////////////////////////////////////
 	/**

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.CompanyMember;
 import com.example.domain.CompanyMemberPasswordResetToken;
-import com.example.domain.PasswordResetToken;
 
 @Repository
 public class CompanyMemberPasswordTokenRepository {

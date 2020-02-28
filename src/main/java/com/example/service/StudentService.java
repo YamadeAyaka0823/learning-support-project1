@@ -13,7 +13,6 @@ import com.example.domain.DailyReport;
 import com.example.domain.PasswordResetToken;
 import com.example.domain.Student;
 import com.example.form.DailyReportForm;
-import com.example.form.StudentLoginForm;
 import com.example.form.StudentUpdateForm;
 import com.example.repository.DailyReportRepository;
 import com.example.repository.PasswordTokenRepository;
@@ -34,15 +33,6 @@ public class StudentService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	/**
-	 * 受講者がログインするためのサービス.
-	 * @param form
-	 * @return
-	 */
-	public Student findByEmailAndPassword(StudentLoginForm form) {
-		return studentRepository.findByEmailAndPassword(form.getEmail(), form.getPassword());
-	}
 	
 	/**
 	 * 受講者がログインするためのサービス.

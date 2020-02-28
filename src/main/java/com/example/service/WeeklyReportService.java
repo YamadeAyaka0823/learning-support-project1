@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.StudentImpression;
+import com.example.domain.Training;
 import com.example.domain.WeeklyReport;
 import com.example.form.StudentImpressionForm;
-import com.example.form.StudentImpressionUpdateForm;
 import com.example.form.WeeklyReportForm;
 import com.example.form.WeeklyReportUpdateForm;
 import com.example.repository.StudentImpressionRepository;
@@ -37,13 +37,11 @@ public class WeeklyReportService {
 		//週報をインサートする
 		WeeklyReport weeklyReport = new WeeklyReport();
 		weeklyReport.setContent(form.getInstructorContent());
-//		weeklyReport.setInstructorName(form.getInstructorName());
 		weeklyReport.setTrainingId(form.getTrainingId());
 		
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy年MM月dd日");
         Date date = sdFormat.parse(form.getStartDate());
 		weeklyReport.setStartDate(date);
-//		weeklyReportRepository.insert(weeklyReport);
 		weeklyReportRepository.weeklyReportUpdate(weeklyReport);
 		
 		//受講生所感をインサートするためにweeklyReportIdを検索.
@@ -128,6 +126,15 @@ public class WeeklyReportService {
 	 */
 	public WeeklyReport printWeeklyReport(Integer weeklyReportId) {
 		return weeklyReportRepository.printWeeklyReport(weeklyReportId);
+	}
+	
+	/**
+	 * 週報を検索するためのサービス.
+	 * @param trainingId
+	 * @return
+	 */
+	public Training loadForWeeklyReport(Integer trainingId) {
+		return weeklyReportRepository.loadForWeeklyReport(trainingId);
 	}
 	
 }

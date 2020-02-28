@@ -22,7 +22,6 @@ import com.example.form.TrainingUpdateForm;
 import com.example.repository.DailyReportRepository;
 import com.example.repository.StudentImpressionRepository;
 import com.example.repository.TrainingRepository;
-import com.example.repository.TrainingStudentRepository;
 import com.example.repository.WeeklyReportRepository;
 
 @Service
@@ -31,9 +30,6 @@ public class TrainingService {
 	
 	@Autowired
 	private TrainingRepository trainingRepository;
-	
-	@Autowired
-	private TrainingStudentRepository trainingStudentRepository;
 	
 	@Autowired
 	private StudentImpressionRepository studentImpressionRepository;
@@ -136,7 +132,6 @@ public class TrainingService {
 		//trainingIdで一旦weeklyReportを消す
 		weeklyReportRepository.deleteWeeklyReport(form.getId());
 		
-//		List<TrainingStudent> trainingStudentList = trainingStudentRepository.load(form.getId());
 		Training trainingForDailyReport = trainingRepository.load(form.getId());
     	//研修の開始日と終了日を取得する
 		//DateをLocalDateに変換

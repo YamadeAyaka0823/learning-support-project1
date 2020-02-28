@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.CompanyMember;
 import com.example.domain.CompanyMemberPasswordResetToken;
-import com.example.form.CompanyMemberLoginForm;
 import com.example.repository.CompanyMemberPasswordTokenRepository;
 import com.example.repository.CompanyMemberRepository;
 
@@ -25,16 +24,6 @@ public class CompanyMemberService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	
-	/**
-	 * 企業担当者がログインするためのサービス.
-	 * @param form
-	 * @return
-	 */
-	public CompanyMember findByEmailAndPassword(CompanyMemberLoginForm form) {
-		return companyMemberRepository.findByEmailAndPassword(form.getEmail(), form.getPassword());
-	}
 	
 	/**
 	 * 企業担当者がログインするためのサービス.

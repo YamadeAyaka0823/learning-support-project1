@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.CompanyMember;
-import com.example.domain.Student;
 
 @Repository
 public class CompanyMemberRepository {
@@ -30,23 +29,6 @@ public class CompanyMemberRepository {
 		companyMember.setCompanyId(rs.getInt("company_id"));
 		return companyMember;
 	};
-	
-	
-	/**
-	 * 企業担当者がログインするためのリポジトリ.
-	 * @param email
-	 * @param password
-	 * @return
-	 */
-	public CompanyMember findByEmailAndPassword(String email, String password) {
-		String sql = "SELECT id, name, kana, password, email, company_id FROM company_members WHERE email = :email AND password = :password";
-		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email).addValue("password", password);
-		List<CompanyMember> companyMemberList = template.query(sql, param, COMPANY_MEMBER_ROW_MAPPER);
-		if(companyMemberList.size() == 0) {
-			return null;
-		}
-		return companyMemberList.get(0);
-	}
 	
 	/**
 	 * 企業担当者がログインするためのリポジトリ.

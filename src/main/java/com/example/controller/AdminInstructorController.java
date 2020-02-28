@@ -91,7 +91,11 @@ public class AdminInstructorController {
 		Instructor instructor = instructorService.oneLoad(id); //講師の情報
 		model.addAttribute("instructor", instructor);
 		Instructor instructorTrainingList = instructorService.load(id); //講師1人が受け持つ研修一覧
-		model.addAttribute("instructorTrainingList", instructorTrainingList);
+		if(instructorTrainingList == null) {
+			model.addAttribute("error", "研修を登録してください");
+			return "admin/instructor_edit_nullver";
+		}
+	    model.addAttribute("instructorTrainingList", instructorTrainingList);
 		return "admin/instructor_edit";
 	}
 	

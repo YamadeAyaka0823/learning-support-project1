@@ -15,7 +15,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 	<div class="container">
 		<!-- ヘッダーをまとめてる -->
-		<span th:include="fragment::hedder1"></span>
+		<span th:include="adminFragment::hedder1"></span>
 		
 		<!-- パンくずリスト -->
 		<ol class="breadcrumb">
@@ -104,14 +104,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 						<tr>
 							<th>受講者名</th>
 							<th>メールアドレス</th>
-							<th>所属</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="student:${session.studentList}">
 							<td th:text="${student.name}">受講者一郎</td>
 							<td th:text="${student.email}">ichiro@jukou.com</td>
-							<td>株式会社〇〇</td>
 						</tr>
 					</tbody>
 				</table>

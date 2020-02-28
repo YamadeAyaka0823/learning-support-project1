@@ -156,7 +156,6 @@ public class StudentController {
 	 * @throws ParseException 
 	 */
 	@RequestMapping("/date_load")
-//	@ResponseBody
 	public String dateLoad(String date, Model model) throws ParseException {
 		Integer trainingId = (Integer) session.getAttribute("trainingId");
 		Integer studentId = (Integer) session.getAttribute("studentId");
@@ -196,7 +195,6 @@ public class StudentController {
 		  model.addAttribute("dailyReport", dailyReport);
 		  
 		  //研修の開始日と終了日を取得する
-//		  Training training = trainingService.instructorIdLoad(id);
 		  //DateをLocalDateに変換
 		  Date startDate = dailyReport.getTraining().getStartDate();
 		  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
@@ -215,7 +213,6 @@ public class StudentController {
 		  dates.add(formatEndDate);
 		  model.addAttribute("dates", dates);
 		  return "student/student_register_daily_report";
-//		  return "redirect:/student/daily";
 	}
 	
 	/**
@@ -229,10 +226,7 @@ public class StudentController {
 		if(result.hasErrors()) {
 			return daily(form.getTrainingId(), form.getStudentId(), model);
 		}
-//		studentService.insert(form);
 		dailyReportService.update(form);
-//		session.setAttribute("trainingId", form.getTrainingId());
-//		session.setAttribute("studentId", form.getStudentId());
 		return "redirect:/student/student_load";
 	}
 	
@@ -307,8 +301,6 @@ public class StudentController {
 	 */
 	@RequestMapping("/date_load_view")
 	public String dateLoadView(Integer trainingId, Integer studentId, String date, Model model) throws ParseException {
-//		Integer trainingId = (Integer) session.getAttribute("trainingId");
-//		Integer studentId = (Integer) session.getAttribute("studentId");
 		 SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd");
          Date date2 = sdFormat.parse(date);
 		DailyReport dailyReport = studentService.dateLoad(trainingId,studentId,date2);
@@ -345,7 +337,6 @@ public class StudentController {
 		  model.addAttribute("dailyReport", dailyReport);
 		  
 		  //研修の開始日と終了日を取得する
-//		  Training training = trainingService.instructorIdLoad(id);
 		  //DateをLocalDateに変換
 		  Date startDate = dailyReport.getTraining().getStartDate();
 		  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
@@ -407,137 +398,6 @@ public class StudentController {
 		return "student/student_print_daily_report";
 	}
 	
-//	/**
-//	 * 日報を編集する初期画面.
-//	 * @return
-//	 */
-//	@RequestMapping("/daily_edit")
-//	public String dailyEdit(Integer id, Integer studentId, Model model) {
-//		DailyReport dailyReport = studentService.dailyLoad(id, studentId);
-//		//日付を年月日形式に変換
-//		Date date = dailyReport.getDate();
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-//		String formattedDate = dateFormat.format(date);
-//		model.addAttribute("formattedDate", formattedDate);
-//		
-//		if(dailyReport.getIntelligibility() == 1) {
-//		   model.addAttribute("intelligibility", "良く理解できた");
-//		}else if(dailyReport.getIntelligibility() == 2) {
-//			model.addAttribute("intelligibility", "概ね理解できた");
-//		}else if(dailyReport.getIntelligibility() == 3) {
-//			model.addAttribute("intelligibility", "ふつう");
-//		}else if(dailyReport.getIntelligibility() == 4) {
-//			model.addAttribute("intelligibility", "少し難しかった");
-//		}else if(dailyReport.getIntelligibility() == 5) {
-//			model.addAttribute("intelligibility", "とても難しかった");
-//		}
-//		
-//		if(dailyReport.getAboutInstructor() == 1) {
-//			model.addAttribute("aboutInstructor", "とても丁寧だった");
-//		}else if(dailyReport.getAboutInstructor() == 2) {
-//			model.addAttribute("aboutInstructor", "概ね丁寧だった");
-//		}else if(dailyReport.getAboutInstructor() == 3) {
-//			model.addAttribute("aboutInstructor", "どちらともいえない");
-//		}else if(dailyReport.getAboutInstructor() == 4) {
-//			model.addAttribute("aboutInstructor", "やや丁寧ではなかった");
-//		}else if(dailyReport.getAboutInstructor() == 5) {
-//			model.addAttribute("aboutInstructor", "全く丁寧ではなかった");
-//		}
-//		model.addAttribute("dailyReport", dailyReport);
-//		
-//		//研修の開始日と終了日を取得する
-//		Training training = trainingService.instructorIdLoad(id);
-//		//DateをLocalDateに変換
-//		Date date2 = training.getStartDate();
-//		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-//		Date date3 = training.getEndDate();
-//		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-//		//１週間ごとに表示させる.
-//		List<LocalDate> dates = new ArrayList<>();
-//		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(1)) {
-//			dates.add(startDate);
-//		}
-//		//講義最終日のみ最後に追加.
-//		dates.add(end);
-//		model.addAttribute("dates", dates);
-//		return "student/student_edit_daily_report";
-//	}
-	
-//	/**
-//	 * 日報編集画面で日付で1件検索するためのコントローラー.
-//	 * @param trainingId
-//	 * @param date
-//	 * @param model
-//	 * @return
-//	 * @throws ParseException
-//	 */
-//	@RequestMapping("/edit_date_load")
-//	public String editDateLoad(Integer trainingId, Integer studentId, String date, Model model) throws ParseException {
-//		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date2 = sdFormat.parse(date);
-//		DailyReport dailyReport = studentService.dateLoad(trainingId,studentId,date2);
-//		
-//		//日付を年月日形式に変換
-//		Date date3 = dailyReport.getDate();
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-//		String formattedDate = dateFormat.format(date3);
-//		model.addAttribute("formattedDate", formattedDate);
-//		
-//		if(dailyReport.getIntelligibility() == 1) {
-//			   model.addAttribute("intelligibility", "良く理解できた");
-//			}else if(dailyReport.getIntelligibility() == 2) {
-//				model.addAttribute("intelligibility", "概ね理解できた");
-//			}else if(dailyReport.getIntelligibility() == 3) {
-//				model.addAttribute("intelligibility", "ふつう");
-//			}else if(dailyReport.getIntelligibility() == 4) {
-//				model.addAttribute("intelligibility", "少し難しかった");
-//			}else if(dailyReport.getIntelligibility() == 5) {
-//				model.addAttribute("intelligibility", "とても難しかった");
-//			}
-//			
-//			if(dailyReport.getAboutInstructor() == 1) {
-//				model.addAttribute("aboutInstructor", "とても丁寧だった");
-//			}else if(dailyReport.getAboutInstructor() == 2) {
-//				model.addAttribute("aboutInstructor", "概ね丁寧だった");
-//			}else if(dailyReport.getAboutInstructor() == 3) {
-//				model.addAttribute("aboutInstructor", "どちらともいえない");
-//			}else if(dailyReport.getAboutInstructor() == 4) {
-//				model.addAttribute("aboutInstructor", "やや丁寧ではなかった");
-//			}else if(dailyReport.getAboutInstructor() == 5) {
-//				model.addAttribute("aboutInstructor", "全く丁寧ではなかった");
-//			}
-//		  model.addAttribute("dailyReport", dailyReport);
-//		  
-//		  //研修の開始日と終了日を取得する
-////		  Training training = trainingService.instructorIdLoad(id);
-//		  //DateをLocalDateに変換
-//		  Date startDate = dailyReport.getTraining().getStartDate();
-//		  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
-//		  Date endDate = dailyReport.getTraining().getEndDate();
-//		  LocalDate end = ((java.sql.Date)endDate).toLocalDate();
-//		  //１日ごとに表示させる.
-//		  List<LocalDate> dates = new ArrayList<>();
-//		  for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(1)) {
-//			  dates.add(startDay);
-//		  }
-//		  //講義最終日のみ最後に追加.
-//		  dates.add(end);
-//		  model.addAttribute("dates", dates);
-//		return "student/student_edit_daily_report";
-//	}
-	
-//	/**
-//	 * 日報を更新する.
-//	 * @param form
-//	 * @return
-//	 * @throws ParseException
-//	 */
-//	@RequestMapping("/update")
-//	public String update(DailyReportForm form) throws ParseException {
-//		dailyReportService.update(form);
-//		return "redirect:/student/student_load";
-//	}
-
 	////////////////////////////////////////////////////////////////////////
 	/**
 	 * パスワード変更初期画面.
@@ -545,7 +405,7 @@ public class StudentController {
 	 */
 	@RequestMapping("/forgot_password")
 	public String forgotPassword() {
-		return "forgotPassword";
+		return "student/student_forgotPassword";
 	}
 	
 	/**
@@ -608,7 +468,7 @@ public class StudentController {
 			model.addAttribute("message", messages.getMessage("auth.message." + result, null, locale));
 			return "redirect:/login?lang=" + locale.getLanguage();
 		}
-		return "updatePassword";
+		return "student/student_updatePassword";
 	}
 	
 	/**

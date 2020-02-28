@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Instructor;
 import com.example.domain.InstructorPasswordResetToken;
-import com.example.form.InstructorLoginForm;
 import com.example.form.InstructorRegisterForm;
 import com.example.form.InstructorUpdateForm;
 import com.example.repository.InstructorPasswordTokenRepository;
@@ -27,15 +26,6 @@ public class InstructorService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	/**
-	 * 講師がログインするためのサービス.
-	 * @param form
-	 * @return
-	 */
-	public Instructor findByEmailAndPassword(InstructorLoginForm form) {
-		return instructorRepository.findByEmailAndPassword(form.getEmail(), form.getPassword());
-	}
 	
 	/**
 	 * 講師がログインするためのサービス.

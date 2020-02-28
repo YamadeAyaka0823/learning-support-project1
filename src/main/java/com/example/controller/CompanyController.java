@@ -104,7 +104,6 @@ public class CompanyController {
 	@RequestMapping("/list")
 	public String list(Model model, @AuthenticationPrincipal LoginCompanyMember loginCompanyMember) {
 		Integer id = loginCompanyMember.getCompanyMember().getCompanyId(); //company_idで検索.
-//		Integer id = (Integer) session.getAttribute("company_id"); 
 		List<Training> trainingList = companyService.load(id);
 		model.addAttribute("trainingList", trainingList);
 		return "company/company_training_list";
@@ -219,7 +218,6 @@ public class CompanyController {
 				  model.addAttribute("dailyReport", dailyReport);
 				  
 				  //研修の開始日と終了日を取得する
-//				  Training training = trainingService.instructorIdLoad(id);
 				  //DateをLocalDateに変換
 				  Date startDate = dailyReport.getTraining().getStartDate();
 				  LocalDate start = ((java.sql.Date)startDate).toLocalDate();
@@ -260,19 +258,15 @@ public class CompanyController {
 		String formattedDate = dateFormat.format(date);
 		model.addAttribute("formattedDate", formattedDate);
 		
-		//日付を１週間おきに表示させる.
-		Training training = trainingService.load(id);
-		Date startDate = training.getStartDate();
-		LocalDate start = ((java.sql.Date)startDate).toLocalDate();
-		Date endDate = training.getEndDate();
-		LocalDate end = ((java.sql.Date)endDate).toLocalDate();
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(id);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDay = start; startDay.isBefore(end); startDay = startDay.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDay);
-			dates.add(formatStartDate);
-			model.addAttribute("dates", dates);
-	    }
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
+				
 		model.addAttribute("training", training);
 		return "company/company_view_weekly_report";
 	}
@@ -298,22 +292,14 @@ public class CompanyController {
 		String formattedDate = dateFormat.format(dateStart);
 		model.addAttribute("formattedDate", formattedDate);
 		
-//		Integer trainingId = (Integer) session.getAttribute("trainingId");
-		//研修の開始日と終了日を取得する
-		Training training = trainingService.load(trainingId);
-		//DateをLocalDateに変換
-		Date date2 = training.getStartDate();
-		LocalDate start = ((java.sql.Date)date2).toLocalDate();
-		Date date3 = training.getEndDate();
-		LocalDate end = ((java.sql.Date)date3).toLocalDate();
-		//１週間ごとに表示させる.
+		//週報のプルダウンを表示させる
+		Training training = weeklyReportService.loadForWeeklyReport(trainingId);
 		List<String> dates = new ArrayList<>();
-		for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(7)) {
-			DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //yyyy/MM/dd形式に変換.
-		    String formatStartDate = datetimeformatter.format(startDate);
-			dates.add(formatStartDate);
-			  }
-		model.addAttribute("dates", dates);
+		for(int i = 0; i < training.getWeeklyReportList().size(); i++) {
+			String str = new SimpleDateFormat("yyyy/MM/dd").format(training.getWeeklyReportList().get(i).getStartDate());
+			dates.add(str);
+		}
+		model.addAttribute("dates",dates);
 		return "company/company_view_weekly_report";
 	}
 	

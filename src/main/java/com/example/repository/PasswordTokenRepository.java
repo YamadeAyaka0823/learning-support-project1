@@ -30,18 +30,6 @@ public class PasswordTokenRepository {
 		return passwordResetToken;
 	};
 	
-//	public static final RowMapper<StudentToken> STUDENT_ROW_MAPPER = (rs,i) -> {
-//		StudentToken studentToken = new StudentToken();
-//		studentToken.setId(rs.getInt("id"));
-//		studentToken.setName(rs.getString("name"));
-//		studentToken.setKana(rs.getString("kana"));
-//		studentToken.setEmail(rs.getString("email"));
-//		studentToken.setPassword(rs.getString("password"));
-//		studentToken.setCompanyId(rs.getInt("company_id"));
-//		studentToken.setToken(rs.getString("token"));
-//		return studentToken;
-//	};
-	
 	/**
 	 * 生徒パスワード変更画面で発行されたトークンをDBへinsertする.
 	 * @param student

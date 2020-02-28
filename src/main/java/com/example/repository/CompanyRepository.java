@@ -315,12 +315,12 @@ public class CompanyRepository {
 	 * @return
 	 */
 	public List<Company> findByName(String name){
-//		StringBuilder sql = new StringBuilder();
-//		sql.append(join2Table());
-//		sql.append(" WHERE name LIKE :name ");
-		String sql = "SELECT ID, name, kana, remarks FROM companies WHERE name LIKE :name ";
+		StringBuilder sql = new StringBuilder();
+		sql.append(join2Table());
+		sql.append(" WHERE A.name LIKE :name ");
+//		String sql = "SELECT ID, name, kana, remarks FROM companies WHERE name LIKE :name ";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
-		List<Company> companyList = template.query(sql.toString(), param, COMPANY_ROW_MAPPER);
+		List<Company> companyList = template.query(sql.toString(), param, COMPANY_RESULT_SET_EXTRACTOR);
 		return companyList;
 	}
 
