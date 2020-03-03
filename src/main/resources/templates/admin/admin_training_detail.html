@@ -84,12 +84,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputLecturer">サブ講師:</label>
-										<div th:if="${#fields.hasErrors('subInstructorId1')}"
-									         th:errors="*{subInstructorId1}"
-									         style="color:red"></div>
 										 <select name="subInstructorId1" class="form-control">
 											<option th:value="null">選択してください</option>
-											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:field="*{subInstructorId1}" th:value="${instructor.id}">選択してください</option>
+											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:value="${instructor.id}">選択してください</option>
 										</select>
 									</div>
 								</div>
@@ -98,12 +95,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputLecturer">サブ講師:</label> 
-										<div th:if="${#fields.hasErrors('subInstructorId2')}"
-									         th:errors="*{subInstructorId2}"
-									         style="color:red"></div>
 										<select name="subInstructorId2" class="form-control">
 											<option th:value="null">選択してください</option>
-											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:field="*{subInstructorId2}" th:value="${instructor.id}">選択してください</option>
+											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:value="${instructor.id}">選択してください</option>
 										</select>
 									</div>
 								</div>
@@ -112,12 +106,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 								<div class="row">
 									<div class="col-sm-12">
 										<label for="inputLecturer">サブ講師:</label> 
-										<div th:if="${#fields.hasErrors('subInstructorId3')}"
-									         th:errors="*{subInstructorId3}"
-									         style="color:red"></div>
 										<select name="subInstructorId3" class="form-control">
 											<option th:value="null">選択してください</option>
-											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:field="*{subInstructorId3}" th:value="${instructor.id}">選択してください</option>
+											<option th:each="instructor:${instructorList}" th:text="${instructor.name}" th:value="${instructor.id}">選択してください</option>
 										</select>
 									</div>
 								</div>

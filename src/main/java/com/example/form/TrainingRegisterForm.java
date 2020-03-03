@@ -18,13 +18,13 @@ public class TrainingRegisterForm {
 	@NotNull(message="いずれかを選択してください")
 	private Integer instructorId;
 	/** サブ講師1 */
-	@NotNull(message="いずれかを選択してください")
+//	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId1;
 	/** サブ講師2 */
-	@NotNull(message="いずれかを選択してください")
+//	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId2;
 	/** サブ講師3 */
-	@NotNull(message="いずれかを選択してください")
+//	@NotNull(message="いずれかを選択してください")
 	private Integer subInstructorId3;
 	
 	public String getName() {
