@@ -144,7 +144,7 @@ public class StudentSecurityConfig extends WebSecurityConfigurerAdapter {
 			.loginPage("/student/student_login") // ログイン画面に遷移させるパス(ログイン認証が必要なパスを指定してかつログインされていないとこのパスに遷移される)
 			.loginProcessingUrl("/student/login") // ログインボタンを押した際に遷移させるパス(ここに遷移させれば自動的にログインが行われる)
 			.failureUrl("/student/student_login?error=true") //ログイン失敗に遷移させるパス
-			.defaultSuccessUrl("/student/student_load", false) // 第1引数:デフォルトでログイン成功時に遷移させるパス
+			.defaultSuccessUrl("/student/student_load", true) // 第1引数:デフォルトでログイン成功時に遷移させるパス
 			                                        // 第2引数: true :認証後常に第1引数のパスに遷移 
 			                                        //         false:認証されてなくて一度ログイン画面に飛ばされてもログインしたら指定したURLに遷移
 			.usernameParameter("email") // 認証時に使用するユーザ名のリクエストパラメータ名(今回はメールアドレスを使用)
@@ -215,7 +215,7 @@ public class InstructorSecurityConfig extends WebSecurityConfigurerAdapter {
 			.loginPage("/instructor/instructor_login") // ログイン画面に遷移させるパス(ログイン認証が必要なパスを指定してかつログインされていないとこのパスに遷移される)
 			.loginProcessingUrl("/instructor/login") // ログインボタンを押した際に遷移させるパス(ここに遷移させれば自動的にログインが行われる)
 			.failureUrl("/instructor/instructor_login?error=true") //ログイン失敗に遷移させるパス
-			.defaultSuccessUrl("/instructor/load", false) // 第1引数:デフォルトでログイン成功時に遷移させるパス
+			.defaultSuccessUrl("/instructor/load", true) // 第1引数:デフォルトでログイン成功時に遷移させるパス
 			                                        // 第2引数: true :認証後常に第1引数のパスに遷移 
 			                                        //         false:認証されてなくて一度ログイン画面に飛ばされてもログインしたら指定したURLに遷移
 			.usernameParameter("email") // 認証時に使用するユーザ名のリクエストパラメータ名(今回はメールアドレスを使用)
@@ -286,7 +286,7 @@ public class CompanySecurityConfig extends WebSecurityConfigurerAdapter {
 			.loginPage("/company/company_login") // ログイン画面に遷移させるパス(ログイン認証が必要なパスを指定してかつログインされていないとこのパスに遷移される)
 			.loginProcessingUrl("/company/login") // ログインボタンを押した際に遷移させるパス(ここに遷移させれば自動的にログインが行われる)
 			.failureUrl("/company/company_login?error=true") //ログイン失敗に遷移させるパス
-			.defaultSuccessUrl("/company/list", false) // 第1引数:デフォルトでログイン成功時に遷移させるパス
+			.defaultSuccessUrl("/company/list", true) // 第1引数:デフォルトでログイン成功時に遷移させるパス
 			                                        // 第2引数: true :認証後常に第1引数のパスに遷移 
 			                                        //         false:認証されてなくて一度ログイン画面に飛ばされてもログインしたら指定したURLに遷移
 			.usernameParameter("email") // 認証時に使用するユーザ名のリクエストパラメータ名(今回はメールアドレスを使用)
