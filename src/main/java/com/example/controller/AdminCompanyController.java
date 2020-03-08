@@ -104,10 +104,10 @@ public class AdminCompanyController {
 	 * @return
 	 */
 	@RequestMapping("/company_register")
-	public String companyRegister(@Validated CompanyRegisterForm form, BindingResult result) {
-		if(result.hasErrors()) {
-			return register();
-		}
+	public String companyRegister(CompanyRegisterForm form, BindingResult result) {
+//		if(result.hasErrors()) {
+//			return register();
+//		}
 		companyService.insert(form);
 		return "redirect:/admin/company_list";
 	}

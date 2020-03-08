@@ -5,13 +5,13 @@ import javax.validation.constraints.NotBlank;
 public class CompanyRegisterForm {
 	
 	/** 企業名 */
-	@NotBlank(message="企業名を入力してください")
+//	@NotBlank(message="企業名を入力してください")
 	private String name;
 	/** 企業名(かな) */
-	@NotBlank(message="企業名(かな)を入力してください")
+//	@NotBlank(message="企業名(かな)を入力してください")
 	private String kana;
 	/** 備考 */
-	@NotBlank(message="備考を入力してください")
+//	@NotBlank(message="備考を入力してください")
 	private String remarks;
 	
 	public String getName() {
