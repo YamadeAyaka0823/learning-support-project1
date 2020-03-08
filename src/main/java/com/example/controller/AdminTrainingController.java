@@ -1,14 +1,10 @@
 package com.example.controller;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -196,24 +192,10 @@ public class AdminTrainingController {
 	
 	@RequestMapping("/student_import")
 	public String studentImport(StudentRegisterForm form, Model model, Integer id, TrainingStudent trainingStudent) throws IOException {
-		int dot = form.getCsv().getOriginalFilename().lastIndexOf(".");
-		String extention = "";
-		if (dot > 0) {
-			extention = form.getCsv().getOriginalFilename().substring(dot).toLowerCase();
-		}
-		String filename = form.getCsv().getOriginalFilename();
-		Path path = Paths.get("/Users/yamadeayaka/spring-workspace/learning-support-project-1/" + filename);
-
-		try (OutputStream os = Files.newOutputStream(path, StandardOpenOption.CREATE)) {
-			byte[] bytes = form.getCsv().getBytes();
-			os.write(bytes);
-		} catch (IOException ex) {
-			System.err.println(ex);
-		}
 		
-		FileInputStream fIStream= new FileInputStream("/Users/yamadeayaka/spring-workspace/learning-support-project-1/" + filename);
-		InputStreamReader isr = new InputStreamReader(fIStream);
-		BufferedReader br = new BufferedReader(isr);
+		InputStream stream = form.getCsv().getInputStream(); //ファイルからバイトストリームを作る
+		Reader reader = new InputStreamReader(stream); //バイトストリームから文字列ストリームを作る
+		BufferedReader br = new BufferedReader(reader); //リーダーをバッファする
 		String str;
 		List<Student> studentList = new ArrayList<>();
 		 while((str = br.readLine()) != null){

@@ -3,7 +3,12 @@
 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Insert title here</title>
+<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/admin_fragment_header.js}"></script>
 </head>
 <body>
 <div th:fragment="hedder1">
@@ -26,11 +31,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="active nav-item"><a class="nav-link" th:href="@{/admin/training_list}">研修コース</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/admin/admin_list}">運営管理者</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{'/admin/company_list?id=' + ${adminId}}">企業(企業担当者)</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/admin/instructor_list}">講師</a></li>
+					<ul class="nav navbar-nav" id="select">
+						<li class="active"><a th:href="@{/admin/training_list}">研修コース</a></li>
+						<li><a th:href="@{/admin/admin_list}">運営管理者</a></li>
+						<li><a th:href="@{'/admin/company_list?id=' + ${adminId}}">企業(企業担当者)</a></li>
+						<li><a th:href="@{/admin/instructor_list}">講師</a></li>
 					</ul>
 					<p class="navbar-text navbar-right">
 					    <span sec:authentication="principal.admin.name"></span>さんこんにちは！
@@ -42,5 +47,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			<!-- /.container-fluid -->
 		</nav>
 </div>
+<script src="../js/bootstrap.min.js"></script>
 </body>
 </html>
